@@ -106,3 +106,10 @@ The `StrongholdIsolationProbe` C++ tests model directional phase comparison and 
 ## Optional staging-only administrative snapshot
 
 The prospective `.naxxgs snapshot` command is **not compiled into normal builds**, nor available without an independent diagnostics config opt-in and AzerothCore `RBAC_PERM_COMMAND_DEBUG_INFO` permission. It reports only the calling staff character's guild/map/instance/zone/area/phase numbers for future staging review. The command cannot reveal internal phase comparison mode, and any mismatch with installed command/RBAC APIs must be resolved before a staging build. It never teleports or assigns phase. **It does not certify privacy** and cannot mark housing ready.
+
+
+## Fork-specific Individual Progression cap
+
+The reviewed *public* user fork `Grimfeather/mod-individual-progression` (commit `706740808fee328b8557607f87b0548cf961e047`) exposes `enabled`, `progressionLimit` and `GetPlayerProgressionFromQuests`. Its `hasPassedProgression` checks the cap **in addition to rewarded quest rank**. This creates a crucial potential tier bypass if a Strongholds integration reads only completed hidden quests. Our new `StrongholdIpCompatibility.*` domain policy instead computes an effective rank and revokes stale/unknown evidence.
+
+The `check-grimfeather-ip-contract.py` scanner checks actual pinned public fork source in a separate GitHub Actions job and rejects changed public API/enum/rank/cap semantics; it does not prove the *installed* fork matches, nor certify a full build or lack of phasing interference. See [IP_FORK_COMPATIBILITY.md](IP_FORK_COMPATIBILITY.md).

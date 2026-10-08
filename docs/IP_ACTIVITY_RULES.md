@@ -45,3 +45,16 @@ A separate **persistent quest and guild-contribution layer** must handle resets,
 - Guild-scoped construction costs cannot be paid twice on event retries or login/reload.
 - The shared settlement view stays the same for all guild members: Option B.
 - Do not put housing changes into `Spell.dbc` or the existing IP database.
+
+
+## Reviewed actual server IP fork — October 2026
+
+The project's current source reference is **Grimfeather/mod-individual-progression**, not just its parent ZhengPeiRu21 repo. The reviewed public Git commit is `706740808fee328b8557607f87b0548cf961e047`. The user's *actually deployed* checkout version remains unknown until source inventory.
+
+In that fork, `GetPlayerProgressionFromQuests(Player*)` finds the **highest rewarded hidden quest** at `66000 + stage`; it returns zero if the player isn't in the world. Importantly, `hasPassedProgression` also refuses progression when `enabled=false` or `progressionLimit` is configured below a requested milestone. A raw quest rank alone can therefore **overstate permitted access**. IP also responds to player zone/area changes and casts its own phase spells; Strongholds must never overwrite these auras or masks.
+
+`StrongholdIpCompatibility.*` adds a **standalone read-only policy** that computes an effective stage from a verified fork contract, IP enabled flag, player-in-world status, rewarded-quest rank and `progressionLimit` (zero means uncapped). It resets old activity credentials if IP is disabled, unknown, changed or invalid; negative limits or unknown enum ranks are denied.
+
+**Example:** a character retains WotLK quest progress (rank 18), but the server sets `progressionLimit = 7`. A guild expedition requiring `PROGRESSION_PRE_TBC=8` must still be unavailable.
+
+The [fork contract review](IP_FORK_COMPATIBILITY.md) includes a pinned-source CI check and negative tests. A successful source check is *not* a tested, deployed read-only IP adapter. All actual-world activities remain disabled.

@@ -99,3 +99,10 @@ The new `StrongholdVisitRecovery.*` pure C++ layer depends on the combined guild
 The upstream AzerothCore `WorldObject::InSamePhase` tests bitwise AND when `m_useCombinedPhases=true`, and equality when false. A global `OnBeforeWorldObjectSetPhaseMask` hook can select this comparison mode by zone. Modules choosing different modes can create **one-directional visibility**; checking only that guild A cannot see B is insufficient. The pure `StrongholdIsolationProbe` checks both directions among guild players, NPCs and gameobjects and reports a **sample-only** verdict.
 
 `scripts/audit-isolation-compatibility.py` gathers candidate phase/teleport hooks from a local checkout in read-only mode. It never certifies runtime safety and never sets the startup capability to true. See [PHASE_COMPATIBILITY_AUDIT.md](PHASE_COMPATIBILITY_AUDIT.md).
+
+
+## Source-pinned user-fork IP adapter policy
+
+The raw rewarded-quest stage **is not sufficient** for eligibility when Individual Progression's `progressionLimit` is lower. `StrongholdIpCompatibility.*` derives an effective rank only when the installed source contract has been verified, IP is enabled and the player is in-world; if a configured positive cap is lower, the rank is limited to that cap. Unknown, disabled, invalid or stale data fails closed. It never writes hidden quests or touches IP phase auras.
+
+CI independently checks source signatures on the real public Grimfeather fork at a pinned commit; this doesn't substitute for the actual deployed fork's revision inventory and compilation. See [IP_FORK_COMPATIBILITY.md](IP_FORK_COMPATIBILITY.md).

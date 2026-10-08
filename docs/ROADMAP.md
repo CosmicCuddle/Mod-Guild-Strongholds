@@ -73,3 +73,8 @@ Next gate is collecting the actual module fork versions, selecting a reserved pr
 An opt-in, disabled-by-default `.naxxgs snapshot` command now exists in source solely to collect future **staging** measurements of an administrator character's current map/instance/phase/guild. It needs both a compile flag and a runtime config flag; no housing subsystem is enabled by it. Mock headers tests compile it, but the deployed AzerothCore fork and RBAC permissions have **not** been tested. See [STAGING_DIAGNOSTICS.md](STAGING_DIAGNOSTICS.md).
 
 Next step remains a real, owner-approved two-guild isolation feasibility spike. The probe and offline code tests cannot prove map isolation.
+
+
+## User-fork IP contract milestone
+
+Reviewed the actual public `Grimfeather/mod-individual-progression` fork, not merely the upstream parent. The fork's `progressionLimit` means quest-state rank cannot alone determine guild activity eligibility. Added C++ effective-stage policy, integration with the existing pure activity gate, negative tests and pinned-fork source-contract CI checks. **No runtime AzerothCore/Individual Progression adapter exists or has been approved yet.** See [IP_FORK_COMPATIBILITY.md](IP_FORK_COMPATIBILITY.md).

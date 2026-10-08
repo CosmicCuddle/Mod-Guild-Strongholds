@@ -73,3 +73,12 @@ trap 'rm -rf "$work"' EXIT
   "$root/tests/staging_diagnostics_tests.cpp" \
   -o "$work/staging_diagnostics_tests"
 "$work/staging_diagnostics_tests"
+
+
+# Fork-aware read-only effective IP stage and progression-cap tests.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdActivities.cpp" \
+  "$root/src/StrongholdIpCompatibility.cpp" \
+  "$root/tests/ip_compatibility_tests.cpp" \
+  -o "$work/ip_compatibility_tests"
+"$work/ip_compatibility_tests"

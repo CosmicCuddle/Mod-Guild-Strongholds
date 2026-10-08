@@ -103,3 +103,12 @@
 - Exposes the issuing player's guild ID, map ID, instance ID, zone, area and phase mask as staging evidence only. Does not guess internal comparison mode or certify guild isolation.
 - Added mock-core C++ tests for command tree/RBAC, disabled default, opt-in observations and no player changes.
 - No real player movement, world phase hook, SQL write, housing spawn or deployed-worldserver build.
+
+
+## v0.5.0 read-only IP source-contract groundwork (unreleased)
+
+- Reviewed the actual public Grimfeather IP fork (pinned Git commit `706740808fee328b8557607f87b0548cf961e047`), including its quest-reward progression reader, `progressionLimit`, enabled flag and area phasing hooks.
+- Added effective IP stage calculator respecting the fork's global progression cap, not merely the character's rewarded hidden quests.
+- Added fail-closed C++ activity gate integration with stale-proof clearing, disabled/unverified source denial and invalid stage/limit validation.
+- Added a read-only fork source-contract checker, synthetic negative tests and a pinned-revision CI checkout, without modifying the fork or server.
+- No live Individual Progression linkage, guild NPCs, quest rewards or phased housing behavior enabled.

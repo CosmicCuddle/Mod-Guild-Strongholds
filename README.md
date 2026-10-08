@@ -112,3 +112,10 @@ A read-only source audit helper `scripts/audit-isolation-compatibility.py` can l
 The source now contains a **read-only** administrator command, `.naxxgs snapshot`, compiled and registered **only when** `NAXX_GS_BUILD_STAGING_DIAGNOSTICS` is explicitly set, and answering only when `NaxxGuildStrongholds.Diagnostics.Enabled=1`. The command requires a GM RBAC permission and reports **only the issuing player's own** map, instance, zone, area, guild ID and phase-mask values. It never changes phase, moves a player, spawns objects or reads SQL. This provides future staging evidence without pretending to prove privacy.
 
 Normal builds do not register the command, and the housing startup guard remains blocked. The command is only mock-compiled so far—not built or exercised on the user's deployed core. See [STAGING_DIAGNOSTICS.md](docs/STAGING_DIAGNOSTICS.md). **There is nothing to install on the live server.**
+
+
+## Actual Individual Progression fork — reviewed source contract
+
+We inspected the user's public [Grimfeather Individual Progression fork](https://github.com/Grimfeather/mod-individual-progression) at commit `706740808fee328b8557607f87b0548cf961e047`. The fork derives raw character stage from rewarded hidden quests, **but separately restricts access using `enabled` and `progressionLimit`**.
+
+A standalone `StrongholdIpCompatibility.*` policy now computes the capped effective stage and refuses to use stale/unverified stage evidence. An automated read-only source-contract checker tests the pinned public fork in CI and reports mismatches instead of assuming upstream APIs are unchanged. This is not compiled against or installed on the live server. Read [IP_FORK_COMPATIBILITY.md](docs/IP_FORK_COMPATIBILITY.md).
