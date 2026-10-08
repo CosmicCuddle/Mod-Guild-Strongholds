@@ -204,3 +204,10 @@ MariaDB 10.11 test-only code serializes per-guild receipt/unlock/audit writes by
 The pinned public AzerothCore source defines `UnitScript::OnUnitDeath(Unit*, Unit*)` and `UNITHOOK_ON_UNIT_DEATH`, `Map::IsRaid()`, and `Creature::IsDungeonBoss()`. The staging-only `StrongholdStagingRaidObserver.cpp` observes the callback under its own off-by-default config and logs only a candidate map/instance/creature ID, not player data. The normal build does not register the observer.
 
 The custom production AzerothCore/Playerbots/IP fork **may differ**, and the callback alone provides **no** verified human raid-participation or original Classic raid difficulty. No SQL transactions, quest rewards, trophy unlocks or game objects are connected. The staging compilation test is separate from actual installed-fork source verification.
+
+
+## Playerbots: never infer a human from an absent bot AI
+
+Reviewed public `mod-playerbots/mod-playerbots` commit `037c01418b5d01506917a3db9b44fd56ac5f965c` defines `PlayerbotsMgr::GetPlayerbotAI(Player*)` and returns `nullptr` both when Playerbots is disabled and when the player has no stored bot AI. A null result is therefore **ambiguous** and cannot independently prove a human player. Other Playerbots forks can differ further.
+
+The new participation policy requires positive trusted `ControlClassificationSourceVerified` and either `VerifiedHuman` or `VerifiedPlayerbot`; absent confidence it remains `Unknown`, never counted as a human. A dedicated CI job audits the pinned public Playerbots source only, NOT the user's installed version or actual runtime. The staging kill-credit observer has no dependency on the Playerbots module and cannot award anything. See [RAID_PARTICIPATION.md](RAID_PARTICIPATION.md).

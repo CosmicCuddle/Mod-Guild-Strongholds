@@ -145,12 +145,19 @@ jobs:
               echo "::error::Staging raid observer present in normal build"
               exit 1
             fi
+            if grep -Fq 'NaxxGuildStrongholds::AddStagingRaidKillCreditObserverScripts()' \
+                "$RUNNER_TEMP/naxx-gs-symbols.txt"; then
+              echo "::error::Staging kill-credit observer present in normal build"
+              exit 1
+            fi
           else
             grep -Fq 'NaxxGuildStrongholds::AddStagingDiagnosticsScripts()' \
               "$RUNNER_TEMP/naxx-gs-symbols.txt"
             grep -Fq 'NaxxGuildStrongholds::AddStagingStewardScripts()' \
               "$RUNNER_TEMP/naxx-gs-symbols.txt"
             grep -Fq 'NaxxGuildStrongholds::AddStagingRaidObserverScripts()' \
+              "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            grep -Fq 'NaxxGuildStrongholds::AddStagingRaidKillCreditObserverScripts()' \
               "$RUNNER_TEMP/naxx-gs-symbols.txt"
             if [[ "${{ matrix.ip_checkout }}" == "true" ]]; then
               grep -Fq 'NaxxGuildStrongholds::ReadStagingIpState(' \

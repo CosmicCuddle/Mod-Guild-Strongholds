@@ -253,3 +253,12 @@
 - Two independent opt-ins: `NAXX_GS_BUILD_STAGING_RAID_OBSERVER` compiler definition and `NaxxGuildStrongholds.StagingRaidObserver.Enabled=1` (off by default).
 - Pure negative/positive death-observation C++ tests and static source guard assert no false named-boss, participating-guild or trophy-award proof.
 - Pinned public upstream staging compiler variant includes the observer; normal full worldserver compilation must exclude its symbol.
+
+
+## Raid kill-credit observation and Playerbots-aware participant policy (development only)
+
+- Added second staging-only real AzerothCore event handler `OnPlayerCreatureKillCredit` alongside `OnUnitDeath`, recording only numeric raid instance/creature candidate metadata; no player/GUID or guild attribution in logs.
+- Added fail-closed participant domain policy requiring positive, independently verified human-vs-Playerbot classification, original guild generation, unique GUID, verified raid membership, matching instance and per-person encounter contribution.
+- Added 40-player/mixed-guild, duplicate GUID, unknown bots, mismatched guild generation and non-participation negative tests.
+- Audited pinned public Playerbots source: `GetPlayerbotAI` returns null when module is disabled, so a null AI pointer cannot prove a character is human. Added immutable public source checkout/contract CI job.
+- **No new trophy award path**: kill-credit callbacks never imply completed encounter contribution, no persistent raid roster, no actual Playerbots fork runtime dependency, no DB/world/quest writes.

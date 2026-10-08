@@ -164,3 +164,12 @@ A production C++ event listener, authentic boss/map/Playerbots checks and an app
 A staging-only `UnitScript` now registers the **real upstream** `UNITHOOK_ON_UNIT_DEATH` and can observe when a `Creature::IsDungeonBoss()` dies on `Map::IsRaid()` with a nonzero instance identity. The module logs metadata only and never calls the trophy unlock/persistence proposal. This proves a possible safe event-integration seam without guessing which map/boss difficulty corresponds to original Classic Onyxia, Naxxramas or Wrath variants.
 
 **Still required before any trophy credit:** source-verified real boss/raid difficulty allowlist on the owner's custom server; verified instance completion; encounter-participation records not just being in the map; exact member GUID/guild generation and a trustworthy Playerbots classification. A killing blow, map presence, loot tag or NPC flag is NOT enough to award anything. See [STAGING_RAID_OBSERVER.md](STAGING_RAID_OBSERVER.md).
+
+
+## Stronghold raid participation evidence seam
+
+Added a real `PlayerScript::OnPlayerCreatureKillCredit` staging observer as a second candidate-only source of raid boss signals. Domain tests now require positive Playerbots-aware human classification, unique GUID, guild creation generation, trusted raid roster, same-instance proof and independently verified contribution to the same boss encounter before even returning a hypothetical qualifying result.
+
+Public `mod-playerbots` source revealed a critical semantic trap: `GetPlayerbotAI()==nullptr` is ambiguous if the module is disabled. The new pinned-fork CI audit confirms this; a real human check must be specifically designed against **the owner's installed Playerbots fork**, not guessed from that pointer.
+
+No actual encounter-specific participation adapter or reward hook has been added; all server logs remain candidate-only and all housing/trophy gameplay blocked. See [RAID_PARTICIPATION.md](RAID_PARTICIPATION.md).

@@ -21,6 +21,7 @@ void AddStagingStewardScripts();
 #endif
 #if defined(NAXX_GS_BUILD_STAGING_RAID_OBSERVER)
 void AddStagingRaidObserverScripts();
+void AddStagingRaidKillCreditObserverScripts();
 #endif
 }
 
@@ -35,6 +36,7 @@ void Addmod_guild_strongholdsScripts()
 #endif
 #if defined(NAXX_GS_BUILD_STAGING_RAID_OBSERVER)
     NaxxGuildStrongholds::AddStagingRaidObserverScripts();
+    NaxxGuildStrongholds::AddStagingRaidKillCreditObserverScripts();
 #endif
 }
 

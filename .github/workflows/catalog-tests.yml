@@ -39,6 +39,8 @@ jobs:
         run: python3 tests/trophy_no_effects_tests.py
       - name: Verify read-only raid death hook never awards guild trophies
         run: python3 tests/raid_death_observer_source_tests.py
+      - name: Verify PlayerScript kill credit and participation never infer human status
+        run: python3 tests/raid_participation_source_tests.py
       - name: Verify safe module inventory and local Git modification reporting
         run: bash tests/module_inventory_tests.sh
 
@@ -140,3 +142,28 @@ jobs:
         run: python tests/mysql_property_read_test.py
       - name: Test generation-safe trophy receipts and atomic unlock history
         run: python tests/mysql_trophy_receipts_test.py
+
+  playerbots-fork-contract:
+    name: Reviewed public Playerbots classification semantics (read-only)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out Strongholds policy source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check out pinned public Playerbots source
+        uses: actions/checkout@v4
+        with:
+          repository: mod-playerbots/mod-playerbots
+          ref: 037c01418b5d01506917a3db9b44fd56ac5f965c
+          path: reviewed-playerbots-source
+          sparse-checkout: |
+            src/Bot/PlayerbotMgr.h
+            src/Bot/PlayerbotMgr.cpp
+            src/Script/Playerbots.cpp
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Verify bot-null ambiguity and no human-status guessing
+        run: python3 tests/playerbots_source_contract_tests.py reviewed-playerbots-source

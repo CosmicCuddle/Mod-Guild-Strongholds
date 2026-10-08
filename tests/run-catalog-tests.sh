@@ -166,3 +166,17 @@ trap 'rm -rf "$work"' EXIT
   "$root/tests/raid_death_observation_tests.cpp" \
   -o "$work/raid_death_observation_tests"
 "$work/raid_death_observation_tests"
+
+# Server kill-credit hook is candidate-only, not a human/encounter proof.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdRaidKillCreditObservation.cpp" \
+  "$root/tests/raid_kill_credit_observation_tests.cpp" \
+  -o "$work/raid_kill_credit_observation_tests"
+"$work/raid_kill_credit_observation_tests"
+
+# Mixed-guild 40-person raid; unknown bot status never counts as human.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdRaidParticipation.cpp" \
+  "$root/tests/raid_participation_tests.cpp" \
+  -o "$work/raid_participation_tests"
+"$work/raid_participation_tests"

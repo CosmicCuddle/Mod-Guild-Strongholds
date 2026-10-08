@@ -87,3 +87,10 @@ The previous 'before introducing real awards' storage requirement is partly sati
 Added `StrongholdStagingRaidObserver.cpp`, a **separately opt-in real AzerothCore `UnitScript`** that can listen to generic `OnUnitDeath` callbacks and log a raid boss-like creature's **map ID, instance ID and creature entry**. This is *candidate telemetry*, not trusted Classic boss completion. There is deliberately no hard-coded boss/raid ID mapping and no player/Playerbot/Guild or individual-progression access.
 
 This new staging observer **never calls `ProposeTrophyUnlock`**, the test-only Python receipt recorder or any database API. Its pure-core-independent policy explicitly keeps `BossEncounterVerified`, `GuildParticipationVerified` and `GuildTrophyGranted` false. User-approved actual boss/instance validation and a safely sourced human guild participation audit are mandatory before event-derived credit. See [STAGING_RAID_OBSERVER.md](STAGING_RAID_OBSERVER.md).
+
+
+## Playerbots-aware participant evidence: a second staging callback
+
+The project now has `OnPlayerCreatureKillCredit` staging observation in addition to the previous `OnUnitDeath`. Its result is **candidate-only**. AzerothCore documents that a player may receive kill credit for a tapped creature, pet or totem; receiving a kill-credit event is *not* authoritative proof of their personal encounter contribution or a full eligible raid roster.
+
+`StrongholdRaidParticipation.*` rejects unknown/disabled Playerbots classification, mismatched original guild generation, bogus/duplicate roster IDs, absent group/instance proof and missing per-person contribution. Even complete synthetic evidence results in a **ProposalOnly** with `TrophyGranted=false`; no live code ever constructs that successful proof. The public pinned Playerbots API returns null on disabled module, so it cannot safely identify a human through the absence of a bot AI. See [RAID_PARTICIPATION.md](RAID_PARTICIPATION.md).

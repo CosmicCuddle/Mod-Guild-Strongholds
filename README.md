@@ -247,3 +247,12 @@ The module now contains a real opt-in `UnitScript::OnUnitDeath` staging observer
 It is **compiled out of normal builds**. Staging compilation requires `NAXX_GS_BUILD_STAGING_RAID_OBSERVER`; running it additionally requires the separate disabled-by-default `NaxxGuildStrongholds.StagingRaidObserver.Enabled=1` config. The observer never supplies `TrophyKillProof.ServerBossKillConfirmed` or `GuildParticipationVerified`, because an ordinary death callback alone does not prove a guild's qualifying raid participation.
 
 Pure C++ negative tests and no-side-effects source checks ensure this remains a metadata observer, not an achievement listener. Public-upstream CI compiles the staging opt-in and asserts that normal worldserver builds omit its registration. See [STAGING_RAID_OBSERVER.md](docs/STAGING_RAID_OBSERVER.md).
+
+
+## Raid participation and Playerbots classification — locked, staging-only
+
+A second real AzerothCore callback is now under the same disabled-by-default staging raid-observer build option: `PlayerScript::OnPlayerCreatureKillCredit(Player*, Creature*)`. It reports **numeric, candidate-only** boss kill-credit observations when the player and boss belong to the same nonzero raid instance. Neither the callback nor any player name/ID is logged as genuine human/participant proof; group/pet/totem/tapped-creature credit is explicitly insufficient by itself.
+
+The platform-free `StrongholdRaidParticipation.*` checks original guild generation, unique character GUID, verified raid group + encounter instance, individually verified encounter participation and a **positive, separately source-verified human/Playerbot classification**. It handles mixed-guild 40-player rosters, denies unknown human status and never awards anything. Tests simulate all evidence; live event adapters **cannot yet provide the missing encounter participation and human provenance**.
+
+We audited public `mod-playerbots/mod-playerbots` revision `037c01418b5d01506917a3db9b44fd56ac5f965c`. Its `GetPlayerbotAI(Player*)` may return null simply when Playerbots is disabled; **null is not proof of a human**. A new pinned-source CI job checks this contract. The user's deployed Playerbots fork remains unverified. See [RAID_PARTICIPATION.md](docs/RAID_PARTICIPATION.md).
