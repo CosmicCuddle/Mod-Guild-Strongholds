@@ -2,7 +2,7 @@
 
 A planned AzerothCore 3.3.5 module for private, customisable guild settlements.
 
-**Status:** v0.1.0 foundation proposal, **not gameplay-ready**. No housing, phasing, quests, NPCs or object spawning are implemented yet. The C++ loader is intentionally inert and the feature is disabled by default.
+**Status:** development-only, **not gameplay-ready**. No housing, phasing, quests, NPCs or object spawning are implemented. The C++ loader registers only passive diagnostics; actual housing remains hard-blocked even if the master enable switch is requested.
 
 ## Planned gameplay
 

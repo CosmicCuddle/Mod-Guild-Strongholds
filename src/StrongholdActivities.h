@@ -24,9 +24,9 @@ enum class ActivityGate : std::uint8_t
     UnknownActivity
 };
 
-// These identifiers use upstream mod-individual-progression progression-state
-// *names*. Live IP numeric values may differ on the user's server/fork.
-// Therefore, future adapters MUST resolve or verify stage identities before
+// These named stages were reviewed against public Grimfeather IP commit
+// 706740808fee328b8557607f87b0548cf961e047. The DEPLOYED server may
+// differ. Future adapters MUST verify actual installed source before
 // passing a rank to this independent catalogue; no direct quest writes.
 enum class IpMilestone : std::uint8_t
 {

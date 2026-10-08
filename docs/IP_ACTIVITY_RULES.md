@@ -6,7 +6,7 @@
 
 The settlement and its buildings belong to the guild, but each visitor has their own Individual Progression state. A high-tier member cannot grant an unprogressed character access to Northrend or Outland service content simply by upgrading the guild hall.
 
-The current upstream ZhengPeiRu21/mod-individual-progression header defines `PROGRESSION_ONYXIA=2`, `PROGRESSION_NAXX40=7`, `PROGRESSION_PRE_TBC=8`, `PROGRESSION_TBC_TIER_5=13` (opens WotLK raid tier) and `PROGRESSION_WOTLK_TIER_3=16`. These are only research reference numbers. The user's installed version may have modified definitions.
+The reviewed public Grimfeather/mod-individual-progression header (commit `706740808fee328b8557607f87b0548cf961e047`) defines `PROGRESSION_ONYXIA=2`, `PROGRESSION_NAXX40=7`, `PROGRESSION_PRE_TBC=8`, `PROGRESSION_TBC_TIER_5=13` (pre-Wrath gate) and `PROGRESSION_WOTLK_TIER_3=16`. The deployed checkout may still differ and must be verified before any live integration.
 
 **Do not substitute character level or account level for real IP stage.** The future read-only adapter must retrieve and verify the installed module's progression data before supplying a monotonic rank to this code. If the adapter cannot verify compatibility, all progression-gated activities are locked.
 
