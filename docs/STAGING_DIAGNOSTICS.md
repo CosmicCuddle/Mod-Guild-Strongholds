@@ -49,3 +49,7 @@ Remove the compile definition and rebuild the known-good staging binary; leave `
 ## New real-header staging build check
 
 A separate GitHub Actions compile variant now compiles `StrongholdStagingDiagnostics.cpp` with its explicit staging flag against pinned *real upstream* AzerothCore headers, in addition to the existing fake-interface tests. It validates that the GM command is **absent** from the normal module build and **present** in a separately isolated staging compile. This does not enable or install that command on your actual server; its config setting still defaults to off. Complete fork-specific staging tests are still necessary before use.
+
+## Real-header test correction
+
+The first opt-in diagnostic build surfaced a `ChatCommandBuilder` mismatch: AzerothCore expects a handler function reference, not a temporary function pointer. The implementation now passes `HandleSnapshot` directly. The fake C++ command constructor mirrors the function-reference requirement so the same error cannot silently pass mock tests. This remains a **staging-only** diagnostic, never enabled in normal builds.

@@ -29,7 +29,7 @@ public:
         using namespace Acore::ChatCommands;
         static ChatCommandTable snapshotTable =
         {
-            { "snapshot", &HandleSnapshot, rbac::RBAC_PERM_COMMAND_DEBUG_INFO, Console::No }
+            { "snapshot", HandleSnapshot, rbac::RBAC_PERM_COMMAND_DEBUG_INFO, Console::No }
         };
         static ChatCommandTable commandTable =
         {

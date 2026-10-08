@@ -23,7 +23,7 @@ struct ChatCommandEntry
     Console ConsoleMode = Console::No;
     int RequiredPermission = 0;
 
-    ChatCommandEntry(char const* name, bool (*handler)(ChatHandler*), int permission, Console mode)
+    // Match upstream ChatCommandBuilder\x27s lvalue function-handler requirement.\n    // Passing &HandleSnapshot produces a temporary pointer and fails this check.\n    ChatCommandEntry(char const* name, bool (&handler)(ChatHandler*), int permission, Console mode)
         : Name(name), Handler(handler), ConsoleMode(mode), RequiredPermission(permission) {}
 
     ChatCommandEntry(char const* name, std::vector<ChatCommandEntry> children)

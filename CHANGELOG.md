@@ -154,3 +154,10 @@
 - Expanded ephemeral GitHub build into two variants: normal full-worldserver compile/link, and separate diagnostics-enabled module compilation using real AzerothCore headers.
 - Added binary-level checks to ensure the normal build **does not include** the staging GM command and the explicitly opted-in build does.
 - Neither CI mode starts a realm, applies SQL or touches live data. Full deployed-fork compatibility and guild privacy remain unverified.
+
+## Upstream staging-command compilation fix (development)
+
+- Real-header CI caught a function-pointer construction rejected by upstream `ChatCommandBuilder` when compiling `.naxxgs snapshot` with `NAXX_GS_BUILD_STAGING_DIAGNOSTICS`.
+- Changed the command to pass `HandleSnapshot` by function reference, matching upstream command syntax.
+- Tightened fake-core test header to use a handler-reference constructor, preventing previous mock-only false passes.
+- This correction does not register the GM command in normal builds or change housing safety gates.
