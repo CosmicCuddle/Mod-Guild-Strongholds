@@ -6,6 +6,16 @@
 
 #include <iostream>
 #include <string>
+#include <type_traits>
+
+// Keep the fake C++ command interface faithful to upstream: a named function
+// (lvalue reference) is accepted, a temporary function pointer is NOT.
+using FakeCommand = Acore::ChatCommands::ChatCommandEntry;
+using HandlerFunction = bool(ChatHandler*);
+static_assert(std::is_constructible_v<FakeCommand, char const*, HandlerFunction&, int,
+    Acore::ChatCommands::Console>);
+static_assert(!std::is_constructible_v<FakeCommand, char const*, HandlerFunction*, int,
+    Acore::ChatCommands::Console>);
 
 FakeDiagnosticsConfig configStorage;
 FakeDiagnosticsConfig* sConfigMgr = &configStorage;
