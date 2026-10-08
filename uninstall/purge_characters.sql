@@ -4,6 +4,8 @@
 -- Ordinary uninstall MUST NOT execute this script.
 -- Drops only module-owned naxx_gs_* tables.
 
+DROP TABLE IF EXISTS `naxx_gs_trophy_unlock`;
+DROP TABLE IF EXISTS `naxx_gs_trophy_receipt`;
 DROP TABLE IF EXISTS `naxx_gs_isolation_slot`;
 DROP TABLE IF EXISTS `naxx_gs_visit`;
 DROP TABLE IF EXISTS `naxx_gs_ledger`;

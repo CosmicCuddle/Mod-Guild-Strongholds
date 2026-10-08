@@ -117,3 +117,33 @@ CREATE TABLE IF NOT EXISTS `naxx_gs_ledger` (
   PRIMARY KEY (`id`),
   KEY `idx_guild_event_time` (`guild_id`, `event_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- DRAFT ONLY: dedicated raid trophy history and receipts. NOT a migration
+-- from legacy naxx_gs_unlock: the old table is deliberately left unchanged.
+-- These tables grant NO in-game rewards. Must NOT be applied to production.
+-- History is keyed to original guild generation, not guild numeric ID alone.
+CREATE TABLE IF NOT EXISTS `naxx_gs_trophy_receipt` (
+  `guild_id` INT UNSIGNED NOT NULL,
+  `guild_created_at` BIGINT UNSIGNED NOT NULL,
+  `event_receipt` VARCHAR(80) NOT NULL,
+  `trophy_key` VARCHAR(80) NOT NULL,
+  `raid_map_id` INT UNSIGNED NOT NULL,
+  `raid_instance_id` INT UNSIGNED NOT NULL,
+  `verified_human_count` TINYINT UNSIGNED NOT NULL,
+  `recorded_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`guild_id`, `guild_created_at`, `event_receipt`),
+  KEY `idx_trophy_receipt_key` (`guild_id`, `guild_created_at`, `trophy_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Only a receipt + unlock + existing audit-LEDGER row in ONE transaction
+-- can represent an earned trophy. No real adapter executes this contract.
+CREATE TABLE IF NOT EXISTS `naxx_gs_trophy_unlock` (
+  `guild_id` INT UNSIGNED NOT NULL,
+  `guild_created_at` BIGINT UNSIGNED NOT NULL,
+  `trophy_key` VARCHAR(80) NOT NULL,
+  `first_event_receipt` VARCHAR(80) NOT NULL,
+  `unlocked_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`guild_id`, `guild_created_at`, `trophy_key`),
+  UNIQUE KEY `uk_trophy_first_receipt` (`guild_id`, `guild_created_at`, `first_event_receipt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

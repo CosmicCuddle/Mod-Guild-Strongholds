@@ -190,3 +190,10 @@ The protected disposable MariaDB CI test covers exact column types/order, archiv
 The reviewed Grimfeather source at `706740808fee328b8557607f87b0548cf961e047` defines `sIndividualProgression`, its public `enabled`, `progressionLimit` and `GetPlayerProgressionFromQuests(Player*)`. The optional `StrongholdStagingIpAdapter.cpp` includes that **actual** module header only in a third CI compile variant. It deliberately has no config-only fallback and cannot be built with IP inspection enabled if the header is missing.
 
 Direct read is additionally limited to the staging GM Guild Steward, confirmed guild membership/original creation generation and opt-in config. This is still public source from Grimfeather, NOT the verified source SHA of the server's installed IP fork or any guarantee of cross-module compatibility.
+
+
+## Trophy storage contract: draft additive SQL only
+
+The developer-only characters template now declares **11** module-owned tables; two are generation-qualified raid trophy receipts/unlocks. The older generic `naxx_gs_unlock` remains untouched to avoid silently rewriting legacy rows or treating guild-ID-only achievements as trustworthy. The explicit optional destructive purge list is updated to include the two new tables; normal uninstall still retains all data.
+
+MariaDB 10.11 test-only code serializes per-guild receipt/unlock/audit writes by `SELECT ... FOR UPDATE` on `naxx_gs_settlement`, and tests failpoints/concurrency in `naxx_gs_ci_test` only. No C++ real database write/kill/quest/Playerbots hook exists. Both template schema and optional purge require a manually approved **separate staging** migration rehearsal and backups before any game-server use. A successful upstream core compilation does not prove SQL or runtime compatibility with the deployed custom server.

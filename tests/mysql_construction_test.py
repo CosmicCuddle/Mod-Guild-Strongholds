@@ -277,7 +277,7 @@ def run_tests():
                 "SELECT COUNT(*) FROM information_schema.tables "
                 "WHERE table_schema = DATABASE() AND table_name LIKE 'naxx\\_gs\\_%'"
             )
-            check(cur.fetchone()[0] == 9, "exactly nine isolated module tables")
+            check(cur.fetchone()[0] == 11, "exactly eleven isolated draft module tables")
             cur.execute(
                 "SELECT COUNT(*) FROM information_schema.statistics "
                 "WHERE table_schema = DATABASE() AND table_name='naxx_gs_contribution' "

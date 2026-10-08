@@ -71,3 +71,12 @@ These slot names are **not** world coordinates or proof of client models. Even w
 - Prove guild-private world and safe entrance/exit, both-direction visibility, Playerbots, mixed IP tiers, logout/disband/restart, rollback and full uninstall.
 
 **Do not apply draft SQL or spawn NPC/GO entries on production. All gameplay startup capabilities remain false.**
+
+
+## Draft permanent storage and event receipts — October 2026 extension
+
+The prototype now includes `naxx_gs_trophy_receipt` and `naxx_gs_trophy_unlock` in the **unapplied draft** characters SQL, rather than writing to the older/general `naxx_gs_unlock` whose guild-ID-only primary key does not protect original guild generation. Each new table contains `guild_id` AND `guild_created_at` in its primary key. An event receipt is unique for a given guild generation; an unlock is unique per (guild generation, trophy key). Same encounter can credit two separately qualified guilds without crossing ownership or inventing duplicates.
+
+The **disposable CI-only** InnoDB transaction simulates future persistence by taking the matching `naxx_gs_settlement` row `FOR UPDATE`, rejecting missing/recycled/archived guilds, checking replay and existing unlock, then writing a unique kill receipt, matching trophy unlock and ledger audit in ONE transaction. Injected errors after any insert roll all three back; concurrent races commit only one. Test data is fabricated and does not prove a real kill, bot roster, map instance, IP phase or housing location. This provides the persistence **contract**, not a deployable C++ reward handler. Full detail: [RAID_TROPHY_STORAGE.md](RAID_TROPHY_STORAGE.md).
+
+The previous 'before introducing real awards' storage requirement is partly satisfied at **draft schema and isolated DB test** level only. Actual migration validation, real server-side encounter evidence, trusted runtime C++ adapter, genuine models and secure placement remain pending.

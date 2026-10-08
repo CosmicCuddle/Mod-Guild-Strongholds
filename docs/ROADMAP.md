@@ -150,3 +150,10 @@ The next outstanding blockers remain source auditing of the actual deployed fork
 The source now provides five specifically named **raid trophy concepts** with strict no-side-effect unlock/placement proposal policies. A verified guild raid requires authoritative server kill/encounter proof, unique receipt, original guild generation, an active stronghold and separately verified real human guild participants. Mixed guilds can independently qualify; Playerbots do not count as qualifying human guild players; any proposal is still not a reward.
 
 The trophy records cannot be connected to the current draft `naxx_gs_unlock` table without schema hardening for **original guild generation and idempotent encounter receipts**. The future kill hook must be audited against the exact deployed AzerothCore/Playerbots modules, the boss/map IDs verified for *classic* versus 3.3.5 Onyxia variants, and a transaction adapter must persist unlocks with audit receipts. No loot or gameobject IDs have been allocated. See [RAID_TROPHIES.md](RAID_TROPHIES.md).
+
+
+## Raid trophy database milestone: transactional receipts (CI-only)
+
+Added generation-qualified trophy receipt and trophy unlock **draft** tables without replacing any existing general unlock records. In a disposable MariaDB test database, a simulated validated server kill is recorded under an InnoDB settlement row lock with a unique receipt, one-time trophy unlock and audit entry in one transaction. Rollback, concurrency, mixed-guild raids, guild ID reuse, archival and schema-reapplication tests prevent duplicate or partially committed history.
+
+A production C++ event listener, authentic boss/map/Playerbots checks and an approved migration path **do not exist**. Next: decide guild raid participation requirements with the owner; inspect the installed AzerothCore kill/group hooks and actual Classic raid IDs; design read-only earned-trophy display and vetted 3.3.5 GO models, only after the real guild-private destination is safe. See [RAID_TROPHY_STORAGE.md](RAID_TROPHY_STORAGE.md).

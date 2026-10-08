@@ -60,6 +60,25 @@ def run_checks() -> None:
     purge = PURGE.read_text(encoding="utf-8")
     tables = validate_sql(install, purge)
 
+    # Trophy receipt and unlock MUST remain generation-qualified. The legacy
+    # naxx_gs_unlock intentionally remains separate/untrusted for trophies.
+    for name in ("naxx_gs_trophy_receipt", "naxx_gs_trophy_unlock"):
+        match = re.search(
+            r"CREATE\s+TABLE\s+IF\s+NOT\s+EXISTS\s+`"
+            + name + r"`\s*\((.*?)\)\s*ENGINE",
+            install, flags=re.IGNORECASE | re.DOTALL,
+        )
+        if not match:
+            raise AssertionError(f"Missing generation-qualified trophy table: {name}")
+        body = match.group(1)
+        if "`guild_created_at` BIGINT UNSIGNED NOT NULL" not in body:
+            raise AssertionError(f"{name}: missing original guild generation")
+        if not re.search(r"PRIMARY KEY\s*\(`guild_id`\s*,\s*`guild_created_at`", body):
+            raise AssertionError(f"{name}: primary key is not generation-qualified")
+    if "PRIMARY KEY (`guild_id`, `guild_created_at`, `event_receipt`)" not in install:
+        raise AssertionError("Trophy receipt replay identity must be unique per generation")
+    if "PRIMARY KEY (`guild_id`, `guild_created_at`, `trophy_key`)" not in install:
+        raise AssertionError("Trophy unlock must be unique per original guild and trophy")
     # Simple negative tests for protection against accidental schema expansion.
     def must_fail(i: str, p: str) -> None:
         try:

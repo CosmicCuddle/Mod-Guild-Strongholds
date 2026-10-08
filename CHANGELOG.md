@@ -234,3 +234,12 @@
 - Guild Steward optional staging trophy preview now shows five concepts from the source catalogue, each explicitly [PLAN].
 - Expanded source-only no-world-mutation guard and extensive C++ regression tests for guild reuse, archiving, mixed raids, fake kills, bots, replay receipts, forged roster, 40 members and invalid object placement.
 - Current draft `naxx_gs_unlock` is **NOT adequate** for generation-qualified trophy receipts and must not be used for live awards until a versioned schema and audit-transaction design are reviewed. No SQL migration made.
+
+
+## 0.3.x — guild-generation-safe trophy storage contract (unreleased; DRAFT)
+
+- Added two module-owned, **unapplied** characters tables: `naxx_gs_trophy_receipt` keyed to (guild ID, original creation timestamp, unique raid event receipt), and `naxx_gs_trophy_unlock` keyed to (guild ID, original creation timestamp, trophy key) with an additional first-receipt constraint.
+- Deliberately preserved the legacy/general `naxx_gs_unlock` table; it is not trusted to prove generation-safe raid achievements.
+- Added a disposable MariaDB transaction contract: lock the active matching settlement row, validate verified source/roster policy, ensure no duplicate event or trophy, then commit the receipt, unlock and audit-ledger row **together**.
+- Added fault-injection rollback tests after receipt, unlock and ledger inserts; concurrent same-event and different-event/same-trophy races; mixed-guild receipt reuse with independent generation keys; disband/archive refusal with historical preservation; simulated guild-ID reuse; same-schema reinstall preservation.
+- Updated SQL-to-purge name safety lint, 11-table count and CI MariaDB job. No production database or gameplay actions, C++ world hooks, GO IDs or client patches.

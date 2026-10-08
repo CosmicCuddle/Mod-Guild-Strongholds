@@ -136,3 +136,5 @@ jobs:
         run: python tests/mysql_phase_lease_test.py
       - name: Test draft settlement SELECT without mutations
         run: python tests/mysql_property_read_test.py
+      - name: Test generation-safe trophy receipts and atomic unlock history
+        run: python tests/mysql_trophy_receipts_test.py
