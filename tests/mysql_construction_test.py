@@ -180,11 +180,15 @@ def deposit_supply(guild_id, actor_guild_id, actor_authorized, receipt, units,
                 "VALUES (%s, 12345, %s, %s, %s)",
                 (guild_id, project_key, receipt, units)
             )
+            if failpoint == "after_receipt_insert":
+                raise RuntimeError("SIMULATED FAILURE after receipt insert")
             cur.execute(
                 "INSERT INTO naxx_gs_ledger (guild_id, event_key, actor_guid, details) "
                 "VALUES (%s, 'construction_supply_deposit', 12345, %s)",
                 (guild_id, receipt)
             )
+            if failpoint == "after_ledger_insert":
+                raise RuntimeError("SIMULATED FAILURE after ledger insert")
         c.commit()
         return "accepted"
     except Rejected as exc:
@@ -215,7 +219,8 @@ def run_tests():
     check(deposit_supply(42, 42, True, "has spaces", 5) == "invalid_receipt", "invalid receipt rejected")
     check(read_state(42) == (250, 0, 0, 0, 0), "rejections have no side effects")
 
-    for at in ("after_debit", "after_project_update"):
+    for at in ("after_debit", "after_project_update",
+               "after_receipt_insert", "after_ledger_insert"):
         try:
             deposit_supply(42, 42, True, at, 40, failpoint=at)
         except RuntimeError:
@@ -271,7 +276,53 @@ def run_tests():
     finally:
         c.close()
 
-    print(f"PASS: {tests} MariaDB construction-transaction contract checks (isolated test DB)")
+    # Reapplying draft CREATE IF NOT EXISTS is a *reinstall* smoke check, NOT
+    # a schema-migration strategy. It must never erase existing saved progress.
+    with connection() as c:
+        with c.cursor() as cur:
+            for sql in statements(INSTALL_SQL):
+                cur.execute(sql)
+        c.commit()
+    check(read_state(42) == (50, 200, 5, 5, 5),
+          "reapplying identical schema preserves already-committed progress")
+    check(read_state(84) == (110, 40, 1, 1, 1),
+          "reapplying identical schema preserves other guild")
+
+    # A non-module table in this throwaway DB is a sentinel for selective
+    # purge. The only destructive operation here is deliberately confined to
+    # naxx_gs_ci_test and is never performed against player data.
+    with connection() as c:
+        with c.cursor() as cur:
+            cur.execute(
+                "CREATE TABLE IF NOT EXISTS ci_other_module_sentinel "
+                "(id INT PRIMARY KEY, value VARCHAR(20) NOT NULL) ENGINE=InnoDB"
+            )
+            cur.execute(
+                "INSERT INTO ci_other_module_sentinel (id, value) VALUES (1, 'preserve') "
+                "ON DUPLICATE KEY UPDATE value=VALUES(value)"
+            )
+        c.commit()
+    with connection() as c:
+        with c.cursor() as cur:
+            for sql in statements(PURGE_SQL):
+                cur.execute(sql)
+            cur.execute("SELECT value FROM ci_other_module_sentinel WHERE id=1")
+            check(cur.fetchone()[0] == "preserve",
+                  "module purge leaves unrelated data untouched")
+            cur.execute(
+                "SELECT COUNT(*) FROM information_schema.tables "
+                "WHERE table_schema=DATABASE() AND table_name LIKE 'naxx\\\\_gs\\\\_%'"
+            )
+            check(cur.fetchone()[0] == 0,
+                  "deliberate destructive purge removed only module tables")
+        c.commit()
+    # Keep CI database disposable, and remove our unrelated sentinel too.
+    with connection() as c:
+        with c.cursor() as cur:
+            cur.execute("DROP TABLE ci_other_module_sentinel")
+        c.commit()
+
+    print(f"PASS: {tests} MariaDB construction, reinstallation and selective-purge checks (isolated test DB)")
 
 
 if __name__ == "__main__":

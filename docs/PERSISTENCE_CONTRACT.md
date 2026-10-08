@@ -45,3 +45,11 @@ The simulated routine accepts actor identity/permissions as arguments to **test*
 Open `.github/workflows/catalog-tests.yml` and the GitHub Actions tab. The `mysql-construction` job starts a temporary MariaDB service, creates a dedicated test-only database, applies draft schema, and checks atomicity, rollback, concurrent receipts and guild separation.
 
 Do not run the test against a live AzerothCore characters DB. The hard-coded guards are intentionally strict.
+
+## Additional reversible-install checks
+
+The MariaDB contract suite also repeats all draft `CREATE TABLE IF NOT EXISTS` statements **after** sample contributions and verifies both guilds' committed data survives. This tests an identical-schema reinstall, **not** a versioned schema upgrade.
+
+A deliberately unrelated sentinel table is created **inside the CI-only database**, then the optional module purge is executed. The suite verifies the sentinel survives and the seven module-owned tables are gone. It then cleans up the sentinel. None of these test statements run on the live server, and this does not replace a verified production uninstall plan.
+
+Injected failures at four transaction boundaries (after debit, project update, receipt insertion, and ledger insertion) must roll back every change, including the unique receipt. This tests recoverable SQL failures, **not** a process kill or physical disk-crash durability.

@@ -43,3 +43,10 @@
 - Added concurrent same-receipt/different-receipt and cross-guild isolation tests.
 - CI uses `naxx_gs_ci_test`; test runner refuses any other database name and requires an explicit CI environment guard.
 - Clarified that WoW player inventory debit, real server-side guild validation, C++ database adapter, IP integration and private property instancing remain incomplete.
+
+## Additional staging recovery validation
+
+- Extended MariaDB transaction failpoint coverage to receipt and ledger insertions.
+- Added draft schema reinstallation checks preserving data for two guilds.
+- Added an explicit selective-purge test in the *isolated CI database* with an unrelated sentinel table.
+- Reaffirmed that production migration and recovery remain untested until the deployed AzerothCore fork is available.

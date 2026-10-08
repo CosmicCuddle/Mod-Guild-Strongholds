@@ -67,3 +67,5 @@ The **draft, unapplied** characters SQL now includes a project-balance table and
 The project now tests real InnoDB transaction behavior on a **temporary, throwaway MariaDB database in GitHub Actions**. The runner simulates *virtual Guild Supplies* (not player inventory), checks same-guild concurrency, unique receipts, rollback after injected exceptions, guild separation and reopening the connection after commit. See [PERSISTENCE_CONTRACT.md](docs/PERSISTENCE_CONTRACT.md).
 
 This is a **test-only Python reference implementation**; AzerothCore C++ persistence and inventory integrations are not yet written. It does not make Strongholds playable.
+
+The MariaDB contract now also checks same-schema reinstall preservation and that the **explicit optional purge** leaves a simulated unrelated module table untouched (again only in the throwaway CI test database). This does **not** exercise a live uninstall.
