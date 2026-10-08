@@ -95,3 +95,13 @@ trap 'rm -rf "$work"' EXIT
   -I"$root/src" "$root/src/StrongholdInstanceRoute.cpp" \
   "$root/tests/instance_route_tests.cpp" -o "$work/instance_route_tests"
 "$work/instance_route_tests"
+
+# Same passive WorldScript, but through the case-sensitive entry point used
+# when the repository is cloned as modules/Mod-Guild-Strongholds.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -DNAXX_GS_TEST_UPPERCASE_LOADER \
+  -I"$root/tests/fake_azerothcore" -I"$root/src" \
+  "$root/src/StrongholdBootstrap.cpp" "$root/src/loader.cpp" \
+  "$root/tests/bootstrap_smoke_tests.cpp" \
+  -o "$work/bootstrap_uppercase_loader_tests"
+"$work/bootstrap_uppercase_loader_tests"

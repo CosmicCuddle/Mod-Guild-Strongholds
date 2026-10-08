@@ -9,6 +9,7 @@ on:
       - 'src/**'
       - 'tests/**'
       - 'scripts/**'
+      - 'docs/**'
       - 'data/sql/manual/**'
       - 'uninstall/**'
       - '.github/workflows/catalog-tests.yml'
@@ -28,6 +29,38 @@ jobs:
         run: python3 tests/isolation_audit_tests.py
       - name: Test reviewed IP fork source contract negatives
         run: python3 tests/ip_fork_contract_tests.py
+      - name: Test module-loader contract negatives and both folder aliases
+        run: python3 tests/module_loader_contract_tests.py
+
+  core-loader-contract:
+    name: Real upstream AzerothCore loader/header contract (read-only)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out Strongholds source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check out reviewed upstream AzerothCore loader source
+        uses: actions/checkout@v4
+        with:
+          repository: azerothcore/azerothcore-wotlk
+          ref: 7b2cecef92b271a468e39d89831b520b20ae06a8
+          path: reviewed-azerothcore
+          sparse-checkout: |
+            modules/CMakeLists.txt
+            modules/ModulesLoader.cpp.in.cmake
+            src/cmake/macros/ConfigureModules.cmake
+            src/cmake/macros/AutoCollect.cmake
+            src/server/game/Scripting/ScriptDefines/WorldScript.h
+            src/server/game/Scripting/ScriptDefines/CommandScript.h
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Compare real loader and script interfaces to module
+        run: >-
+          python3 scripts/check-azerothcore-module-loader.py
+          reviewed-azerothcore --module-source .
 
   ip-fork-contract:
     name: Reviewed Grimfeather IP fork contract (read-only)

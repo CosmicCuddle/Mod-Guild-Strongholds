@@ -22,3 +22,9 @@ The tests compile the diagnostic code using simple mock `Config.h`, `Log.h` and 
 ## Recovery
 
 The bootstrap modifies no game state. To disable it, retain `Enabled=0`. To remove compiled diagnostic hooks, remove module source, re-run CMake and rebuild to a known-good binary. SQL installation remains separate, draft-only and unapplied. Full uninstall and rollback policy remains documented in `UNINSTALL.md` and `ROLLBACK.md`.
+
+## Folder-case registration compatibility
+
+The generated upstream AzerothCore loader takes the module folder name and replaces hyphens with underscores without normalizing letter case. Thus `mod-guild-strongholds` calls `Addmod_guild_strongholdsScripts()`, but `Mod-Guild-Strongholds` calls `AddMod_Guild_StrongholdsScripts()`. We export both via a single canonical implementation and test each symbol separately with fake core interfaces. This eliminates a preventable case-sensitive link failure on Linux; it **does not prove** a full build against the deployed core.
+
+A separate workflow now verifies the exact loader-generation and callback declarations in a pinned **public upstream** AzerothCore revision. No normal-build code enables housing or the GM snapshot command.

@@ -129,3 +129,12 @@
 - Added checks for safe player/group bindings, non-raid map/client asset provenance, guild-private routing, world isolation and recovery proofs.
 - Added regression tests rejecting shared instance IDs (even across map IDs), guild identity reuse, retired instance reuse, missing evidence and wrong arrival destination.
 - No SQL migrations, gameplay registration, instance creation, phase writes or live teleportation implemented.
+
+## Core loader/registration preflight — October 2026 (development only)
+
+- Verified the *actual upstream* AzerothCore CMake module loader naming and `src/`-only source collection conventions.
+- Fixed folder case mismatch by exporting both `Addmod_guild_strongholdsScripts()` and `AddMod_Guild_StrongholdsScripts()`; the uppercase form delegates to one passive registration path.
+- Added C++ fake-core smoke compilation and execution through both case-sensitive loader symbols.
+- Added a read-only, pinned-upstream source contract checker for generated CMake loader naming, module source glob and WorldScript/CommandScript interfaces; negative tests reject incompatible upstream changes.
+- Added a GitHub Actions job checking genuine upstream source (rather than relying only on mock headers).
+- Actual deployed-core compile, complete module inventory, private guild isolation and playable housing are **not yet verified or implemented**.

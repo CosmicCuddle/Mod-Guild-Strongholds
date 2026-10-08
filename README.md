@@ -25,7 +25,7 @@ Read **[DESIGN.md](docs/DESIGN.md)**, **[ARCHITECTURE.md](docs/ARCHITECTURE.md)*
 
 ## Current repository contents
 
-- `src/loader.cpp`: compile-time registration stub only.
+- `src/loader.cpp`: passive diagnostic-only entry; supports both common module-folder spellings.
 - `conf/mod_naxx_guild_strongholds.conf.dist`: disabled-by-default settings.
 - `data/sql/manual/install_characters.sql`: optional, **manual** isolated schema creation; do not execute yet.
 - `INSTALL.md`, `UNINSTALL.md`, `ROLLBACK.md`: installation and recovery policy.
@@ -37,7 +37,7 @@ Read **[DESIGN.md](docs/DESIGN.md)**, **[ARCHITECTURE.md](docs/ARCHITECTURE.md)*
 
 ## Compatibility still to verify
 
-AzerothCore revision, C++ module loader convention on the deployed core, `mod-individual-progression` API and Playerbots fork must be checked before the first executable feature is added.
+Upstream AzerothCore's CMake loader convention is now checked automatically at a pinned public revision. The **deployed** core loader/build, Individual Progression and Playerbots forks still need a real staging build before gameplay is enabled.
 
 ## Mandatory module compatibility gate
 
@@ -134,3 +134,11 @@ This prototype does not prove that finite phase bits can support the desired sca
 The project now has a **test-only** core-instance route preflight in `src/StrongholdInstanceRoute.*`. It rejects unverified map/client assets, mismatched player/group instance bindings, unsafe reset lifetime, lack of deterministic per-guild routing and missing two-guild privacy evidence. Existing and even retired instance IDs may not silently be given to another guild. The code **does not call** AzerothCore `GenerateInstanceId`, `CreateInstance` or `TeleportTo` and does not store or assign any real instance ID.
 
 Upstream AzerothCore's current dungeon instance routing uses player/group instance saves, not a verified guild owner mapping. True private instances remain a **candidate requiring a custom integration and staged proof**, not an implemented housing option. No new database tables were added in this batch. Read [INSTANCE_ROUTING_FEASIBILITY.md](docs/INSTANCE_ROUTING_FEASIBILITY.md).
+
+## Upstream build-loader integration — now checked in CI
+
+We found and fixed a genuine integration gap: AzerothCore derives the module C++ registration symbol **from the folder name, preserving case**. Both `modules/mod-guild-strongholds` (preferred) and `modules/Mod-Guild-Strongholds` (the GitHub repo's name) now have compatible loader symbols, and the two variants are mock-linked and smoke-tested.
+
+A separate GitHub Actions job checks pinned **real upstream** AzerothCore CMake module-source collection, generated registration symbols and WorldScript/CommandScript interfaces. It confirms AzerothCore collects sources from this module's **`src/` directory only**, leaving standalone `tests/` outside the worldserver build. No extra `CMakeLists.txt` is required in this module for that upstream default discovery.
+
+**This is not a full AzerothCore build** and does not establish compatibility with the user's customized core/Playerbots. No production code or database was installed. Read [CORE_BUILD_CONTRACT.md](docs/CORE_BUILD_CONTRACT.md).

@@ -89,3 +89,9 @@ Review [PHASE_LEASE_FEASIBILITY.md](PHASE_LEASE_FEASIBILITY.md) before consideri
 ## Candidate A — Guild-private core instance routing feasibility
 
 We now have a test-only C++ instance route preflight and server-arrival comparison. **The current upstream MapInstanced source does not offer a demonstrated guild-owned destination hook**: player/group binding controls dungeon and raid instance selection. This remains a major blocker, not a ready alternative to the finite phase leases. Candidate A requires a compatibility-reviewed core-supported route plus persistent custom instance save semantics without modifying existing raid lockouts. See [INSTANCE_ROUTING_FEASIBILITY.md](INSTANCE_ROUTING_FEASIBILITY.md).
+
+## Upstream module loader integration milestone
+
+The repository now exports both folder-case registration symbols and automatically checks them against upstream AzerothCore's **real** module loader CMake generator and WorldScript/CommandScript interface declarations (pinned revision). Tests under `tests/` are outside the source tree collected by the actual upstream module build, avoiding accidental compilation of fake-core tests into the worldserver.
+
+Next non-negotiable validation: compile against the **user's actual deployed AzerothCore/Playerbots/IP fork** with all modules in a separate staging environment. This upstream-source check **does not** permit live installation or housing gameplay; privacy remains unverified. See [CORE_BUILD_CONTRACT.md](CORE_BUILD_CONTRACT.md).

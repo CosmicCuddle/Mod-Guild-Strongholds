@@ -34,6 +34,7 @@ void FakeLog(std::string const& severity, std::string const& message)
 }
 
 void Addmod_guild_strongholdsScripts();
+void AddMod_Guild_StrongholdsScripts();
 
 int main()
 {
@@ -49,7 +50,11 @@ int main()
         }
     };
 
+#if defined(NAXX_GS_TEST_UPPERCASE_LOADER)
+    AddMod_Guild_StrongholdsScripts();
+#else
     Addmod_guild_strongholdsScripts();
+#endif
     test(gFakeRegisteredScript != nullptr, "Bootstrap WorldScript registered");
 
     gFakeRegisteredScript->OnBeforeConfigLoad(false);

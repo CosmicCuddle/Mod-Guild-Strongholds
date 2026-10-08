@@ -29,3 +29,18 @@ Before even a staging install, record **all modules actually deployed**, the Aze
 ## Staging-only bootstrap
 
 The earlier empty loader has become a **diagnostic-only** WorldScript, which logs disabled or blocked status during startup. Do not deploy this branch live. The test uses fake core headers; validate against your actual AzerothCore fork and complete installed-module inventory before any staging deployment. This does not permit real housing enablement.
+
+## Source layout and module naming — staging only, not an install instruction yet
+
+Upstream AzerothCore discovers a module when its folder under `modules/` has a `src/` directory. It recursively compiles `src/` (not standalone `tests/`), and its generated script loader calls a C++ registration name based on the **exact folder spelling**:
+
+| Folder under modules | Generated C++ registration |
+| --- | --- |
+| `mod-guild-strongholds` (recommended) | `Addmod_guild_strongholdsScripts()` |
+| `Mod-Guild-Strongholds` (GitHub repository name) | `AddMod_Guild_StrongholdsScripts()` |
+
+Both symbols exist in `src/loader.cpp`; one delegates to the other. **Only one of them is called** by the generated loader in any given build. This prevents Linux case-sensitive linker problems without touching any other installed module.
+
+The repository intentionally does not supply a separate module-root `CMakeLists.txt` because the reviewed upstream AzerothCore loader manages module source discovery. The module's test code is outside `src/`, and `StrongholdStagingDiagnostics.cpp` has an additional compile-time guard in normal builds.
+
+**Do not clone/pull this draft into a live server yet.** Real staging compilation against the exact deployed core and all modules is still required. The new automated check reads the public upstream core loader source but does not compile/link the actual user's worldserver. See [CORE_BUILD_CONTRACT.md](docs/CORE_BUILD_CONTRACT.md).

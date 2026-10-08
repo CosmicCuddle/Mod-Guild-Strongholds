@@ -1,9 +1,14 @@
 /*
- * Naxxramas Guild Strongholds — development-only AzerothCore module entry.
+ * Naxxramas Guild Strongholds — development-only AzerothCore entry.
  *
- * Active registration is restricted to the passive diagnostic WorldScript.
- * No housing, guild, player, phase, spawn, teleport or database hooks.
- * Release-blocking compatibility testing is still required.
+ * AzerothCore generates Add<module-folder-with-hyphens-replaced>Scripts().
+ * Both common folder spellings below are supported:
+ *   modules/mod-guild-strongholds       -> Addmod_guild_strongholdsScripts()
+ *   modules/Mod-Guild-Strongholds       -> AddMod_Guild_StrongholdsScripts()
+ *
+ * Register only a passive WorldScript in a NORMAL build. The GM snapshot
+ * script is compiled/registered solely via explicit STAGING compiler opt-in.
+ * Neither entry point creates housing, spawns NPCs, changes phases or SQL.
  */
 namespace NaxxGuildStrongholds
 {
@@ -17,8 +22,14 @@ void Addmod_guild_strongholdsScripts()
 {
     NaxxGuildStrongholds::AddBootstrapScripts();
 #if defined(NAXX_GS_BUILD_STAGING_DIAGNOSTICS)
-    // Explicit compile-time staging opt-in; ABSENT from normal module builds.
-    // The command still requires GM RBAC and Diagnostics.Enabled=1.
     NaxxGuildStrongholds::AddStagingDiagnosticsScripts();
 #endif
+}
+
+// Case-preserving alias for cloning the actual GitHub repository under
+// modules/Mod-Guild-Strongholds. The core calls EXACTLY ONE entry point,
+// according to the folder name; this alias does not register scripts twice.
+void AddMod_Guild_StrongholdsScripts()
+{
+    Addmod_guild_strongholdsScripts();
 }

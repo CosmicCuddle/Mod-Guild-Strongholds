@@ -126,3 +126,11 @@ The CI `1 << 24` and `1 << 25` masks are synthetic values. Never write them into
 The new C++ route preflight tests source assumptions for candidate A, but **does not register or create AzerothCore instances**. A proper adapter cannot simply generate and persist an instance ID; it must integrate with the actual core instance manager and prove that `PlayerGetDestinationInstanceId` and group/raid binds do not override ownership routing. Map DBC and instance templates must be valid, without repurposing Molten Core, Onyxia or any IP-gated progression dungeon.
 
 The upstream reviewed core commit for this research was `7b2cecef92b271a468e39d89831b520b20ae06a8` (8 October 2026), **not a verified deployed server revision**. The code has tests for stale guild generations and client arrival mismatches; all other module compatibility remains unverified. See [INSTANCE_ROUTING_FEASIBILITY.md](INSTANCE_ROUTING_FEASIBILITY.md).
+
+## Actual upstream module build contract (not full compile)
+
+AzerothCore's upstream CMake loader uses the module folder's literal spelling, replacing `-` with `_` while keeping case to generate `Add<folder>Scripts()`. We now support both the conventional all-lowercase `mod-guild-strongholds` folder and the capitalized GitHub repository `Mod-Guild-Strongholds`; a single registration path avoids duplicate scripts. The upstream collector discovers `src/` recursively, so no `tests/` fake C++ code is included in worldserver.
+
+The `scripts/check-azerothcore-module-loader.py` checker and separate CI job verify these contracts against the pinned public upstream AzerothCore commit `7b2cecef92b271a468e39d89831b520b20ae06a8`, including WorldScript and CommandScript signatures. Any drift fails the check. **It does not compile the user's actual customized core** and cannot certify the modules, staging GM command, housing or IP phasing.
+
+The entire housing feature remains hard-blocked under `DevelopmentCapabilities`. See [CORE_BUILD_CONTRACT.md](CORE_BUILD_CONTRACT.md).
