@@ -72,3 +72,7 @@ The standalone test runner now includes activity eligibility checks for mismatch
 ## Construction contribution compatibility checks
 
 The new standalone construction-policy tests verify project definitions, different construction stages, guild/rank access, bot opt-out, duplicate receipt checks, contribution limits and fail-closed invalid states. Before in-game activation, verify external-mod event deduplication, **transactional** receipt uniqueness, currency/inventory accounting, race conditions and repeated login/restart behavior. Standalone tests do not establish runtime compatibility.
+
+## MariaDB contract coverage
+
+CI now includes an isolated MariaDB service for draft-character-schema and **virtual** guild supply accounting tests. These verify basic InnoDB rollback and concurrent receipt protection but cannot certify safe AzerothCore in-memory character inventory handling, IP phasing, Playerbots, core versions, restart evacuation or long-term compatibility. A live server install remains blocked.

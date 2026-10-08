@@ -61,3 +61,9 @@ A standalone C++ regression test is provided at `bash tests/run-catalog-tests.sh
 The standalone `src/StrongholdConstruction.*` catalogue includes twelve **proposed** Human/Orc construction projects, four visual construction states and a non-mutating contribution validator with receipt/version protections. This is not an in-game building mechanic. See [CONSTRUCTION_ENGINE.md](docs/CONSTRUCTION_ENGINE.md).
 
 The **draft, unapplied** characters SQL now includes a project-balance table and a unique receipt key to plan for idempotency. Database writes, item escrow, race-safe transactions, world spawning, uninstall/reinstall and compatibility testing are future mandatory milestones.
+
+## Staging MariaDB persistence contract
+
+The project now tests real InnoDB transaction behavior on a **temporary, throwaway MariaDB database in GitHub Actions**. The runner simulates *virtual Guild Supplies* (not player inventory), checks same-guild concurrency, unique receipts, rollback after injected exceptions, guild separation and reopening the connection after commit. See [PERSISTENCE_CONTRACT.md](docs/PERSISTENCE_CONTRACT.md).
+
+This is a **test-only Python reference implementation**; AzerothCore C++ persistence and inventory integrations are not yet written. It does not make Strongholds playable.

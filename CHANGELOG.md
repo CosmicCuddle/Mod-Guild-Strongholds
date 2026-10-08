@@ -35,3 +35,11 @@
 - Updated draft (unapplied) character SQL with project balances and uniqueness for per-guild contribution receipts; updated explicit purge list.
 - C++ policy tests extended to construction and integration boundaries documented.
 - **No housing instances, world spawn IDs, inventory deductions or live database changes.**
+
+## 0.3.0-mariadb-contract groundwork (unreleased)
+
+- Added staging-only MariaDB 10.11 InnoDB transaction contract test for virtual Guild Supplies contributions.
+- Added locked guild/project update, unique receipt, optimistic version, ledger and failure-injection rollback reference behavior.
+- Added concurrent same-receipt/different-receipt and cross-guild isolation tests.
+- CI uses `naxx_gs_ci_test`; test runner refuses any other database name and requires an explicit CI environment guard.
+- Clarified that WoW player inventory debit, real server-side guild validation, C++ database adapter, IP integration and private property instancing remain incomplete.

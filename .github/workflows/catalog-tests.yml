@@ -23,3 +23,38 @@ jobs:
         run: bash tests/run-catalog-tests.sh
       - name: Validate namespaced SQL and matching uninstall targets (static lint)
         run: python3 tests/sql_safety_check.py
+
+  mysql-construction:
+    name: MariaDB construction transaction contract
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: strongholds_test_only
+          MARIADB_DATABASE: naxx_gs_ci_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mariadb-admin ping -h 127.0.0.1 -uroot -pstrongholds_test_only"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    env:
+      NAXX_GS_CI_ONLY: "YES"
+      NAXX_GS_TEST_HOST: "127.0.0.1"
+      NAXX_GS_TEST_PORT: "3306"
+      NAXX_GS_TEST_DB: "naxx_gs_ci_test"
+      NAXX_GS_TEST_USER: "root"
+      NAXX_GS_TEST_PASSWORD: "strongholds_test_only"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test-only MariaDB client
+        run: python -m pip install --disable-pip-version-check PyMySQL==1.1.1
+      - name: Exercise isolated SQL transactions and rollback
+        run: python tests/mysql_construction_test.py

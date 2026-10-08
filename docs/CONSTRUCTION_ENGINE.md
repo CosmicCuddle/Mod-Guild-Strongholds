@@ -61,3 +61,9 @@ The GitHub unit test suite checks domain rules. Before declaring playable: test 
 ## Stronghold theme and plot validation
 
 The domain snapshot now includes the **stored plot key**, and its context includes a **server-verified settlement theme**. A Human guild project is not valid at an Orc property (and a project cannot claim another plot). These values must originate from the database, not client-submitted NPC menu IDs.
+
+## Staging database transaction contract
+
+An executable **test-only** MariaDB implementation is now maintained at `tests/mysql_construction_test.py`. It verifies atomic credit, versioned updates and duplicate receipts on the **draft** SQL schema. It transfers only existing virtual Guild Supplies from the guild balance to the project, with a contribution receipt and audit ledger in one transaction. No physical player items are consumed; no in-game NPCs or quest flow are involved.
+
+See [PERSISTENCE_CONTRACT.md](PERSISTENCE_CONTRACT.md). Before production, the real C++ adapter must use authoritative guild membership and compatible database APIs, and it must have a safe way to account for player items if we enable timber/iron.

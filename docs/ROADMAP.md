@@ -39,3 +39,7 @@ Per-character activity gate code is now available for testing in `src/Stronghold
 Pure C++ `StrongholdConstruction.*` now defines twelve Human/Orc building projects and four visual-stage transitions. This is an **early design substep**, not the completion of v0.3.0. The actual persistence adapter, resource debit, unique receipt transaction, objects, privacy and rollback testing are still outstanding.
 
 See [CONSTRUCTION_ENGINE.md](CONSTRUCTION_ENGINE.md) for strict transaction/rollback requirements.
+
+## MariaDB persistence contract experiment
+
+A separate CI job now applies the draft schema to a throwaway MariaDB database and tests supply-only InnoDB transaction semantics with receipt uniqueness, rollback and concurrent deposits. See [PERSISTENCE_CONTRACT.md](PERSISTENCE_CONTRACT.md). It is **not** an AzerothCore runtime adapter or live migration. Item/timber/iron consumption stays prohibited until transaction/escrow design and deployed-core testing.
