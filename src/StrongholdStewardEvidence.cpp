@@ -132,8 +132,12 @@ std::vector<std::string> BuildStewardEvidenceRows(
     StewardEvidenceReport const result = EvaluateStewardEvidence(input);
     return {
         "[LOCKED] Housing is not enabled; real isolation is unverified.",
-        "[LOCKED] Player guild ID " + std::to_string(input.ActorGuild.GuildId) +
-            " is NOT verified guild-property ownership.",
+        "[LOCKED] Guild " + std::to_string(input.ActorGuild.GuildId) +
+            (input.GuildGenerationVerified && input.ActorGuild.CreatedAt ?
+                " member verified; guild created " +
+                    std::to_string(input.ActorGuild.CreatedAt) +
+                    "; property ownership NOT verified." :
+                " member/creation unverified; property ownership NOT verified."),
         "[LOCKED] Property: " + StatusDescription(result.Status),
         "[LOCKED] IP: " + IpDescription(result.IpStatus, result.EffectiveIpRank),
         "[LOCKED] All guild activities, quests and trophies remain inactive."

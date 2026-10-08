@@ -27,8 +27,11 @@ int main()
     check(CheckStewardPreview(c) == StewardPreviewDecision::NoGuild,
         "no-guild staff cannot view guild property preview");
     c.CurrentGuildId = 17;
+    check(CheckStewardPreview(c) == StewardPreviewDecision::UnverifiedGuild,
+        "GM with numeric guild ID alone cannot access preview");
+    c.VerifiedActiveMembershipAndGeneration = true;
     check(CheckStewardPreview(c) == StewardPreviewDecision::Allowed,
-        "GM in guild can inspect planning-only preview");
+        "GM with registry and membership proof can inspect preview");
 
     for (std::uint32_t action = 1; action <= 11; ++action)
     {
@@ -54,6 +57,11 @@ int main()
     check(CheckStewardSelection(c, true, 1) == StewardPreviewDecision::NoGuild,
         "guild left between hello and selection");
     c.CurrentGuildId = 17;
+    c.VerifiedActiveMembershipAndGeneration = false;
+    check(CheckStewardSelection(c, true, 1) ==
+        StewardPreviewDecision::UnverifiedGuild,
+        "Guild registry/member proof lost after menu opened");
+    c.VerifiedActiveMembershipAndGeneration = true;
     c.ExplicitStagingSettingEnabled = false;
     check(CheckStewardSelection(c, true, 1) == StewardPreviewDecision::Disabled,
         "runtime config disabled between hello and selection");

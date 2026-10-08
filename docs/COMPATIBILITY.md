@@ -162,3 +162,10 @@ The opt-in staging `CreatureScript` now links the `StrongholdCatalog`, `Strongho
 ## Guild/IP source verification is not live state
 
 `StrongholdStewardEvidence.*` reuses independent original-guild-generation, property-lifecycle and IP effective-rank policies and never calls the upstream or installed Individual Progression module directly. In real staging `CreatureScript`, only `Player::GetGuildId` is read; the policy's original guild creation stamp, active property, settlement level and IP source snapshot are left unverified, so the page is locked. A matching public Grimfeather source contract does not prove the user's deployed fork or player stage. See [STEWARD_EVIDENCE_CONTRACT.md](STEWARD_EVIDENCE_CONTRACT.md).
+
+
+## Read-only guild registry integration: actual upstream APIs
+
+Opt-in staging guild proof uses `Guild::GetMember(ObjectGuid)`, `Guild::GetCreatedDate()`, `Guild::GetId()` and `Player::GetGuild()`/ `GetGuildId()`/ `GetGUID()`. These were inspected in pinned public AzerothCore commit `7b2cecef92b271a468e39d89831b520b20ae06a8`. It never uses guild bank access or writes guild/world/character SQL. The actual custom fork/Playerbots combination still requires a separate compiler and source compatibility audit.
+
+An explicit `tests/staging_guild_adapter_source_tests.py` guards the opt-in read path against known state-mutating APIs, while C++ negative tests guard stale guild membership/creation evidence. The new upstream real-header compiler job is the authoritative C++ signature check for the **public** pinned core, not for the user's deployed modifications.

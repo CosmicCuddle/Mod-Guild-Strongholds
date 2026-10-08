@@ -187,3 +187,12 @@ The Guild Steward now has a **Guild and IP evidence [LOCKED]** page, driven by `
 **Real staging gossip reads only the current player's guild ID via AzerothCore.** We have deliberately **not** fabricated a guild creation timestamp, property SQL record, settlement level, Individual Progression stage or verified private map. The live-preview row explicitly says those fields cannot yet be verified. Every row says `[LOCKED]`, and `HousingAvailable` remains false even if all inputs are true in a synthetic test.
 
 This work provides a safe, composable seam for future **read-only** deployed-fork adapters but does not activate any quests, awards, buildings or NPC spawns. See [STEWARD_EVIDENCE_CONTRACT.md](docs/STEWARD_EVIDENCE_CONTRACT.md).
+
+
+## First actual, read-only core guild-identity adapter (staging)
+
+The optional Guild Steward now reads **actual AzerothCore guild registry state** when compiled for staging. Instead of trusting `Player::GetGuildId()` alone, `StrongholdStagingGuildAdapter.cpp` checks `Player::GetGuild()`, a matching `Guild::GetId()`, `Guild::GetMember(player->GetGUID())`, and the **original** `Guild::GetCreatedDate()` timestamp. The preview closes if the player is no longer a verified guild member or the guild generation is unavailable. Every menu interaction checks again.
+
+The Guild/IP Evidence page can now honestly show the **verified member guild ID and original creation timestamp**. It still marks **property ownership, settlement level, Individual Progression stage and all housing gameplay LOCKED**: none of those server adapters exist. The new domain test suite rejects stale/recycled guild ID data, lost membership and missing creation timestamps; a source-only safety test rejects game/database mutator APIs.
+
+**Staging-only:** direct guild API adapter is compiled only under `NAXX_GS_BUILD_STAGING_STEWARD`. Normal builds contain neither staging gossip nor guild API glue. Real upstream compilation will verify signatures; the deployed custom fork still needs a separate build. See [STAGING_GUILD_IDENTITY.md](docs/STAGING_GUILD_IDENTITY.md).

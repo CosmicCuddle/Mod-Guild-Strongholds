@@ -123,3 +123,10 @@ The actual opt-in `CreatureScript` preview now reuses existing C++ source catalo
 ## Steward proof-composition milestone
 
 The development-only Steward now has a structured, fail-closed guild/IP evidence policy and read-only gossip page. Unlike displaying generic planned thresholds, it can independently detect lifecycle-generation mismatch, archived property and high rewarded-IP-rank with a lower global server cap in tests. The **actual in-game page intentionally shows these as UNVERIFIED**, not unlocked; production-readonly property/IP adapters and real private-space routing remain missing. See [STEWARD_EVIDENCE_CONTRACT.md](STEWARD_EVIDENCE_CONTRACT.md).
+
+
+## First actual AzerothCore guild identity seam
+
+The staging Steward can now query a current player, registry guild object, member GUID and original guild creation timestamp with actual AzerothCore APIs. Previously the preview only knew the player's numeric guild ID. This closes a concrete ownership-spoofing gap in our read-only UI and supplies a verified `GuildIdentity` to existing lifecycle policies, without claiming property ownership.
+
+Remaining: version-matched deployed core, authoritative **property DB adapter**, Individual Progression runtime state and actual private-world isolation. All services remain locked. See [STAGING_GUILD_IDENTITY.md](STAGING_GUILD_IDENTITY.md).

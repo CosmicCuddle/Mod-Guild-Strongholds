@@ -10,6 +10,8 @@ StewardPreviewDecision CheckStewardPreview(StewardPreviewContext const& input)
         return StewardPreviewDecision::NotStaff;
     if (!input.CurrentGuildId)
         return StewardPreviewDecision::NoGuild;
+    if (!input.VerifiedActiveMembershipAndGeneration)
+        return StewardPreviewDecision::UnverifiedGuild;
     return StewardPreviewDecision::Allowed;
 }
 

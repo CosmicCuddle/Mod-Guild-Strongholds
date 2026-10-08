@@ -67,3 +67,12 @@ The staging-only menu adds `Guild and IP evidence [LOCKED]`. This is a **non-exe
 The `StrongholdStewardEvidence` policy combines existing library rules for property lifetime, per-player IP effective stage and planned activity gates. It can be tested with synthetic complete proof, but **real gossip supplies no claimed proof**: owner creation date and property persistence, level and IP adapter remain unset. Thus the page stays locked. A synthetic `ActivityGate::Allowed` is explicitly **planning-only**; `HousingAvailable` is always false.
 
 Release requires authoritative, version-matched server-side read-only adapters and privacy isolation before any status can be shown as factual access. No in-world evaluation can currently claim achievements, grant daily quests, change phase, spawn buildings or debit resources.
+
+
+## Verified actual core guild reference — staging only
+
+In the opt-in build, the Steward now calls `ReadCurrentGuildIdentity(player)`, which consults **AzerothCore's guild registry** via the player's `GetGuild()`, confirms registry `GetId()` matches current `GetGuildId()`, confirms the character's exact `GetGUID()` is in `Guild::GetMember`, and checks `GetCreatedDate() > 0`. Any absent or stale value closes the menu, including if membership is revoked between opening and clicking.
+
+The Guild/IP Evidence page therefore displays a verified **guild member ID and original creation timestamp**. That is NOT proof that the guild has claimed a stronghold! The property SQL adapter does not exist, and Individual Progression remains unverified. The menu explicitly labels these as locked.
+
+`StrongholdGuildReadOnly.*` contains platform-free validation and negative tests; `StrongholdStagingGuildAdapter.cpp` is guarded by the **staging-only compilation flag**. No guild mutators, database writes, realm state changes or housing services are introduced.

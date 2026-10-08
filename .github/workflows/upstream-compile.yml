@@ -14,8 +14,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: upstream-module-compile-${{ github.ref }}
-  cancel-in-progress: true
+  group: upstream-module-compile-${{ github.sha }}
+  cancel-in-progress: false
 
 jobs:
   compile-against-upstream:

@@ -133,3 +133,9 @@ trap 'rm -rf "$work"' EXIT
   "$root/tests/steward_evidence_tests.cpp" \
   -o "$work/steward_evidence_tests"
 "$work/steward_evidence_tests"
+
+# Guild ID by itself is untrusted: verify registry, member GUID and created date.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdGuildReadOnly.cpp" \
+  "$root/tests/guild_readonly_tests.cpp" -o "$work/guild_readonly_tests"
+"$work/guild_readonly_tests"

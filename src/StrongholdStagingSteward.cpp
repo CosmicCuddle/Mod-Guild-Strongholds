@@ -10,6 +10,7 @@
 #include "StrongholdStewardPreview.h"
 #include "StrongholdStewardReadOnlyContent.h"
 #include "StrongholdStewardEvidence.h"
+#include "StrongholdStagingGuildAdapter.h"
 #include "Config.h"
 #include "Creature.h"
 #include "Player.h"
@@ -41,6 +42,9 @@ StewardPreviewContext ReadContext(Player const* player)
     {
         ctx.StaffGameMaster = player->IsGameMaster();
         ctx.CurrentGuildId = player->GetGuildId();
+        // Registry ID, member GUID and actual creation date must ALL match.
+        ctx.VerifiedActiveMembershipAndGeneration =
+            ReadCurrentGuildIdentity(player).IsVerified();
     }
     return ctx;
 }
@@ -87,7 +91,15 @@ void ShowDetailPage(Player* player, Creature* creature, StewardPreviewAction pag
     if (page == StewardPreviewAction::EvidenceReview)
     {
         StewardEvidenceInput evidence;
+        GuildReadResult const guild = ReadCurrentGuildIdentity(player);
         evidence.ActorGuild.GuildId = player->GetGuildId();
+        if (guild.IsVerified())
+        {
+            evidence.ActorGuild = guild.Identity;
+            evidence.GuildGenerationVerified = true;
+        }
+        // No property database adapter and no installed-fork IP adapter:
+        // both stay missing, even when the core Guild has been verified.
         rows = BuildStewardEvidenceRows(evidence);
     }
     else

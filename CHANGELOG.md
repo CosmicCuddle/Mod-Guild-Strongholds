@@ -188,3 +188,12 @@
 - Added a Guild/IP evidence menu page in the staging-only CreatureScript. In-world it reads only the current player's guild ID and explicitly marks property/IP state unverified; it never guesses missing data.
 - Added C++ tests for foreign/reused/archived guilds, IP ranks capped below rewarded quests, missing IP, bot opt-out, no gameplay enablement, and bounded `[LOCKED]` preview rows.
 - No SQL queries, server-guild generation adapter, active building system, quest handlers, player teleports or visible NPC spawn.
+
+
+## Guild Steward: real core registry/member-generation read (development)
+
+- Added a **source-isolated read-only** guild adapter using actual AzerothCore `Player::GetGuild()`, `Guild::GetId()`, `Guild::GetMember(player GUID)` and `Guild::GetCreatedDate()` APIs.
+- Staging Steward now refuses menu access without a verified guild object, exact member GUID and positive original creation date, not just an untrusted numeric player guild ID; checks occur at menu open and each click.
+- The status page now truthfully displays current verified member guild ID and creation timestamp while leaving property ownership, settlement level, IP state and housing **LOCKED**.
+- Added C++ tests for missing registry, foreign/stale ID, removed guild member, invalid creation generation, revoked privileges and never exposing stale proof.
+- Added source-only no-mutator guard to GitHub Actions and adjusted upstream-build concurrency so new commits do not repeatedly cancel long worldserver links; no live data touched.

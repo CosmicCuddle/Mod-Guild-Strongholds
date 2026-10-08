@@ -13,6 +13,7 @@ struct StewardPreviewContext
     bool ExplicitStagingSettingEnabled = false;
     bool StaffGameMaster = false;
     std::uint32_t CurrentGuildId = 0;
+    bool VerifiedActiveMembershipAndGeneration = false;
 };
 
 enum class StewardPreviewDecision : std::uint8_t
@@ -21,6 +22,7 @@ enum class StewardPreviewDecision : std::uint8_t
     Disabled,
     NotStaff,
     NoGuild,
+    UnverifiedGuild,
     InvalidMenuSender,
     InvalidAction
 };

@@ -37,3 +37,19 @@ This is deliberately less impressive than fabricated `Level 7` / `IP Tier 18` va
 ## Still blocked
 
 A separate, owner-approved staging build must first provide authoritative read-only API glue for original guild generation, property state and versioned persistence, IP state on the installed fork, and independently confirmed private settlement isolation. No real property, daily quest, reward, trophy, map entry or teleport should be wired to a gossip menu until those tests and backup/uninstall plans have passed.
+
+
+## First true server field: guild ID, membership and original generation
+
+We now have a real **staging-only read adapter** based on pinned upstream AzerothCore guild APIs:
+- `Player::GetGuildId()` supplies the character's *current visible* guild ID.
+- `Player::GetGuild()` resolves the corresponding guild object in core.
+- `Guild::GetId()` must match the current character guild ID.
+- `Guild::GetMember(Player::GetGUID())` must resolve the **exact player member record**.
+- `Guild::GetCreatedDate()` must be positive, proving the **original guild generation timestamp**.
+
+All checks fail closed and the result resets to no verified identity on failure. This verified **membership and creation stamp** is passed to `StewardEvidenceInput`, replacing the earlier unknown creation date. The next check is still `PropertySnapshotLoaded=false`, so the status page explicitly says property ownership is NOT verified.
+
+No code reads or mutates the guild bank, guild roster, CharacterDatabase, Individual Progression hidden quests, or Playerbot AI; there is no progression or housing enablement. A real property DB adapter and version-matched IP adapter are still missing.
+
+The pinned-upstream staging compilation checks the actual API signatures. The custom deployed fork's headers may differ, and the code must not be installed until its complete staging source build passes. See [STAGING_GUILD_IDENTITY.md](STAGING_GUILD_IDENTITY.md).

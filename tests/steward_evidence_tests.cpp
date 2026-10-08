@@ -26,7 +26,7 @@ int main()
     check(!result.HousingAvailable, "No public housing from player guild ID");
     auto menu = BuildStewardEvidenceRows(context);
     check(menu.size() == 5 && menu[1].find("321") != std::string::npos &&
-          menu[2].find("NOT verified") != std::string::npos,
+          menu[1].find("NOT verified") != std::string::npos,
           "Staging screen reports guild ID but not property ownership");
     check(menu[3].find("No verified deployed IP") != std::string::npos,
           "Unintegrated IP never invented from a character");
@@ -36,6 +36,10 @@ int main()
     check(EvaluateStewardEvidence(context).Status ==
           StewardEvidenceStatus::PropertyNotLoaded,
           "Guild identity proof is insufficient without property DB");
+    menu = BuildStewardEvidenceRows(context);
+    check(menu[1].find("member verified; guild created 1790001234") != std::string::npos &&
+        menu[1].find("property ownership NOT verified") != std::string::npos,
+        "Verified registry membership never implies property ownership");
     context.PropertySnapshotLoaded = true;
     context.Property.OriginalGuild = {322, 1790001234};
     context.Property.State = PropertyLifecycle::Active;

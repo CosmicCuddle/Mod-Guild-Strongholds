@@ -31,6 +31,8 @@ jobs:
         run: python3 tests/ip_fork_contract_tests.py
       - name: Test module-loader contract negatives and both folder aliases
         run: python3 tests/module_loader_contract_tests.py
+      - name: Ensure read-only guild API adapter never mutates game state
+        run: python3 tests/staging_guild_adapter_source_tests.py
 
   core-loader-contract:
     name: Real upstream AzerothCore loader/header contract (read-only)

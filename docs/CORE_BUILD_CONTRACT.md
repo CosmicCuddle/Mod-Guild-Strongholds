@@ -80,3 +80,10 @@ GitHub workflow: [upstream-compile.yml](../.github/workflows/upstream-compile.ym
 The upstream CI's **staging opt-in** variant now also adds `NAXX_GS_BUILD_STAGING_STEWARD` and builds `StrongholdStagingSteward.cpp` against the real upstream `CreatureScript` and `ScriptedGossip` headers. The normal full worldserver build remains without either staging flag; its module archive must contain **no** `AddStagingStewardScripts` symbol.
 
 Passing this compilation demonstrates API syntax only; the Guild Steward is neither registered nor bound to a creature in production and no staging realm has been started. See [STAGING_STEWARD.md](STAGING_STEWARD.md).
+
+
+## Preserve longer worldserver links in GitHub Actions
+
+The upstream `worldserver` full-link job has often been cancelled by new development commits because workflow concurrency previously grouped **all branch builds** together. This was not proof of a successful or failed link. The workflow now keys concurrency by the **commit SHA** and disables cancellation, allowing each issued pinned-upstream build to reach a definitive outcome even if later commits are pushed. This consumes additional CI minutes but avoids losing the only full-link evidence.
+
+The new staging-only `StrongholdStagingGuildAdapter.cpp` is compiled against genuine public `Guild.h` and `Player.h` only in the opt-in staging job. The normal worldserver build still contains only the passive module plus independent policy sources, not the staging Guild Steward or guild API adapter.
