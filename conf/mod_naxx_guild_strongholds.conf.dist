@@ -1,0 +1,20 @@
+[worldserver]
+
+#####################################
+# Naxxramas Guild Strongholds
+# v0.1.0 foundation (no gameplay logic yet)
+#####################################
+
+# Master feature switch.
+# Remains disabled until private-area security and exit handling are implemented.
+# Default: 0
+NaxxGuildStrongholds.Enabled = 0
+
+# Optional debugging in later releases. Does nothing in the foundation stub.
+# Default: 0
+NaxxGuildStrongholds.Debug = 0
+
+# Planned: optional Playerbot contribution integration.
+# Will stay disabled until bot-related abuse protections are tested.
+# Default: 0
+NaxxGuildStrongholds.Playerbots.Enabled = 0

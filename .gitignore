@@ -1,0 +1,17 @@
+# Never commit local credentials, player data or dumps
+*.sql.gz
+*.sql.zip
+*.dump
+*.bak
+*.backup
+*.log
+.env
+.env.*
+!.env.example
+*.conf
+!*.conf.dist
+/build/
+/out/
+/cmake-build-*/
+/.vs/
+/.idea/

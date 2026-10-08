@@ -1,2 +1,40 @@
-# Mod-Guild-Strongholds
-Custom Guild Stronghold system for AzerothCore 3.3.5, featuring racial settlements, construction, guild progression, daily and weekly quests, and Individual Progression integration.
+# Naxxramas Guild Strongholds
+
+A planned AzerothCore 3.3.5 module for private, customisable guild settlements.
+
+**Status:** v0.1.0 foundation proposal, **not gameplay-ready**. No housing, phasing, quests, NPCs or object spawning are implemented yet. The C++ loader is intentionally inert and the feature is disabled by default.
+
+## Planned gameplay
+
+- **Hybrid housing:** a guild selects one prepared property and customises building plots and decoration slots.
+- **Ten racial themes:** Human, Dwarf, Night Elf, Gnome, Draenei; Orc, Troll, Tauren, Undead, Blood Elf. A guild may choose a theme within its faction.
+- **Shared world:** all eligible guild members see the same buildings and earned trophies.
+- **Individual Progression (Option B):** each character's IP state controls quests, NPC services and activities; the shared settlement remains visible.
+- **Long-term progression:** seven proposed settlement stages, daily assignments, weekly guild projects, raid trophies and a permanent guild ledger.
+- **Playerbots:** future controlled participation, not unlimited automated currency generation.
+
+## Safety-first development
+
+1. Never deploy unreviewed code or SQL to the live server.
+2. Maintain a reversible install, a data-preserving uninstall and a separate destructive purge.
+3. Do not overwrite base AzerothCore or Individual Progression tables.
+4. Test guild separation, logouts, relogs, teleport returns, restarts and progression checks before allowing property purchases.
+5. Stop and back up the databases before any schema installation or upgrade.
+
+Read **[DESIGN.md](docs/DESIGN.md)**, **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** and **[ROADMAP.md](docs/ROADMAP.md)**.
+
+## Current repository contents
+
+- `src/loader.cpp`: compile-time registration stub only.
+- `conf/mod_naxx_guild_strongholds.conf.dist`: disabled-by-default settings.
+- `data/sql/manual/install_characters.sql`: optional, **manual** isolated schema creation; do not execute yet.
+- `INSTALL.md`, `UNINSTALL.md`, `ROLLBACK.md`: installation and recovery policy.
+- `uninstall/purge_characters.sql`: explicitly destructive module-data purge, never automatic.
+- `backup/README.md`: backup checklist.
+- `CHANGELOG.md`: version history.
+
+**There is no reason to git-pull or recompile this on the live server yet.**
+
+## Compatibility still to verify
+
+AzerothCore revision, C++ module loader convention on the deployed core, `mod-individual-progression` API and Playerbots fork must be checked before the first executable feature is added.
