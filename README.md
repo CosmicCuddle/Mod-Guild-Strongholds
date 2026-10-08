@@ -55,3 +55,9 @@ A standalone C++ regression test is provided at `bash tests/run-catalog-tests.sh
 `src/StrongholdActivities.h/.cpp` now defines nine sample daily, weekly and one-time settlement activities and fail-closed access-policy checks for personal IP milestones, settlement development, guild ownership and Playerbots. This is **domain logic**, not live quest registrations or reward processing. See [IP_ACTIVITY_RULES.md](docs/IP_ACTIVITY_RULES.md) for the concrete gating rules and the requirement for a version-matched, read-only IP adapter.
 
 `bash tests/run-catalog-tests.sh` tests the racial catalogue **and** activity eligibility without installing or changing anything in AzerothCore.
+
+## New groundwork: construction milestones and contribution safety
+
+The standalone `src/StrongholdConstruction.*` catalogue includes twelve **proposed** Human/Orc construction projects, four visual construction states and a non-mutating contribution validator with receipt/version protections. This is not an in-game building mechanic. See [CONSTRUCTION_ENGINE.md](docs/CONSTRUCTION_ENGINE.md).
+
+The **draft, unapplied** characters SQL now includes a project-balance table and a unique receipt key to plan for idempotency. Database writes, item escrow, race-safe transactions, world spawning, uninstall/reinstall and compatibility testing are future mandatory milestones.

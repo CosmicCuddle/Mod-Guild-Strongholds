@@ -26,3 +26,12 @@
 - Added standalone C++ regression coverage and expanded GitHub Actions test execution.
 - Inspected upstream AzerothCore instance routing and current Guild House zone-specific phasing; documented technical isolation risks.
 - Still no AzerothCore runtime hooks, database updates, quest entry IDs, map coordinates or live-server changes.
+
+## 0.3.0-construction-domain groundwork (unreleased, October 2026)
+
+- Twelve preliminary building-construction project templates for Human/Orc plots.
+- Deterministic 4-stage construction visual-state selection.
+- Fail-closed material-contribution proposal validator: guild permissions, bot opt-out, project eligibility, receipt checks, amount bounds and optimistic version.
+- Updated draft (unapplied) character SQL with project balances and uniqueness for per-guild contribution receipts; updated explicit purge list.
+- C++ policy tests extended to construction and integration boundaries documented.
+- **No housing instances, world spawn IDs, inventory deductions or live database changes.**

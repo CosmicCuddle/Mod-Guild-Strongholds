@@ -31,3 +31,7 @@ Use the correct character database explicitly, not `acore_world` or `acore_auth`
 ## Before declaring uninstall supported
 
 The playable release must test disable/re-enable, no stranded players, no leaked spawns, compile without module, preserving data through reinstall, and no impact on IP/Playerbots. These are **future tests**, not current guarantees.
+
+## Construction-project tables (draft schema update)
+
+The isolated, unapplied schema now includes `naxx_gs_project` and uniquely identified `naxx_gs_contribution` rows. Preserve-data uninstall leaves these tables untouched. Only optional `uninstall/purge_characters.sql` explicitly drops them **after backups and consent**; do not delete guild supplies or character inventory in order to remove code.

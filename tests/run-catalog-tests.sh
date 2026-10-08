@@ -14,3 +14,8 @@ trap 'rm -rf "$work"' EXIT
   -I"$root/src" "$root/src/StrongholdActivities.cpp" "$root/tests/activity_tests.cpp" \
   -o "$work/activity_tests"
 "$work/activity_tests"
+
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdCatalog.cpp" "$root/src/StrongholdConstruction.cpp" \
+  "$root/tests/construction_tests.cpp" -o "$work/construction_tests"
+"$work/construction_tests"

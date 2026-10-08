@@ -24,6 +24,20 @@ CREATE TABLE IF NOT EXISTS `naxx_gs_building` (
   PRIMARY KEY (`guild_id`, `plot_index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Pending construction projects; single active project per guild/plot.
+-- Do not apply until staging-tested inventory and receipt transactions exist.
+CREATE TABLE IF NOT EXISTS `naxx_gs_project` (
+  `guild_id` INT UNSIGNED NOT NULL,
+  `plot_key` VARCHAR(32) NOT NULL,
+  `project_key` VARCHAR(48) NOT NULL,
+  `supplies_contributed` INT UNSIGNED NOT NULL DEFAULT 0,
+  `timber_contributed` INT UNSIGNED NOT NULL DEFAULT 0,
+  `iron_contributed` INT UNSIGNED NOT NULL DEFAULT 0,
+  `version` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`guild_id`, `plot_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS `naxx_gs_unlock` (
   `guild_id` INT UNSIGNED NOT NULL,
   `unlock_key` VARCHAR(80) NOT NULL,
@@ -46,9 +60,11 @@ CREATE TABLE IF NOT EXISTS `naxx_gs_contribution` (
   `guild_id` INT UNSIGNED NOT NULL,
   `player_guid` INT UNSIGNED NOT NULL,
   `activity_key` VARCHAR(80) NOT NULL,
+  `receipt_key` VARCHAR(64) NOT NULL,
   `units` INT UNSIGNED NOT NULL,
   `contributed_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_guild_receipt` (`guild_id`, `receipt_key`),
   KEY `idx_guild_time` (`guild_id`, `contributed_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

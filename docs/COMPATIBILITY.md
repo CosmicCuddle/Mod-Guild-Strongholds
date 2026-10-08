@@ -68,3 +68,7 @@ A release note must state the tested AzerothCore commit, Playerbots fork/ref, IP
 ## IP activity policy smoke tests
 
 The standalone test runner now includes activity eligibility checks for mismatched guilds, unverified IP stages, lower-tier access to Outland/Northrend, disabled module access, bot opt-out and invalid settlement levels. These validate domain decisions only; they do **not** verify the installed IP fork, quest events, or database persistence.
+
+## Construction contribution compatibility checks
+
+The new standalone construction-policy tests verify project definitions, different construction stages, guild/rank access, bot opt-out, duplicate receipt checks, contribution limits and fail-closed invalid states. Before in-game activation, verify external-mod event deduplication, **transactional** receipt uniqueness, currency/inventory accounting, race conditions and repeated login/restart behavior. Standalone tests do not establish runtime compatibility.

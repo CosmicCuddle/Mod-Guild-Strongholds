@@ -8,5 +8,6 @@ DROP TABLE IF EXISTS `naxx_gs_ledger`;
 DROP TABLE IF EXISTS `naxx_gs_contribution`;
 DROP TABLE IF EXISTS `naxx_gs_decoration`;
 DROP TABLE IF EXISTS `naxx_gs_unlock`;
+DROP TABLE IF EXISTS `naxx_gs_project`;
 DROP TABLE IF EXISTS `naxx_gs_building`;
 DROP TABLE IF EXISTS `naxx_gs_settlement`;

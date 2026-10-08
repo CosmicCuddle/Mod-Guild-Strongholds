@@ -67,3 +67,9 @@ Use fail-closed integration: if the compatible IP API, bot integration, safe gui
 The current runtime loader stays inert. Do not assume a call to `CheckGuildEntry` proves safe guild isolation; its `isolationVerified` input only means something when a future runtime component supplies a real, audited guarantee.
 
 See [SETTLEMENT_CATALOG.md](SETTLEMENT_CATALOG.md) and [ISOLATION_RESEARCH.md](ISOLATION_RESEARCH.md) for the planned server integration.
+
+## Construction and transactions
+
+`StrongholdConstruction.*` is an independent, deterministic engine with no world/DB side effects. Its `PlanContribution` returns an **uncommitted proposal**, never a grant of resources or a world-spawn instruction. See [CONSTRUCTION_ENGINE.md](CONSTRUCTION_ENGINE.md).
+
+The module draft schema adds `naxx_gs_project` and a unique per-guild receipt key. An adapter must commit receipt insertion, project version update, inventory/resource accounting and audit entries atomically, after verifying the deployed core's inventory/database semantics. Without that adapter, projects are non-playable and deposits must remain disabled.

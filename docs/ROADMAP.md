@@ -33,3 +33,9 @@ Before each playable milestone is accepted: confirm the full existing module inv
 Upstream MapMgr and MapInstanced source indicates that standard dungeon/raid instance routing is based on player/group instance saves, **not guild ownership**. No production-safe guild private-space mechanism has been selected yet.
 
 Per-character activity gate code is now available for testing in `src/StrongholdActivities.*`. Runtime compatibility and IP adapter are still outstanding.
+
+## v0.3.0 prototype substep — construction domain model
+
+Pure C++ `StrongholdConstruction.*` now defines twelve Human/Orc building projects and four visual-stage transitions. This is an **early design substep**, not the completion of v0.3.0. The actual persistence adapter, resource debit, unique receipt transaction, objects, privacy and rollback testing are still outstanding.
+
+See [CONSTRUCTION_ENGINE.md](CONSTRUCTION_ENGINE.md) for strict transaction/rollback requirements.
