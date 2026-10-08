@@ -79,3 +79,7 @@ The module draft schema adds `naxx_gs_project` and a unique per-guild receipt ke
 `StrongholdBootstrap.cpp` reads the enable setting from AzerothCore's WorldScript config/startup hooks. `StrongholdStartupGate.h` explicitly blocks gameplay until privacy, persistent storage, safe exits and existing-module compatibility have all been tested and approved. The current loader registers the diagnostic WorldScript only. See [RUNTIME_BOOTSTRAP.md](RUNTIME_BOOTSTRAP.md).
 
 The fake core headers in `tests/fake_azerothcore` exist solely for independent compilation checks and must never be used by worldserver.
+
+## Property selection vs. physical guild housing
+
+`StrongholdProperty.*` only decides whether a server-verified guildmaster could choose a known, faction-appropriate and implemented **logical** property theme. The `naxx_gs_settlement` primary key provides one property per guild in the draft schema. The MariaDB CI test proves the storage contract in a disposable database; it does not reserve a physical map location or spawn an estate. A claim request must remain disabled in worldserver until guild authentication, map privacy and safe exit are all operational. See [PROPERTY_CLAIMS.md](PROPERTY_CLAIMS.md).

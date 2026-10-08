@@ -47,3 +47,7 @@ A separate CI job now applies the draft schema to a throwaway MariaDB database a
 ## Diagnostic bootstrap checkpoint
 
 The loader now registers a passive **startup/config logging** WorldScript only; no gameplay can be activated in the current development build. Mock-core compilation and gate tests are available; a full build against the actual AzerothCore fork and module stack remains a release blocker.
+
+## Property ownership domain milestone
+
+The pure C++ property selection policy and MariaDB claim transaction **test-only contract** now exist. The underlying `naxx_gs_settlement.guild_id` primary key prevents multiple simultaneous guild property claims in the isolated CI database. This does not imply that guild member/faction auth, game location isolation or actual purchase menus have been integrated into worldserver. See [PROPERTY_CLAIMS.md](PROPERTY_CLAIMS.md).

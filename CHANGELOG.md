@@ -58,3 +58,10 @@
 - Explicit warning and no gameplay activation when `NaxxGuildStrongholds.Enabled=1` is requested prematurely.
 - Added pure C++ startup gate tests and mock-core WorldScript compile/config-reload smoke checks.
 - No housing activity, SQL, NPC, teleport, phase or character hooks enabled.
+
+## 0.2.x — guild property claim groundwork (development only)
+
+- Added pure C++ guild property claim validator with guildleader, race/faction, verified identity and duplicate ownership rules.
+- Human/Orc logical properties claimable by their respective guild factions in the domain model; the other eight themes remain draft-only.
+- Added disposable MariaDB property-claim transaction contract for simultaneous claims, rollback after failure, separate faction/guild owners and saved-property preservation after schema reapplication.
+- Continued startup fail-closed restriction: absolutely no in-game housing, NPC, map, phase, teleport or quest changes.

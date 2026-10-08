@@ -80,3 +80,7 @@ CI now includes an isolated MariaDB service for draft-character-schema and **vir
 ## Runtime diagnostic coverage
 
 The new WorldScript subscribes to config load/startup only, with no access to the DB, phasing, character scripts or WorldObjects. Its compile-time readiness flags all remain false. CI compiles the source against **mock** Config/Log/ScriptMgr headers to exercise logging and reload; this is not a substitute for compiling/testing against the actual full module stack.
+
+## Guild property ownership — test boundaries
+
+`StrongholdProperty.*` deliberately does not include AzerothCore Guild/Player APIs, and does not register a gossip or command. Tests reject cross-faction and cross-guild access and a second property claim. A future production adapter must check faction/guildmaster status through the actual installed AzerothCore classes. The MariaDB test proves only namespaced ownership and concurrency. No compatibility with other installed guild/housing modules is claimed.

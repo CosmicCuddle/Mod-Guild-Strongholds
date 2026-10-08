@@ -75,3 +75,11 @@ The MariaDB contract now also checks same-schema reinstall preservation and that
 `src/StrongholdBootstrap.cpp` registers a **passive WorldScript** (startup/config logging only). It reads `NaxxGuildStrongholds.Enabled` but **cannot activate housing**, even if an administrator sets it to 1: all four necessary development capabilities (privacy, persistence, safe exit and compatibility) remain explicitly unverified. No character, player, NPC, quest, map, phase, or database hooks are registered.
 
 A mock-core compilation test checks registration and startup behavior; this is **not** proof of compatibility with the user's installed AzerothCore/Playerbots/IP revision. See [RUNTIME_BOOTSTRAP.md](docs/RUNTIME_BOOTSTRAP.md).
+
+## Guild property selection prototype — separate from world maps
+
+`src/StrongholdProperty.*` now implements safe, pure C++ rules for one property per guild, server-verified ownership, guildmaster-only claiming and faction-appropriate theme selection. Until in-world isolation is solved, only the initial Human and Orc logical layouts are eligible; all other themes await assets and privacy tests.
+
+GitHub Actions also tests the **existing** `naxx_gs_settlement` primary-key ownership constraint on a disposable MariaDB: two simultaneous claims cannot produce two properties, a simulated SQL failure rolls back the claim and ledger, and an identical-schema reinstall preserves the saved property. See [PROPERTY_CLAIMS.md](docs/PROPERTY_CLAIMS.md).
+
+These are **not** real character property purchases or in-game housing.

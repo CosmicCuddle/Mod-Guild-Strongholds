@@ -58,3 +58,5 @@ jobs:
         run: python -m pip install --disable-pip-version-check PyMySQL==1.1.1
       - name: Exercise isolated SQL transactions and rollback
         run: python tests/mysql_construction_test.py
+      - name: Test guild property claims, rollback and concurrent ownership
+        run: python tests/mysql_property_claim_test.py

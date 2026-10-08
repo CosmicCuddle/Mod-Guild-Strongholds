@@ -32,3 +32,8 @@ trap 'rm -rf "$work"' EXIT
   "$root/tests/bootstrap_smoke_tests.cpp" \
   -o "$work/bootstrap_smoke_tests"
 "$work/bootstrap_smoke_tests"
+
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdCatalog.cpp" "$root/src/StrongholdProperty.cpp" \
+  "$root/tests/property_tests.cpp" -o "$work/property_tests"
+"$work/property_tests"
