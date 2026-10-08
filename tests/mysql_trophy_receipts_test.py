@@ -53,8 +53,8 @@ def state(guild_id, generation):
             receipts = tuple(cur.fetchall())
             cur.execute(
                 "SELECT details FROM naxx_gs_ledger WHERE guild_id=%s "
-                "AND event_key='trophy_unlocked' ORDER BY id",
-                (guild_id,),
+                "AND event_key='trophy_unlocked' AND details LIKE %s ORDER BY id",
+                (guild_id, f"gen={generation};%"),
             )
             events = tuple(r[0] for r in cur.fetchall())
             return unlocks, receipts, events
