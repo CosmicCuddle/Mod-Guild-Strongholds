@@ -73,3 +73,10 @@ After the initial isolated `modules` target compilation passed, the workflow was
 If a job fails, the module must be fixed before promoting any compile compatibility claim. A completed full link proves only that the source links with the **pinned upstream** source in CI, not with a customised server fork or installed Playerbots/Individual Progression stack. `DevelopmentCapabilities` remain hard-blocked.
 
 GitHub workflow: [upstream-compile.yml](../.github/workflows/upstream-compile.yml).
+
+
+## Additional optional real-header compilation: Guild Steward CreatureScript
+
+The upstream CI's **staging opt-in** variant now also adds `NAXX_GS_BUILD_STAGING_STEWARD` and builds `StrongholdStagingSteward.cpp` against the real upstream `CreatureScript` and `ScriptedGossip` headers. The normal full worldserver build remains without either staging flag; its module archive must contain **no** `AddStagingStewardScripts` symbol.
+
+Passing this compilation demonstrates API syntax only; the Guild Steward is neither registered nor bound to a creature in production and no staging realm has been started. See [STAGING_STEWARD.md](STAGING_STEWARD.md).

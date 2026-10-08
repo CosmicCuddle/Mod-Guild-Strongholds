@@ -29,8 +29,8 @@ jobs:
           - label: Real upstream full worldserver compile and link (housing disabled)
             compile_flags: ""
             link_worldserver: true
-          - label: Real upstream staging GM diagnostics module compile (opt-in)
-            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS"
+          - label: Real upstream staging GM and Guild Steward script compile (opt-in)
+            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD"
             link_worldserver: false
     steps:
       - name: Check out isolated Strongholds development source
@@ -117,8 +117,15 @@ jobs:
               echo "::error::Staging GM diagnostic symbol unexpectedly present in normal build"
               exit 1
             fi
+            if grep -Fq 'NaxxGuildStrongholds::AddStagingStewardScripts()' \
+                "$RUNNER_TEMP/naxx-gs-symbols.txt"; then
+              echo "::error::Staging Guild Steward symbol present in normal build"
+              exit 1
+            fi
           else
             grep -Fq 'NaxxGuildStrongholds::AddStagingDiagnosticsScripts()' \
+              "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            grep -Fq 'NaxxGuildStrongholds::AddStagingStewardScripts()' \
               "$RUNNER_TEMP/naxx-gs-symbols.txt"
           fi
 

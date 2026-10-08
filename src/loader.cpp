@@ -6,15 +6,18 @@
  *   modules/mod-guild-strongholds       -> Addmod_guild_strongholdsScripts()
  *   modules/Mod-Guild-Strongholds       -> AddMod_Guild_StrongholdsScripts()
  *
- * Register only a passive WorldScript in a NORMAL build. The GM snapshot
- * script is compiled/registered solely via explicit STAGING compiler opt-in.
- * Neither entry point creates housing, spawns NPCs, changes phases or SQL.
+ * Register only a passive WorldScript in NORMAL builds. Read-only GM snapshot
+ * and informational CreatureScript are separate explicit STAGING opt-ins.
+ * Neither entry point spawns an NPC, opens housing, changes phases or SQL.
  */
 namespace NaxxGuildStrongholds
 {
 void AddBootstrapScripts();
 #if defined(NAXX_GS_BUILD_STAGING_DIAGNOSTICS)
 void AddStagingDiagnosticsScripts();
+#endif
+#if defined(NAXX_GS_BUILD_STAGING_STEWARD)
+void AddStagingStewardScripts();
 #endif
 }
 
@@ -23,6 +26,9 @@ void Addmod_guild_strongholdsScripts()
     NaxxGuildStrongholds::AddBootstrapScripts();
 #if defined(NAXX_GS_BUILD_STAGING_DIAGNOSTICS)
     NaxxGuildStrongholds::AddStagingDiagnosticsScripts();
+#endif
+#if defined(NAXX_GS_BUILD_STAGING_STEWARD)
+    NaxxGuildStrongholds::AddStagingStewardScripts();
 #endif
 }
 

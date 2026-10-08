@@ -161,3 +161,12 @@
 - Changed the command to pass `HandleSnapshot` by function reference, matching upstream command syntax.
 - Tightened fake-core test header to use a handler-reference constructor, preventing previous mock-only false passes.
 - This correction does not register the GM command in normal builds or change housing safety gates.
+
+
+## Guild Steward staging-preview script (development only)
+
+- Added a real AzerothCore `CreatureScript` with a simple GM-only gossip menu: read-only guild preview, proposed guild buildings/trophies, and close.
+- Compile-time `NAXX_GS_BUILD_STAGING_STEWARD` and separate disabled-by-default config protect production. The script is not bound to any NPC entry or spawned.
+- Current staff/GM and guild membership are revalidated on every gossip click; forged menu senders/actions fail closed.
+- Added independent pure C++ steward permission/action tests and real upstream CI opt-in compilation; normal build must exclude both staging registrations.
+- No property purchase, building placement, currency change, quest reward, map phase or teleport.

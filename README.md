@@ -161,3 +161,12 @@ The isolated GitHub Actions build now checks **two independent compiler configur
 Both paths use a disposable GitHub Actions runner with no real player data, SQL updates or user server access. **Neither verifies the user's custom deployed AzerothCore/Grimfeather IP/Playerbots stack**, nor private housing functionality.
 
 This expands the workflow after the initial module-target compilation succeeded. See [CORE_BUILD_CONTRACT.md](docs/CORE_BUILD_CONTRACT.md).
+
+
+## First AzerothCore Guild Steward — optional staging-only preview
+
+The module now contains `src/StrongholdStagingSteward.cpp`, a real AzerothCore `CreatureScript` implementing **read-only gossip menus** for the proposed Guild Steward. This moves beyond conceptual menu mock-ups, but **it does not spawn an NPC**.
+
+A normal build omits the script. On an approved *separate staging* build it requires BOTH `NAXX_GS_BUILD_STAGING_STEWARD` and `NaxxGuildStrongholds.StagingSteward.Enabled=1`. Only a staff character in GM mode who belongs to a guild can view it. It rechecks permissions on every gossip selection and accepts only overview, future-building information, and close. It explicitly says housing is unavailable.
+
+No creature template ID, spawn, world SQL, guild property purchase, teleport, inventory debit, quest progress, decoration or phase operation is included. A staging admin would have to supply a separately approved, backed-up test NPC template and script binding after compatibility testing. See [STAGING_STEWARD.md](docs/STAGING_STEWARD.md).

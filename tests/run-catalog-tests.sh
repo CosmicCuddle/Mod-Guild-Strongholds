@@ -105,3 +105,10 @@ trap 'rm -rf "$work"' EXIT
   "$root/tests/bootstrap_smoke_tests.cpp" \
   -o "$work/bootstrap_uppercase_loader_tests"
 "$work/bootstrap_uppercase_loader_tests"
+
+# Staging-only Guild Steward: pure permission and action-validation rules.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdStewardPreview.cpp" \
+  "$root/tests/steward_preview_tests.cpp" \
+  -o "$work/steward_preview_tests"
+"$work/steward_preview_tests"

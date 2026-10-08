@@ -146,3 +146,10 @@ The deployed core may differ materially (Playerbots, Grimfeather IP, custom Naxx
 ## Separate normal and staging compiler variants
 
 The upstream GitHub build now tests that a normal `worldserver` can link against the module with no staging GM diagnostic, and separately compiles the opt-in diagnostics using real public upstream command API headers. A *successful* public-source full link cannot prove compatibility with your installed fork, Playerbots, custom Naxxramas-Core or Individual Progression. Their versions and coexistence remain release blockers.
+
+
+## Guild Steward gossip API and staged safety
+
+The new `StrongholdStagingSteward.cpp` is an upstream-AzerothCore `CreatureScript`, explicitly compiled only with the separate `NAXX_GS_BUILD_STAGING_STEWARD` definition. It uses `ScriptedGossip.h`, server-read `Player::IsGameMaster()` and `GetGuildId()`, `OnGossipHello` and `OnGossipSelect`. Every gossip selection is checked again for active config, GM mode, guild membership, exact sender and approved informational action.
+
+There is deliberately **no** assigned `creature_template` row, SQL or spawn, nor housing service code. The optional script must be compiled and verified against the user's actual installed AzerothCore fork on a separate staging server before *any* bind is permitted. Existing Individual Progression quests, spells and Playerbots are untouched. See [STAGING_STEWARD.md](STAGING_STEWARD.md).

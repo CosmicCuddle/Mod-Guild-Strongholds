@@ -107,3 +107,10 @@ The job does not build/link the whole user's customised worldserver, start any r
 ## Follow-on upstream build gate
 
 The initial passive upstream module compilation passed. The next automated gate now attempts a **complete public-upstream worldserver compile and link** with the disabled module, plus a second **diagnostics-enabled** module compile checking real upstream command interfaces. These are isolated CI-only jobs and intentionally exclude user's deployed modules and real databases. Neither result can certify private guild routing or game features.
+
+
+## First gameplay-facing staging interface — Guild Steward preview
+
+The first actual AzerothCore `CreatureScript` now exists: an explicitly opt-in read-only Guild Steward information menu with GM/guild requirements. It is not spawned, does not bind to any live creature template and cannot perform housing operations. The upstream CI checks that the opt-in script compiles and is absent from normal builds. This prepares real gossip integration while protecting players and existing modules.
+
+Next step is **full upstream/staging build validation**, then decide a safe guild-private location and real server-side persistence; only after a complete staged compatibility review should an approved dedicated Guild Steward NPC template/SQL be drafted. See [STAGING_STEWARD.md](STAGING_STEWARD.md).

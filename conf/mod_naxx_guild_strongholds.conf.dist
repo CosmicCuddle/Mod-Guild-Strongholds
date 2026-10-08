@@ -25,3 +25,11 @@ NaxxGuildStrongholds.Playerbots.Enabled = 0
 # Even with diagnostics on, private housing remains blocked.
 # Default: 0
 NaxxGuildStrongholds.Diagnostics.Enabled = 0
+
+# STAGING-ONLY informational Guild Steward creature script.
+# Requires a separate NAXX_GS_BUILD_STAGING_STEWARD compile flag.
+# A staging administrator must ALSO bind the ScriptName manually to a
+# verified creature_template on a SEPARATE backed-up staging realm.
+# There is NO supplied NPC entry, world SQL, spawn or gameplay unlock.
+# Default: 0
+NaxxGuildStrongholds.StagingSteward.Enabled = 0
