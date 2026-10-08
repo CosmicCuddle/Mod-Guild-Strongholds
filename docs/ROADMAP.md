@@ -56,3 +56,8 @@ The pure C++ property selection policy and MariaDB claim transaction **test-only
 ## Ownership recovery checkpoint
 
 Property lifecycle logic now addresses guild leadership changes, disband, stale guild IDs, archiving and possible restoration. This is a source-only / temporary MariaDB contract, not operational on the live server. In-game GuildScript registration, real membership verification, safe evacuation, migration and staging compatibility remain blockers. See [GUILD_LIFECYCLE.md](GUILD_LIFECYCLE.md).
+
+
+## v0.2.x Safe Return — development progress
+
+`StrongholdVisitRecovery.*` and the disposable `naxx_gs_visit` database test now model a three-step entry/return process and recovery after a failed teleport or disband. **This is groundwork, not a completed v0.2.0.** Actual guild-private map/phase routing remains the release blocker. Read [SAFE_RETURN_CONTRACT.md](SAFE_RETURN_CONTRACT.md) and [ISOLATION_DECISION.md](ISOLATION_DECISION.md) before adding teleport scripts.

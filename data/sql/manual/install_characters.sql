@@ -71,6 +71,29 @@ CREATE TABLE IF NOT EXISTS `naxx_gs_contribution` (
   KEY `idx_guild_time` (`guild_id`, `contributed_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Draft ONLY: persisted safe-return ticket for crash/disband recovery.
+-- Must be committed BEFORE teleport. One outstanding visit per character.
+-- Never permit live entry until property isolation and safe-exit hooks work.
+CREATE TABLE IF NOT EXISTS `naxx_gs_visit` (
+  `player_guid` INT UNSIGNED NOT NULL,
+  `guild_id` INT UNSIGNED NOT NULL,
+  `guild_created_at` BIGINT UNSIGNED NOT NULL,
+  `visit_nonce` VARCHAR(64) NOT NULL,
+  `property_key` VARCHAR(32) NOT NULL,
+  `visit_state` VARCHAR(16) NOT NULL DEFAULT 'prepared',
+  `return_map` INT UNSIGNED NOT NULL,
+  `return_instance` INT UNSIGNED NOT NULL DEFAULT 0,
+  `return_x` FLOAT NOT NULL,
+  `return_y` FLOAT NOT NULL,
+  `return_z` FLOAT NOT NULL,
+  `return_o` FLOAT NOT NULL,
+  `version` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`player_guid`),
+  UNIQUE KEY `uk_visit_nonce` (`visit_nonce`),
+  KEY `idx_guild_visit` (`guild_id`, `guild_created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS `naxx_gs_ledger` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `guild_id` INT UNSIGNED NOT NULL,

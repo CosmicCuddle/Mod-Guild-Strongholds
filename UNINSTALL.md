@@ -40,3 +40,8 @@ The isolated, unapplied schema now includes `naxx_gs_project` and uniquely ident
 ## Archived settlements
 
 A normal disable or data-preserving uninstall leaves both active and archived properties, all decorative trophy and building records and the audit ledger intact. Guild disband does **not** trigger destructive purge. The optional SQL purge is separate, manual and backup-dependent. Never restore an archived property to a newly created guild simply because it reuses an old numeric ID. Actual lifecycle hooks remain unimplemented.
+
+
+## Critical: outstanding `naxx_gs_visit` records
+
+The draft module includes durable return tickets for potential private-area visitors. A future production uninstall **must evacuate and verify every player is safely returned before removing the compiled recovery hooks**, and preserve tickets until success. Do not purge `naxx_gs_visit` when players may still be inside housing. The optional destructive SQL purge is never automatically run, and a database backup alone cannot teleport a stranded character. The diagnostic development branch is not housing-capable and has no actual return hooks yet.

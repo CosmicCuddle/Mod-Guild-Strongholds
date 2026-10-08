@@ -88,3 +88,8 @@ The fake core headers in `tests/fake_azerothcore` exist solely for independent c
 ## Guild lifetime and archive semantics
 
 Draft `naxx_gs_settlement` includes `guild_created_at`, `lifecycle_state`, and `lifecycle_version`. A future runtime adapter must validate both guild ID and original creation date against authoritative Guild objects, and deny interactions when archived. The upstream Guild::Disband calls the script manager before deleting members, but a real archive listener still needs fork-specific sequencing and safe database transaction testing. Disband must not delete our project/trophy/history data. See [GUILD_LIFECYCLE.md](GUILD_LIFECYCLE.md).
+
+
+## Fail-closed visit admission and durable safe exit
+
+The new `StrongholdVisitRecovery.*` pure C++ layer depends on the combined guild/access/lifecycle policy, and requires durable pre-entry return tickets. Draft `naxx_gs_visit` records are uniquely keyed by character, with a separate globally unique server-generated visit nonce; only one outstanding return per character is permitted. An eventual worldserver adapter must validate safe source/destination maps with actual core APIs, persist/transition records with version checks and **retain an independent emergency evacuation path when the feature is disabled**. No real adapter exists yet. See [SAFE_RETURN_CONTRACT.md](SAFE_RETURN_CONTRACT.md).

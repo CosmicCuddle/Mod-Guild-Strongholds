@@ -93,3 +93,10 @@ The draft settlement owner now uses a verified guild creation date alongside its
 ## Unified property visit check
 
 A new `StrongholdVisitGate` combines master enable, proven isolation, server-verified membership, original guild generation and active property status into a single fail-closed decision. This makes it harder for a future entry NPC to accidentally check only the numeric guild ID. It is a **policy helper, not actual guild privacy or a teleport**.
+
+
+## Durable safe-return tickets — development prototype
+
+A new `StrongholdVisitRecovery` C++ policy layer requires a **server-captured**, structurally valid origin point and a unique outstanding visit record before a hypothetical guild-property entry teleport. Three ticket states — `prepared`, `inside`, and `returning` — support crash recovery and emergency return even if the guild disbands or housing is disabled. This is a **domain model**, not live teleport handling.
+
+The draft character SQL now includes a module-owned `naxx_gs_visit` table. GitHub Actions tests durable records and rollback in an isolated MariaDB DB; no map/phase modifications exist. See [SAFE_RETURN_CONTRACT.md](docs/SAFE_RETURN_CONTRACT.md) and [ISOLATION_DECISION.md](docs/ISOLATION_DECISION.md).

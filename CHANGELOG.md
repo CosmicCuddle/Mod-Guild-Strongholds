@@ -76,3 +76,14 @@
 
 
 - Added `StrongholdVisitGate`, combining the older guild-ID entry logic with mandatory membership, property lifetime/generation and archive checks; standalone C++ regression tests prevent stale guild access.
+
+
+## v0.2.x — private property visit recovery groundwork (unreleased)
+
+- Added pure C++ visit preparation, arrival verification, emergency return and safe completion policy.
+- Required persisted per-character return ticket before any future teleport and denied overwriting outstanding return locations.
+- Added three-state `prepared` / `inside` / `returning` lifecycle, retry and version checks, and character-bound visit ID validation.
+- Created draft manual `naxx_gs_visit` table in characters database and updated explicit opt-in purge.
+- Added C++ tests and disposable MariaDB contract for interrupted arrival, guild disband, return failure rollback, outstanding tickets, same-schema preservation and ticket deletion only after verified return.
+- Researched upstream MapMgr/MapInstanced/Player teleport routing; no production-safe guild-private isolation strategy selected.
+- **No playable housing, teleport, phase overwrite, character database migration or installed-module compatibility claim.**

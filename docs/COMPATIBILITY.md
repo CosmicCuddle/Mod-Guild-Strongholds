@@ -89,3 +89,8 @@ The new WorldScript subscribes to config load/startup only, with no access to th
 ## Lifecycle and old-guild ID reuse
 
 A numeric guild ID alone is insufficient to restore a saved property. The proposed source uses the original guild creation date as a defensive fingerprint. Archived settlements block contributions and entry. A restoration requires independent verified administration and proof of the *original* guild identity. This is not guaranteed unique under every data restore or migration; deployed-fork checks remain mandatory. No guild-disband hook is registered yet.
+
+
+## Safe-return contract
+
+The new safe-return policy and MariaDB test preserve a player's server-captured original position before a hypothetical teleport, and keep the ticket until verified return. Entry remains blocked if isolation or guild ownership is unverified; exit must work even after loss of guild membership or module disable. Runtime integration needs IP phase restoration, Playerbots/logout/death/disband checks, map-coordinate/terrain validation and original core API compatibility. This code currently performs no worldserver teleport or data writes.

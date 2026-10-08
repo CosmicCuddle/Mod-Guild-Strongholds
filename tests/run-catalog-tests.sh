@@ -50,3 +50,10 @@ trap 'rm -rf "$work"' EXIT
   "$root/src/StrongholdLifecycle.cpp" "$root/src/StrongholdVisitGate.cpp" \
   "$root/tests/visit_gate_tests.cpp" -o "$work/visit_gate_tests"
 "$work/visit_gate_tests"
+
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdCatalog.cpp" \
+  "$root/src/StrongholdLifecycle.cpp" "$root/src/StrongholdVisitGate.cpp" \
+  "$root/src/StrongholdVisitRecovery.cpp" "$root/tests/visit_recovery_tests.cpp" \
+  -o "$work/visit_recovery_tests"
+"$work/visit_recovery_tests"

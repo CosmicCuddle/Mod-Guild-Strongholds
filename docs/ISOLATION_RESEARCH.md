@@ -55,3 +55,8 @@ Research targets inspected (upstream code, **not** the user's deployed fork):
 **Recommendation for first practical spike:** a test-only privacy feasibility prototype, disabled by default, that records/map-logs the intended owner guild, verified client guild ID, selected property key and safe return location; it must **not teleport or change phases** until we can prove one of the isolation methods on the target core. Follow with the documented two-guild in-world test, not a guessed permanent phase allocation.
 
 **No production approach chosen yet.** A feasibility decision is blocked on inspecting the actual server fork/modules and a physical test world. Both options remain candidates; neither is safe to promise as production-ready.
+
+
+## Updated decision evidence
+
+The **upstream** `Player::TeleportTo` validates map coordinates and can deny entry for map restrictions, and dungeon/raid instance assignment relies on player/group instance saves. This reinforces that a successful teleport request is not evidence of correct guild-private arrival. The new recovery ticket contract is documented separately in [SAFE_RETURN_CONTRACT.md](SAFE_RETURN_CONTRACT.md); the candidate map/phase approaches and their stop conditions are in [ISOLATION_DECISION.md](ISOLATION_DECISION.md). No private-site solution has yet been implemented.

@@ -58,3 +58,8 @@ Injected failures at four transaction boundaries (after debit, project update, r
 ## Archived owner safety
 
 The **revised initial, unapplied** `naxx_gs_settlement` table now stores the guild creation date plus lifecycle state/version. Deposits must verify the origin and active state **inside the same guild row lock** used for accounting. An archive updates lifecycle status and appends an audit event within one transaction. Real in-game escrow/authoritative guild verification remain to be implemented. This revised initial schema is **not a migration** for already deployed database tables.
+
+
+## New durable return-ticket record
+
+The draft initial schema includes `naxx_gs_visit`, whose `player_guid` primary key forbids replacing a character's outstanding return position and whose unique `visit_nonce` identifies a single visit across retries. Prepared records must be **committed before any entry teleport**; a Returning state must be committed before exit; records are deleted only after final arrival is independently verified. The disposable MariaDB test in `tests/mysql_visit_recovery_test.py` checks the storage contract. No gameplay teleport or login-recovery handler has been implemented or validated on the user's installed core.
