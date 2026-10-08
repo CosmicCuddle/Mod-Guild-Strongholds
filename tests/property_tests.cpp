@@ -19,7 +19,7 @@ int main()
         }
     };
 
-    PropertyClaimContext ctx{true, true, 100, 100, true, false, Faction::Alliance, false, ""};
+    PropertyClaimContext ctx{true, true, 100, 100, true, false, Faction::Alliance, false, "", 1790000000};
 
     check(CheckPropertyClaim(ctx, "human") == PropertyClaimDecision::Allowed,
         "Alliance guild master may claim Human property");
@@ -56,6 +56,10 @@ int main()
     check(CheckPropertyClaim(ctx, "human") == PropertyClaimDecision::IdentityUnverified,
         "Unverified identity rejected");
     ctx.IdentityVerified = true;
+    ctx.GuildCreatedAt = 0;
+    check(CheckPropertyClaim(ctx, "human") == PropertyClaimDecision::IdentityUnverified,
+        "Unknown guild creation date fails closed");
+    ctx.GuildCreatedAt = 1790000000;
     ctx.Enabled = false;
     check(CheckPropertyClaim(ctx, "human") == PropertyClaimDecision::ModuleDisabled,
         "Disabled module rejects all property claims");

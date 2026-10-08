@@ -83,3 +83,8 @@ The fake core headers in `tests/fake_azerothcore` exist solely for independent c
 ## Property selection vs. physical guild housing
 
 `StrongholdProperty.*` only decides whether a server-verified guildmaster could choose a known, faction-appropriate and implemented **logical** property theme. The `naxx_gs_settlement` primary key provides one property per guild in the draft schema. The MariaDB CI test proves the storage contract in a disposable database; it does not reserve a physical map location or spawn an estate. A claim request must remain disabled in worldserver until guild authentication, map privacy and safe exit are all operational. See [PROPERTY_CLAIMS.md](PROPERTY_CLAIMS.md).
+
+
+## Guild lifetime and archive semantics
+
+Draft `naxx_gs_settlement` includes `guild_created_at`, `lifecycle_state`, and `lifecycle_version`. A future runtime adapter must validate both guild ID and original creation date against authoritative Guild objects, and deny interactions when archived. The upstream Guild::Disband calls the script manager before deleting members, but a real archive listener still needs fork-specific sequencing and safe database transaction testing. Disband must not delete our project/trophy/history data. See [GUILD_LIFECYCLE.md](GUILD_LIFECYCLE.md).

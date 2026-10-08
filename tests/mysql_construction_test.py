@@ -68,8 +68,8 @@ def reset_fixtures():
                 cur.execute(sql)
 
             cur.execute(
-                "INSERT INTO naxx_gs_settlement (guild_id, theme_key, development_level, guild_supplies) "
-                "VALUES (42, 'human', 2, 250), (84, 'orc', 2, 150)"
+                "INSERT INTO naxx_gs_settlement (guild_id, guild_created_at, theme_key, development_level, guild_supplies) "
+                "VALUES (42, 1790000000, 'human', 2, 250), (84, 1790000000, 'orc', 2, 150)"
             )
             cur.execute(
                 "INSERT INTO naxx_gs_project (guild_id, plot_key, project_key) "
@@ -97,14 +97,14 @@ def read_state(guild_id):
             return (*state, receipts, ledger)
 
 
-def deposit_supply(guild_id, actor_guild_id, actor_authorized, receipt, units,
-                   *, failpoint=None, is_bot=False):
+def _deposit_supply(guild_id, actor_guild_id, actor_authorized, receipt, units,
+                   *, actor_created_at=None, failpoint=None, is_bot=False):
     """Illustrate the REQUIRED atomic DB contract for virtual Guild Supplies.
 
     Caller must provide *server-verified* guild ID and permission (faked in tests).
     This is NOT a production API and CANNOT charge WoW character inventory.
     """
-    if not actor_authorized or actor_guild_id != guild_id or is_bot:
+    if not actor_authorized or actor_guild_id != guild_id or is_bot or not actor_created_at:
         return "unauthorized"
     if (not isinstance(units, int) or isinstance(units, bool) or units < 1
             or units > 200):
@@ -119,14 +119,18 @@ def deposit_supply(guild_id, actor_guild_id, actor_authorized, receipt, units,
         with c.cursor() as cur:
             # A single guild-level row lock serializes all guild-supply debits.
             cur.execute(
-                "SELECT theme_key, development_level, guild_supplies "
+                "SELECT theme_key, development_level, guild_supplies, guild_created_at, lifecycle_state "
                 "FROM naxx_gs_settlement WHERE guild_id = %s FOR UPDATE",
                 (guild_id,)
             )
             owner = cur.fetchone()
             if owner is None:
                 raise Rejected("unknown_guild")
-            theme, level, balance = owner
+            theme, level, balance, owner_created_at, lifecycle_state = owner
+            if owner_created_at != actor_created_at:
+                raise Rejected("wrong_generation")
+            if lifecycle_state != "active":
+                raise Rejected("property_archived")
             cur.execute(
                 "SELECT project_key, supplies_contributed, version "
                 "FROM naxx_gs_project "
@@ -211,8 +215,15 @@ def run_tests():
             raise AssertionError(description)
 
     reset_fixtures()
+    # Helper inserts explicit TEST-only server identity into every simulated request.
+    def deposit_supply(*args, **kwargs):
+        kwargs.setdefault("actor_created_at", 1790000000)
+        return _deposit_supply(*args, **kwargs)
+
     check(read_state(42) == (250, 0, 0, 0, 0), "initial state")
     check(deposit_supply(42, 99, True, "foreign", 10) == "unauthorized", "foreign guild rejected")
+    check(deposit_supply(42, 42, True, "reused", 10, actor_created_at=1791111111) ==
+          "wrong_generation", "new guild with same ID cannot donate")
     check(deposit_supply(42, 42, False, "norank", 10) == "unauthorized", "unauthorized guild rank rejected")
     check(deposit_supply(42, 42, True, "bot", 10, is_bot=True) == "unauthorized", "bot rejected")
     check(deposit_supply(42, 42, True, "invalid", -1) == "invalid_units", "invalid amount rejected")

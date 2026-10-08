@@ -51,3 +51,8 @@ The loader now registers a passive **startup/config logging** WorldScript only; 
 ## Property ownership domain milestone
 
 The pure C++ property selection policy and MariaDB claim transaction **test-only contract** now exist. The underlying `naxx_gs_settlement.guild_id` primary key prevents multiple simultaneous guild property claims in the isolated CI database. This does not imply that guild member/faction auth, game location isolation or actual purchase menus have been integrated into worldserver. See [PROPERTY_CLAIMS.md](PROPERTY_CLAIMS.md).
+
+
+## Ownership recovery checkpoint
+
+Property lifecycle logic now addresses guild leadership changes, disband, stale guild IDs, archiving and possible restoration. This is a source-only / temporary MariaDB contract, not operational on the live server. In-game GuildScript registration, real membership verification, safe evacuation, migration and staging compatibility remain blockers. See [GUILD_LIFECYCLE.md](GUILD_LIFECYCLE.md).

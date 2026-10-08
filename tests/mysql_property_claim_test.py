@@ -25,11 +25,12 @@ def clear_schema():
 
 
 def claim(*, guild_id: int, actor_guild_id: int, leader: bool,
-          guild_faction: str, requested_theme: str, bot: bool = False,
+          guild_faction: str, requested_theme: str, guild_created_at: int,
+          bot: bool = False,
           failpoint: bool = False):
     # These values are test fixtures. Live adapter MUST read faction,
     # guild membership/rank and bot status from the server's Player/Guild.
-    if guild_id <= 0 or actor_guild_id != guild_id or not leader or bot:
+    if guild_id <= 0 or actor_guild_id != guild_id or not leader or bot or guild_created_at <= 0:
         return "unauthorized"
     if THEMES.get(requested_theme) != guild_faction:
         return "invalid_theme"
@@ -43,9 +44,9 @@ def claim(*, guild_id: int, actor_guild_id: int, leader: bool,
             try:
                 cur.execute(
                     "INSERT INTO naxx_gs_settlement "
-                    "(guild_id, theme_key, development_level, guild_supplies) "
-                    "VALUES (%s, %s, 1, 0)",
-                    (guild_id, requested_theme)
+                    "(guild_id, guild_created_at, theme_key, development_level, guild_supplies) "
+                    "VALUES (%s, %s, %s, 1, 0)",
+                    (guild_id, guild_created_at, requested_theme)
                 )
             except pymysql.err.IntegrityError as exc:
                 if exc.args[0] != 1062:
@@ -98,8 +99,10 @@ def main():
             raise AssertionError(reason)
 
     parameters = dict(guild_id=100, actor_guild_id=100, leader=True,
-                      guild_faction="alliance", requested_theme="human")
+                      guild_faction="alliance", requested_theme="human", guild_created_at=1790000000)
 
+    expect(claim(**{**parameters, "guild_created_at": 0}) == "unauthorized",
+           "unverified guild date is rejected")
     expect(claim(**{**parameters, "leader": False}) == "unauthorized",
            "guildmaster required")
     expect(claim(**{**parameters, "bot": True}) == "unauthorized",
@@ -124,10 +127,12 @@ def main():
            "two simultaneous claims produce one owner")
     expect(read_claim(100) == ("human", 1), "one property and one history entry")
     expect(claim(**parameters) == "already_owned", "repeated claim cannot double-spend")
+    expect(claim(**{**parameters, "guild_created_at": 1791111111}) == "already_owned",
+           "guild ID reuse cannot overwrite saved property")
     expect(read_claim(100) == ("human", 1), "repeated claim cannot double-log")
 
     horde = dict(guild_id=200, actor_guild_id=200, leader=True,
-                 guild_faction="horde", requested_theme="orc")
+                 guild_faction="horde", requested_theme="orc", guild_created_at=1790000001)
     expect(claim(**horde) == "accepted", "Horde guild can claim separate property")
     expect(read_claim(200) == ("orc", 1), "Horde guild independent")
     expect(read_claim(100) == ("human", 1), "Alliance guild unaffected")

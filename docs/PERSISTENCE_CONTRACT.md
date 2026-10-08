@@ -53,3 +53,8 @@ The MariaDB contract suite also repeats all draft `CREATE TABLE IF NOT EXISTS` s
 A deliberately unrelated sentinel table is created **inside the CI-only database**, then the optional module purge is executed. The suite verifies the sentinel survives and the seven module-owned tables are gone. It then cleans up the sentinel. None of these test statements run on the live server, and this does not replace a verified production uninstall plan.
 
 Injected failures at four transaction boundaries (after debit, project update, receipt insertion, and ledger insertion) must roll back every change, including the unique receipt. This tests recoverable SQL failures, **not** a process kill or physical disk-crash durability.
+
+
+## Archived owner safety
+
+The **revised initial, unapplied** `naxx_gs_settlement` table now stores the guild creation date plus lifecycle state/version. Deposits must verify the origin and active state **inside the same guild row lock** used for accounting. An archive updates lifecycle status and appends an audit event within one transaction. Real in-game escrow/authoritative guild verification remain to be implemented. This revised initial schema is **not a migration** for already deployed database tables.

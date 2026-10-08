@@ -35,3 +35,8 @@ The playable release must test disable/re-enable, no stranded players, no leaked
 ## Construction-project tables (draft schema update)
 
 The isolated, unapplied schema now includes `naxx_gs_project` and uniquely identified `naxx_gs_contribution` rows. Preserve-data uninstall leaves these tables untouched. Only optional `uninstall/purge_characters.sql` explicitly drops them **after backups and consent**; do not delete guild supplies or character inventory in order to remove code.
+
+
+## Archived settlements
+
+A normal disable or data-preserving uninstall leaves both active and archived properties, all decorative trophy and building records and the audit ledger intact. Guild disband does **not** trigger destructive purge. The optional SQL purge is separate, manual and backup-dependent. Never restore an archived property to a newly created guild simply because it reuses an old numeric ID. Actual lifecycle hooks remain unimplemented.

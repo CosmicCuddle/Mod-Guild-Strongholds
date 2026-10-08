@@ -65,3 +65,11 @@
 - Human/Orc logical properties claimable by their respective guild factions in the domain model; the other eight themes remain draft-only.
 - Added disposable MariaDB property-claim transaction contract for simultaneous claims, rollback after failure, separate faction/guild owners and saved-property preservation after schema reapplication.
 - Continued startup fail-closed restriction: absolutely no in-game housing, NPC, map, phase, teleport or quest changes.
+
+
+## 0.3.x Guild lifecycle protection (development only)
+
+- Added guild generation ID + creation-date checks and active/archived status to the draft schema.
+- Added C++ policy for disband archiving, replay resistance, versioning, identity mismatches and restricted restoration.
+- Updated disposable MariaDB property/contribution tests and added separate archival and recovery transaction checks.
+- Preserves progress and achievements by design; no live AzerothCore guild hooks, teleport, or database changes.

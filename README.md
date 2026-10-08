@@ -83,3 +83,8 @@ A mock-core compilation test checks registration and startup behavior; this is *
 GitHub Actions also tests the **existing** `naxx_gs_settlement` primary-key ownership constraint on a disposable MariaDB: two simultaneous claims cannot produce two properties, a simulated SQL failure rolls back the claim and ledger, and an identical-schema reinstall preserves the saved property. See [PROPERTY_CLAIMS.md](docs/PROPERTY_CLAIMS.md).
 
 These are **not** real character property purchases or in-game housing.
+
+
+## New guild lifecycle safety foundation
+
+The draft settlement owner now uses a verified guild creation date alongside its numeric ID, so a reused ID must not inherit an earlier guild's property. Disbanding is designed to **archive** property while retaining buildings, supplies, trophies and contribution history. Recovery is administrator-controlled and allowed only for the original guild generation. Standalone C++ policy and isolated MariaDB contract tests cover failure rollback and denial of access after archival. **No live guild event hooks are registered.** See [GUILD_LIFECYCLE.md](docs/GUILD_LIFECYCLE.md).

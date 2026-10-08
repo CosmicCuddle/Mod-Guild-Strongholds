@@ -39,6 +39,7 @@ struct PropertyClaimContext
     Faction GuildFaction = Faction::Alliance;
     bool HasExistingProperty = false;
     std::string_view ExistingTheme;
+    std::uint64_t GuildCreatedAt = 0; // server-verified guild creation time
 };
 
 PropertyClaimDecision CheckPropertyClaim(PropertyClaimContext const& context,

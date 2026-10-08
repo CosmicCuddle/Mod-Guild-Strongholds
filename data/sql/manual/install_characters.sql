@@ -6,6 +6,9 @@
 
 CREATE TABLE IF NOT EXISTS `naxx_gs_settlement` (
   `guild_id` INT UNSIGNED NOT NULL,
+  `guild_created_at` BIGINT UNSIGNED NOT NULL,
+  `lifecycle_state` VARCHAR(16) NOT NULL DEFAULT 'active',
+  `lifecycle_version` BIGINT UNSIGNED NOT NULL DEFAULT 0,
   `theme_key` VARCHAR(32) NOT NULL,
   `development_level` TINYINT UNSIGNED NOT NULL DEFAULT 1,
   `development_xp` BIGINT UNSIGNED NOT NULL DEFAULT 0,

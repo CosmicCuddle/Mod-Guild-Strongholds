@@ -38,3 +38,8 @@ No real AzerothCore guild, guild leader, fee, spawn, map, phasing, portal or NPC
 - Safe uninstall preserves property records by default; only separately requested purge deletes them.
 
 Do not run the schema/claim tests against the live characters database.
+
+
+## Owner generation
+
+A new `guild_created_at` field is required in the draft initial schema. Claim tests reject unknown creation dates and prevent a new guild with a recycled numeric ID from overwriting an existing record. The future adapter should query this from the actual Guild record (`Guild::GetCreatedDate()` exists upstream), not from the client. It is a defensive fingerprint rather than proof of globally unique guild identity. See [GUILD_LIFECYCLE.md](GUILD_LIFECYCLE.md).

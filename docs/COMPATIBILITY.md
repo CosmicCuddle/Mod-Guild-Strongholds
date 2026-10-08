@@ -84,3 +84,8 @@ The new WorldScript subscribes to config load/startup only, with no access to th
 ## Guild property ownership — test boundaries
 
 `StrongholdProperty.*` deliberately does not include AzerothCore Guild/Player APIs, and does not register a gossip or command. Tests reject cross-faction and cross-guild access and a second property claim. A future production adapter must check faction/guildmaster status through the actual installed AzerothCore classes. The MariaDB test proves only namespaced ownership and concurrency. No compatibility with other installed guild/housing modules is claimed.
+
+
+## Lifecycle and old-guild ID reuse
+
+A numeric guild ID alone is insufficient to restore a saved property. The proposed source uses the original guild creation date as a defensive fingerprint. Archived settlements block contributions and entry. A restoration requires independent verified administration and proof of the *original* guild identity. This is not guaranteed unique under every data restore or migration; deployed-fork checks remain mandatory. No guild-disband hook is registered yet.

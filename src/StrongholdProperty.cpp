@@ -7,7 +7,7 @@ PropertyClaimDecision CheckPropertyClaim(PropertyClaimContext const& context,
 {
     if (!context.Enabled)
         return PropertyClaimDecision::ModuleDisabled;
-    if (!context.IdentityVerified)
+    if (!context.IdentityVerified || !context.GuildCreatedAt)
         return PropertyClaimDecision::IdentityUnverified;
     if (!context.OwnerGuildId || !context.ActorGuildId)
         return PropertyClaimDecision::NoGuild;
