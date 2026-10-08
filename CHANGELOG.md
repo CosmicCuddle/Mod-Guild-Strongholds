@@ -73,3 +73,6 @@
 - Added C++ policy for disband archiving, replay resistance, versioning, identity mismatches and restricted restoration.
 - Updated disposable MariaDB property/contribution tests and added separate archival and recovery transaction checks.
 - Preserves progress and achievements by design; no live AzerothCore guild hooks, teleport, or database changes.
+
+
+- Added `StrongholdVisitGate`, combining the older guild-ID entry logic with mandatory membership, property lifetime/generation and archive checks; standalone C++ regression tests prevent stale guild access.

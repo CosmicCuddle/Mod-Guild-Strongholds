@@ -43,3 +43,8 @@ In upstream AzerothCore `Guild::Disband()`, `sScriptMgr->OnGuildDisband(this)` i
 - `tests/mysql_construction_test.py`: guild generation and archived-state check under settlement row lock.
 
 **Not implemented:** production AzerothCore C++ database adapter, guild event listener, Playerbot/IP fork compatibility, quest NPCs, actual private housing map or evacuation. Never run this code's draft SQL on the live server.
+
+
+## Unified gate for future teleport
+
+`StrongholdVisitGate.cpp` now combines the original `CheckGuildEntry` policy **with** original-generation and active-property checks. A valid guild ID alone cannot permit entry if the visitor left, privacy is unverified, the settlement is archived or the ID belongs to a different guild generation. This helper remains pure testable C++: no teleportation and no guarantee that a future core adapter has yet supplied the authoritative inputs.

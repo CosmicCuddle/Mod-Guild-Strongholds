@@ -88,3 +88,8 @@ These are **not** real character property purchases or in-game housing.
 ## New guild lifecycle safety foundation
 
 The draft settlement owner now uses a verified guild creation date alongside its numeric ID, so a reused ID must not inherit an earlier guild's property. Disbanding is designed to **archive** property while retaining buildings, supplies, trophies and contribution history. Recovery is administrator-controlled and allowed only for the original guild generation. Standalone C++ policy and isolated MariaDB contract tests cover failure rollback and denial of access after archival. **No live guild event hooks are registered.** See [GUILD_LIFECYCLE.md](docs/GUILD_LIFECYCLE.md).
+
+
+## Unified property visit check
+
+A new `StrongholdVisitGate` combines master enable, proven isolation, server-verified membership, original guild generation and active property status into a single fail-closed decision. This makes it harder for a future entry NPC to accidentally check only the numeric guild ID. It is a **policy helper, not actual guild privacy or a teleport**.
