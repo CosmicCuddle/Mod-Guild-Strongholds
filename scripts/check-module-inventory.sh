@@ -25,12 +25,15 @@ for path in "$root"/modules/*; do
   [[ -d "$path" ]] || continue
   found=1
   name="${path##*/}"
+  revision="no separate Git revision found"
   if command -v git >/dev/null 2>&1 && git -C "$path" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    sha="$(git -C "$path" rev-parse HEAD)"
-    printf '  %s | %s\n' "$name" "$sha"
-  else
-    printf '  %s | no Git revision found\n' "$name"
+    module_top="$(git -C "$path" rev-parse --show-toplevel)"
+    module_dir="$(cd "$path" && pwd -P)"
+    if [[ "$(cd "$module_top" && pwd -P)" == "$module_dir" ]]; then
+      revision="$(git -C "$path" rev-parse HEAD)"
+    fi
   fi
+  printf '  %s | %s\n' "$name" "$revision"
 done
 
 if [[ "$found" -eq 0 ]]; then
