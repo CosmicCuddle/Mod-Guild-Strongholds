@@ -19,3 +19,16 @@ trap 'rm -rf "$work"' EXIT
   -I"$root/src" "$root/src/StrongholdCatalog.cpp" "$root/src/StrongholdConstruction.cpp" \
   "$root/tests/construction_tests.cpp" -o "$work/construction_tests"
 "$work/construction_tests"
+
+# Diagnostic-only WorldScript — mock core compilation (not user core).
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/tests/startup_gate_tests.cpp" \
+  -o "$work/startup_gate_tests"
+"$work/startup_gate_tests"
+
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/tests/fake_azerothcore" -I"$root/src" \
+  "$root/src/StrongholdBootstrap.cpp" "$root/src/loader.cpp" \
+  "$root/tests/bootstrap_smoke_tests.cpp" \
+  -o "$work/bootstrap_smoke_tests"
+"$work/bootstrap_smoke_tests"

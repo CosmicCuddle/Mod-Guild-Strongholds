@@ -25,3 +25,7 @@ This document will be expanded with exact commands when the target AzerothCore a
 ## Mandatory compatibility preflight
 
 Before even a staging install, record **all modules actually deployed**, the AzerothCore commit, the Playerbots fork/revision, the IP module revision and custom core patches. Follow [COMPATIBILITY.md](docs/COMPATIBILITY.md). Do not remove, replace, or silently modify existing modules to make Strongholds build. A compile failure, phase conflict, SQL/entry ID collision or duplicated completion reward is a release blocker.
+
+## Staging-only bootstrap
+
+The earlier empty loader has become a **diagnostic-only** WorldScript, which logs disabled or blocked status during startup. Do not deploy this branch live. The test uses fake core headers; validate against your actual AzerothCore fork and complete installed-module inventory before any staging deployment. This does not permit real housing enablement.

@@ -1,14 +1,16 @@
 /*
- * Naxxramas Guild Strongholds - v0.1.0 foundation.
+ * Naxxramas Guild Strongholds — development-only AzerothCore module entry.
  *
- * Intentionally registers no scripts or world changes.
- * AzerothCore module entry point; gameplay registration will be added
- * after validation against the deployed AzerothCore source revision.
- *
- * No dependencies on Individual Progression or Playerbots at this stage.
+ * Active registration is restricted to the passive diagnostic WorldScript.
+ * No housing, guild, player, phase, spawn, teleport or database hooks.
+ * Release-blocking compatibility testing is still required.
  */
+namespace NaxxGuildStrongholds
+{
+void AddBootstrapScripts();
+}
 
 void Addmod_guild_strongholdsScripts()
 {
-    // No-op foundation: safe to compile, not a usable housing system.
+    NaxxGuildStrongholds::AddBootstrapScripts();
 }

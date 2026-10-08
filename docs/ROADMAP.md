@@ -43,3 +43,7 @@ See [CONSTRUCTION_ENGINE.md](CONSTRUCTION_ENGINE.md) for strict transaction/roll
 ## MariaDB persistence contract experiment
 
 A separate CI job now applies the draft schema to a throwaway MariaDB database and tests supply-only InnoDB transaction semantics with receipt uniqueness, rollback and concurrent deposits. See [PERSISTENCE_CONTRACT.md](PERSISTENCE_CONTRACT.md). It is **not** an AzerothCore runtime adapter or live migration. Item/timber/iron consumption stays prohibited until transaction/escrow design and deployed-core testing.
+
+## Diagnostic bootstrap checkpoint
+
+The loader now registers a passive **startup/config logging** WorldScript only; no gameplay can be activated in the current development build. Mock-core compilation and gate tests are available; a full build against the actual AzerothCore fork and module stack remains a release blocker.

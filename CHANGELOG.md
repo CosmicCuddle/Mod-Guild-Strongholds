@@ -50,3 +50,11 @@
 - Added draft schema reinstallation checks preserving data for two guilds.
 - Added an explicit selective-purge test in the *isolated CI database* with an unrelated sentinel table.
 - Reaffirmed that production migration and recovery remain untested until the deployed AzerothCore fork is available.
+
+## 0.1.x — passive startup bootstrap (development only)
+
+- Replaced inert loader with one diagnostic-only AzerothCore `WorldScript` listening to config load/startup.
+- Added fail-closed capability evaluation covering private guild isolation, persistence, safe exit and compatibility.
+- Explicit warning and no gameplay activation when `NaxxGuildStrongholds.Enabled=1` is requested prematurely.
+- Added pure C++ startup gate tests and mock-core WorldScript compile/config-reload smoke checks.
+- No housing activity, SQL, NPC, teleport, phase or character hooks enabled.

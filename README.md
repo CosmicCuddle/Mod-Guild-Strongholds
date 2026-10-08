@@ -69,3 +69,9 @@ The project now tests real InnoDB transaction behavior on a **temporary, throwaw
 This is a **test-only Python reference implementation**; AzerothCore C++ persistence and inventory integrations are not yet written. It does not make Strongholds playable.
 
 The MariaDB contract now also checks same-schema reinstall preservation and that the **explicit optional purge** leaves a simulated unrelated module table untouched (again only in the throwaway CI test database). This does **not** exercise a live uninstall.
+
+## Diagnostic-only AzerothCore bootstrap
+
+`src/StrongholdBootstrap.cpp` registers a **passive WorldScript** (startup/config logging only). It reads `NaxxGuildStrongholds.Enabled` but **cannot activate housing**, even if an administrator sets it to 1: all four necessary development capabilities (privacy, persistence, safe exit and compatibility) remain explicitly unverified. No character, player, NPC, quest, map, phase, or database hooks are registered.
+
+A mock-core compilation test checks registration and startup behavior; this is **not** proof of compatibility with the user's installed AzerothCore/Playerbots/IP revision. See [RUNTIME_BOOTSTRAP.md](docs/RUNTIME_BOOTSTRAP.md).

@@ -76,3 +76,7 @@ The new standalone construction-policy tests verify project definitions, differe
 ## MariaDB contract coverage
 
 CI now includes an isolated MariaDB service for draft-character-schema and **virtual** guild supply accounting tests. These verify basic InnoDB rollback and concurrent receipt protection but cannot certify safe AzerothCore in-memory character inventory handling, IP phasing, Playerbots, core versions, restart evacuation or long-term compatibility. A live server install remains blocked.
+
+## Runtime diagnostic coverage
+
+The new WorldScript subscribes to config load/startup only, with no access to the DB, phasing, character scripts or WorldObjects. Its compile-time readiness flags all remain false. CI compiles the source against **mock** Config/Log/ScriptMgr headers to exercise logging and reload; this is not a substitute for compiling/testing against the actual full module stack.

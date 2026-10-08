@@ -73,3 +73,9 @@ See [SETTLEMENT_CATALOG.md](SETTLEMENT_CATALOG.md) and [ISOLATION_RESEARCH.md](I
 `StrongholdConstruction.*` is an independent, deterministic engine with no world/DB side effects. Its `PlanContribution` returns an **uncommitted proposal**, never a grant of resources or a world-spawn instruction. See [CONSTRUCTION_ENGINE.md](CONSTRUCTION_ENGINE.md).
 
 The module draft schema adds `naxx_gs_project` and a unique per-guild receipt key. An adapter must commit receipt insertion, project version update, inventory/resource accounting and audit entries atomically, after verifying the deployed core's inventory/database semantics. Without that adapter, projects are non-playable and deposits must remain disabled.
+
+## Passive startup bootstrap
+
+`StrongholdBootstrap.cpp` reads the enable setting from AzerothCore's WorldScript config/startup hooks. `StrongholdStartupGate.h` explicitly blocks gameplay until privacy, persistent storage, safe exits and existing-module compatibility have all been tested and approved. The current loader registers the diagnostic WorldScript only. See [RUNTIME_BOOTSTRAP.md](RUNTIME_BOOTSTRAP.md).
+
+The fake core headers in `tests/fake_azerothcore` exist solely for independent compilation checks and must never be used by worldserver.

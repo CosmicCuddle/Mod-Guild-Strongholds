@@ -2,15 +2,15 @@
 
 #####################################
 # Naxxramas Guild Strongholds
-# v0.1.0 foundation (no gameplay logic yet)
+# v0.1.x diagnostic-only development bootstrap
 #####################################
 
-# Master feature switch.
-# Remains disabled until private-area security and exit handling are implemented.
+# Master feature switch. Requests to enable remain BLOCKED until
+# privacy, persistence, safe exit and existing-module compatibility are verified.
 # Default: 0
 NaxxGuildStrongholds.Enabled = 0
 
-# Optional debugging in later releases. Does nothing in the foundation stub.
+# Optional debugging in later releases. Does nothing in this bootstrap.
 # Default: 0
 NaxxGuildStrongholds.Debug = 0
 
