@@ -16,3 +16,7 @@ These are target milestones, not released functionality.
 | 1.0.0 | Stability, backups, uninstall and reinstall hardening | Production acceptance checklist completed |
 
 Each milestone requires a clean revert path, schema upgrade plan, test checklist and changelog entry. Do not bundle experimental core patches into a normal release.
+
+## Compatibility gate for every milestone
+
+Before each playable milestone is accepted: confirm the full existing module inventory and run the relevant tests in [COMPATIBILITY.md](COMPATIBILITY.md). Additions to module-related hooks, phasing, SQL gameobject IDs, IP, Playerbots or dungeon-completion logic require focused regression tests. A clean build by itself does not prove runtime compatibility.

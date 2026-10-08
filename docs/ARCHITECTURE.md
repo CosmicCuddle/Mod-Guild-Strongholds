@@ -53,3 +53,9 @@ No tables should be created merely because the repository was cloned during the 
 **First playable prototype:** one private test location, two-guild isolation, safe entrance/exit, isolated tables, restart persistence and fully tested disable/uninstall/reinstall.
 
 **Later:** dual faction architecture, dailies/weeklies, raid hooks and Personal IP gating. Live installation remains prohibited until the necessary gates pass.
+
+## Coexistence with existing modules — release blocker
+
+A module isolation prototype cannot be declared production-safe from its own isolated test alone. We must first obtain a source-and-runtime inventory of **all deployed modules** and conduct the compatibility matrix in [COMPATIBILITY.md](COMPATIBILITY.md), including IP phasing, Playerbots, Mod-Naxxramas-Core and any other installed modules.
+
+Use fail-closed integration: if the compatible IP API, bot integration, safe guild-instance isolation or collision-free ID allocation cannot be verified, disable that feature and block live deployment rather than changing another module's data or behaviour.

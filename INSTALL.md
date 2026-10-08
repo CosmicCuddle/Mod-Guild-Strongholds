@@ -21,3 +21,7 @@ The draft SQL schema lives in `data/sql/manual/install_characters.sql`. It is **
 Do not run installation SQL on `acore_world` or `acore_auth`; it is intended for the character database only.
 
 This document will be expanded with exact commands when the target AzerothCore and database configuration are known.
+
+## Mandatory compatibility preflight
+
+Before even a staging install, record **all modules actually deployed**, the AzerothCore commit, the Playerbots fork/revision, the IP module revision and custom core patches. Follow [COMPATIBILITY.md](docs/COMPATIBILITY.md). Do not remove, replace, or silently modify existing modules to make Strongholds build. A compile failure, phase conflict, SQL/entry ID collision or duplicated completion reward is a release blocker.

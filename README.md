@@ -38,3 +38,7 @@ Read **[DESIGN.md](docs/DESIGN.md)**, **[ARCHITECTURE.md](docs/ARCHITECTURE.md)*
 ## Compatibility still to verify
 
 AzerothCore revision, C++ module loader convention on the deployed core, `mod-individual-progression` API and Playerbots fork must be checked before the first executable feature is added.
+
+## Mandatory module compatibility gate
+
+Guild Strongholds must coexist with the server's **actually installed** modules, not only upstream AzerothCore. Compatibility is a **release blocker**, not an assumption. See [COMPATIBILITY.md](docs/COMPATIBILITY.md) for the required inventory, IP/Playerbots/Naxxramas Core interaction matrix and staged testing plan. No live installation until verified.
