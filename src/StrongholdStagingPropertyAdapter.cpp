@@ -9,6 +9,7 @@
 #include "StrongholdStagingPropertyAdapter.h"
 #include "Config.h"
 #include "DatabaseEnv.h"
+#include "QueryResult.h"
 
 #include <cstdint>
 #include <string>
