@@ -29,8 +29,8 @@ jobs:
           - label: Real upstream full worldserver compile and link (housing disabled)
             compile_flags: ""
             link_worldserver: true
-          - label: Real upstream staging GM and Guild Steward script compile (opt-in)
-            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD"
+          - label: Real upstream staging GM, Steward and read-only property DB compile (opt-in)
+            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_PROPERTY_READ"
             link_worldserver: false
     steps:
       - name: Check out isolated Strongholds development source

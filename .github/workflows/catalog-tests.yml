@@ -130,3 +130,5 @@ jobs:
         run: python tests/mysql_visit_recovery_test.py
       - name: Test collision-resistant guild phase leases and retirement
         run: python tests/mysql_phase_lease_test.py
+      - name: Test draft settlement SELECT without mutations
+        run: python tests/mysql_property_read_test.py

@@ -176,3 +176,10 @@ An explicit `tests/staging_guild_adapter_source_tests.py` guards the opt-in read
 The module compatibility blocker includes **uncommitted local changes**, not only a Git SHA. The revised `check-module-inventory.sh` lists exact core and independent module commit IDs and marks tracked files `CLEAN_TRACKED` or `MODIFIED_OR_UNVERIFIED_TRACKED`. A module without separate Git metadata is explicitly `NO_INDEPENDENT_GIT`. It does **not** expose local diffs, filenames, secrets or remote URLs, nor determine which source modules actually got compiled.
 
 It is designed for a future backed-up **staging source copy**, not a production action. The script itself is read-only and automatically exercised in CI fixtures. A modified tree still requires human comparison/approval before linking runtime Guild, IP, Playerbots or WorldScript adapters.
+
+
+## Staging-only CharacterDatabase read adapter
+
+`StrongholdStagingPropertyAdapter.cpp` uses public upstream `CharacterDatabase.Query`, `QueryResult` and typed `Field::Get` APIs for a single indexed read of the module-owned `naxx_gs_settlement` table. It is behind both staging Steward and **extra property-read** compiler definitions, plus `NaxxGuildStrongholds.StagingPropertyRead.Enabled=0` by default. No existing guild/character/core tables are modified.
+
+The protected disposable MariaDB CI test covers exact column types/order, archived/active property, missing row, recycled creation timestamp and repeated reads; C++ row-validation tests cover malicious/malformed lifecycle and invalid levels. Actual deployed Naxxramas/Playerbots/Grimfeather IP fork plus full staging database schema and worldserver startup remain **unverified**. No live query or migration was performed.

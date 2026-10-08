@@ -139,3 +139,14 @@ trap 'rm -rf "$work"' EXIT
   -I"$root/src" "$root/src/StrongholdGuildReadOnly.cpp" \
   "$root/tests/guild_readonly_tests.cpp" -o "$work/guild_readonly_tests"
 "$work/guild_readonly_tests"
+
+# Compose the real schema read-result policy with the already fail-closed
+# Guild/IP Steward display (still zero executable housing privileges).
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdPropertyRead.cpp" \
+  "$root/src/StrongholdLifecycle.cpp" \
+  "$root/src/StrongholdActivities.cpp" "$root/src/StrongholdIpCompatibility.cpp" \
+  "$root/src/StrongholdStewardEvidence.cpp" \
+  "$root/tests/property_read_evidence_tests.cpp" \
+  -o "$work/property_read_evidence_tests"
+"$work/property_read_evidence_tests"

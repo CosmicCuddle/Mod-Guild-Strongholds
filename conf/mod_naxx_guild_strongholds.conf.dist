@@ -33,3 +33,13 @@ NaxxGuildStrongholds.Diagnostics.Enabled = 0
 # There is NO supplied NPC entry, world SQL, spawn or gameplay unlock.
 # Default: 0
 NaxxGuildStrongholds.StagingSteward.Enabled = 0
+
+# EXTRA STAGING-ONLY read of the DRAFT module-owned settlement table.
+# Requires BOTH NAXX_GS_BUILD_STAGING_STEWARD and
+# NAXX_GS_BUILD_STAGING_PROPERTY_READ compiler definitions.
+# Never enable on production. The test realm must already contain the
+# separately approved/backed-up DRAFT characters SQL table; this will NOT
+# install/create/alter any database objects or grant housing.
+# A missing table is treated as UNKNOWN and logged by the DB subsystem.
+# Default: 0
+NaxxGuildStrongholds.StagingPropertyRead.Enabled = 0

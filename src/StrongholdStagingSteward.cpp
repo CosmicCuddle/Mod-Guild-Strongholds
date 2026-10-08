@@ -11,6 +11,9 @@
 #include "StrongholdStewardReadOnlyContent.h"
 #include "StrongholdStewardEvidence.h"
 #include "StrongholdStagingGuildAdapter.h"
+#if defined(NAXX_GS_BUILD_STAGING_PROPERTY_READ)
+#include "StrongholdStagingPropertyAdapter.h"
+#endif
 #include "Config.h"
 #include "Creature.h"
 #include "Player.h"
@@ -84,9 +87,9 @@ void ShowMainMenu(Player* player, Creature* creature)
 void ShowDetailPage(Player* player, Creature* creature, StewardPreviewAction page)
 {
     ClearGossipMenuFor(player);
-    // Current Worldserver supplies only the player's visible guild ID.
-    // Deliberately DO NOT forge guild creation time, property SQL, IP rank
-    // or isolation proof. Everything else remains unverified/locked.
+    // Server guild/member/creation are independently verified.
+    // A separate *extra opt-in* staging adapter may SELECT draft property
+    // fields. IP rank and private-area isolation remain unverified/locked.
     std::vector<std::string> rows;
     if (page == StewardPreviewAction::EvidenceReview)
     {
@@ -98,8 +101,23 @@ void ShowDetailPage(Player* player, Creature* creature, StewardPreviewAction pag
             evidence.ActorGuild = guild.Identity;
             evidence.GuildGenerationVerified = true;
         }
-        // No property database adapter and no installed-fork IP adapter:
-        // both stay missing, even when the core Guild has been verified.
+#if defined(NAXX_GS_BUILD_STAGING_PROPERTY_READ)
+        // EXTRA independent staging compile/config opt-in. A SELECT on our
+        // own DRAFT table, never auto-install SQL or presume a missing row
+        // grants ownership. Same original guild generation is mandatory.
+        if (guild.IsVerified())
+        {
+            PropertyReadResult const property = ReadStagingProperty(guild.Identity);
+            if (property.CanDisplayRow())
+            {
+                evidence.PropertySnapshotLoaded = property.CanDisplayRow();
+                evidence.Property = property.Property;
+                evidence.SettlementLevelVerified = true;
+                evidence.SettlementLevel = property.Level;
+            }
+        }
+#endif
+        // Installed-fork IP is STILL unknown, so all services remain locked.
         rows = BuildStewardEvidenceRows(evidence);
     }
     else

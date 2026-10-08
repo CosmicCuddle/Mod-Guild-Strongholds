@@ -130,3 +130,10 @@ The development-only Steward now has a structured, fail-closed guild/IP evidence
 The staging Steward can now query a current player, registry guild object, member GUID and original guild creation timestamp with actual AzerothCore APIs. Previously the preview only knew the player's numeric guild ID. This closes a concrete ownership-spoofing gap in our read-only UI and supplies a verified `GuildIdentity` to existing lifecycle policies, without claiming property ownership.
 
 Remaining: version-matched deployed core, authoritative **property DB adapter**, Individual Progression runtime state and actual private-world isolation. All services remain locked. See [STAGING_GUILD_IDENTITY.md](STAGING_GUILD_IDENTITY.md).
+
+
+## Read-only settlement ownership lookup milestone
+
+Following real guild-member and original-generation verification, the Steward now has a second **independent opt-in staging-only** data seam for reading the draft module-owned `naxx_gs_settlement` row. It uses the actual AzerothCore characters database **SELECT** API but cannot run in a default build, and is configured off even for a staging-compiled build. Missing/untrusted rows, generation reuse and malformed lifecycle data fail closed; archived property remains archived.
+
+No real table is installed, no actual worldserver database was touched, and no ownership changes are supported. A successful SELECT is evidence that a module-owned row exists; it is **not** isolation proof, IP progress permission, or a claim to playable housing. Next stages require correct installed-fork IP and actual per-guild isolated destination, then real entry/exit recovery. [STAGING_PROPERTY_READ.md](STAGING_PROPERTY_READ.md).

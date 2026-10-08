@@ -206,3 +206,12 @@
 - Suppresses modified-file paths, patch contents, remotes and configuration secrets; explicitly warns that untracked sources and enabled/compiled modules remain unaudited.
 - Added disposable Git fixture tests for clean core, dirty independent module, unversioned module, dirty core and rejected invalid directory.
 - No server command has been executed, no source patch or database changed.
+
+
+## Gated property ownership SELECT contract (development only)
+
+- Added a narrow, real AzerothCore `CharacterDatabase.Query` adapter for **read-only** guild settlement state, gated by a new independent staging compiler flag and runtime config, both off in regular builds.
+- Queries only `naxx_gs_settlement` with verified guild ID after registry/member/creation validation; no auto SQL migration, table creation, property purchase or state mutation.
+- Validates persisted guild creation generation, lifecycle value, development level 1..7 and returns no proof for missing table/row, malformed state or invalid identity.
+- The Guild Steward can report an independently checked property row while ALL private housing services, Individual Progression status, quests, rewards and phase routing remain locked.
+- Added C++ row validation and policy composition tests, disposable MariaDB real SELECT tests and a static guard banning mutations; CI opt-in build compiles the actual adapter against pinned upstream AzerothCore game/database headers.

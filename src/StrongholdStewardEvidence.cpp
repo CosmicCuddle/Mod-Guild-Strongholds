@@ -136,7 +136,9 @@ std::vector<std::string> BuildStewardEvidenceRows(
             (input.GuildGenerationVerified && input.ActorGuild.CreatedAt ?
                 " member verified; guild created " +
                     std::to_string(input.ActorGuild.CreatedAt) +
-                    "; property ownership NOT verified." :
+                    (input.PropertySnapshotLoaded ?
+                        "; saved property row checked (housing LOCKED)." :
+                        "; property ownership NOT verified.") :
                 " member/creation unverified; property ownership NOT verified."),
         "[LOCKED] Property: " + StatusDescription(result.Status),
         "[LOCKED] IP: " + IpDescription(result.IpStatus, result.EffectiveIpRank),

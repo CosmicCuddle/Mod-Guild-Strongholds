@@ -203,3 +203,12 @@ The Guild/IP Evidence page can now honestly show the **verified member guild ID 
 `scripts/check-module-inventory.sh` has been strengthened to report the core Git SHA, each independently versioned module SHA, and whether **tracked source files are locally modified**. It also labels modules without their own Git checkout as `NO_INDEPENDENT_GIT` rather than guessing a revision. It never prints configuration data, local diff contents, Git remote credentials or source paths of modified files.
 
 This is a **read-only aid for a future separate staging checkout**, not something you need to run on your live server now. A clean Git SHA is not enough to prove full compatibility, because untracked source files, custom binaries and installed config may still differ. CI uses synthetic local Git repositories to check dirty-state reporting and refusal of invalid source directories. See [STAGING_SOURCE_INVENTORY.md](docs/STAGING_SOURCE_INVENTORY.md).
+
+
+## Staging-only property SELECT (extra opt-in; **NOT live housing**)
+
+A narrow **read-only CharacterDatabase adapter** now exists at `StrongholdStagingPropertyAdapter.cpp`, but it is compiled **only** when `NAXX_GS_BUILD_STAGING_STEWARD` **and** `NAXX_GS_BUILD_STAGING_PROPERTY_READ` are explicitly set. It also requires a **separate disabled-by-default** setting `NaxxGuildStrongholds.StagingPropertyRead.Enabled=1` on an approved, backed-up staging realm that already contains the *draft* `naxx_gs_settlement` table. Normal production builds have **no property DB query**.
+
+On a Guild Steward evidence click, it first requires **actual AzerothCore guild membership and original creation time**. It then SELECTs only `guild_id, guild_created_at, lifecycle_state, lifecycle_version, development_level` for that guild. Missing SQL/table returns no proof, invalid rows fail closed and a recycled guild ID with a different creation timestamp is explicitly denied. Valid active or archived rows are reported as **read-only property-record evidence**, never private housing access.
+
+The SQL adapter never creates, updates or drops any table, never installs draft SQL or obtains Individual Progression status. **No staging or live database was queried in this development change**; only disposable GitHub MariaDB fixtures test the SELECT. See [STAGING_PROPERTY_READ.md](docs/STAGING_PROPERTY_READ.md).

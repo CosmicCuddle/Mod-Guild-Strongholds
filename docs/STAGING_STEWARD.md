@@ -76,3 +76,10 @@ In the opt-in build, the Steward now calls `ReadCurrentGuildIdentity(player)`, w
 The Guild/IP Evidence page therefore displays a verified **guild member ID and original creation timestamp**. That is NOT proof that the guild has claimed a stronghold! The property SQL adapter does not exist, and Individual Progression remains unverified. The menu explicitly labels these as locked.
 
 `StrongholdGuildReadOnly.*` contains platform-free validation and negative tests; `StrongholdStagingGuildAdapter.cpp` is guarded by the **staging-only compilation flag**. No guild mutators, database writes, realm state changes or housing services are introduced.
+
+
+## Optional staging property record display
+
+With **both** `NAXX_GS_BUILD_STAGING_STEWARD` and `NAXX_GS_BUILD_STAGING_PROPERTY_READ` explicitly defined, and `NaxxGuildStrongholds.StagingPropertyRead.Enabled=1` set only on a separately backed-up staging realm, the **Guild and IP Evidence** page may SELECT a row from draft `naxx_gs_settlement` after independently verifying the current guild member and original creation generation. It validates lifecycle, version, level and original-guild identity; archived or mismatched records cannot become active claims.
+
+This does **not** query any live production server, create tables, permit guild purchases, enter private guild housing, grant quest credit, or read IP progression. Property read is excluded from normal builds and config off by default. Without the separate staging schema the result remains unknown. See [STAGING_PROPERTY_READ.md](STAGING_PROPERTY_READ.md).
