@@ -44,3 +44,10 @@ Both symbols exist in `src/loader.cpp`; one delegates to the other. **Only one o
 The repository intentionally does not supply a separate module-root `CMakeLists.txt` because the reviewed upstream AzerothCore loader manages module source discovery. The module's test code is outside `src/`, and `StrongholdStagingDiagnostics.cpp` has an additional compile-time guard in normal builds.
 
 **Do not clone/pull this draft into a live server yet.** Real staging compilation against the exact deployed core and all modules is still required. The new automated check reads the public upstream core loader source but does not compile/link the actual user's worldserver. See [CORE_BUILD_CONTRACT.md](docs/CORE_BUILD_CONTRACT.md).
+
+
+## CI upstream compile is not an installation
+
+The separate GitHub Actions upstream-build workflow uses only a temporary runner and builds a disabled gameplay module's C++ source against **public upstream** AzerothCore headers. It is safe to inspect without any change to the live server. It does not start or install worldserver, access any SQL database or create in-game objects. No user Git Pull, recompile, MobaXterm command or HeidiSQL operation is needed for this development milestone.
+
+Before any future **staging install**, still identify the exact deployed AzerothCore/Playerbots/IP/module revisions, back up character/world databases and binaries, and prepare a separate rollback. Upstream CI success never authorises production installation.

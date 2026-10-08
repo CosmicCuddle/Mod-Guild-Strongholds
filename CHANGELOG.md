@@ -138,3 +138,11 @@
 - Added a read-only, pinned-upstream source contract checker for generated CMake loader naming, module source glob and WorldScript/CommandScript interfaces; negative tests reject incompatible upstream changes.
 - Added a GitHub Actions job checking genuine upstream source (rather than relying only on mock headers).
 - Actual deployed-core compile, complete module inventory, private guild isolation and playable housing are **not yet verified or implemented**.
+
+
+## 0.2.x — isolated upstream module compilation check (unreleased)
+
+- Added a separate GitHub Actions job using a fixed public AzerothCore source revision, the real upstream CMake/Ninja build and compiler rather than mocked script interfaces alone.
+- The CI job copies only Strongholds source/config into an ephemeral AzerothCore `modules/mod-guild-strongholds` folder, builds target `modules` with real core headers, and checks both folder-case registration symbols.
+- No database, game server, SQL migration, world object, DBC or live user data accessed. This is a **static module target compile**, not a full worldserver link nor a deployed-fork compatibility test.
+- Housing gameplay remains disabled, unimplemented and blocked by incomplete privacy isolation.

@@ -95,3 +95,10 @@ We now have a test-only C++ instance route preflight and server-arrival comparis
 The repository now exports both folder-case registration symbols and automatically checks them against upstream AzerothCore's **real** module loader CMake generator and WorldScript/CommandScript interface declarations (pinned revision). Tests under `tests/` are outside the source tree collected by the actual upstream module build, avoiding accidental compilation of fake-core tests into the worldserver.
 
 Next non-negotiable validation: compile against the **user's actual deployed AzerothCore/Playerbots/IP fork** with all modules in a separate staging environment. This upstream-source check **does not** permit live installation or housing gameplay; privacy remains unverified. See [CORE_BUILD_CONTRACT.md](CORE_BUILD_CONTRACT.md).
+
+
+## Integration progress: actual upstream module build target
+
+Added a separate, opt-in-capable GitHub workflow that attempts to compile the **actual upstream** AzerothCore `modules` target with this development code using Clang, CMake and Ninja. This closes a gap between prior fake-header smoke tests and a genuine build of C++ code against actual upstream core headers.
+
+The job does not build/link the whole user's customised worldserver, start any realm, interact with databases or certify coexistence with deployed modules. A successful run would improve *upstream source compatibility* only. A full staging build on the **user's version-matched complete module stack** and two-guild privacy validation remain release blockers.

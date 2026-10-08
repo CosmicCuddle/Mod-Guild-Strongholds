@@ -45,3 +45,19 @@ Pinned upstream AzerothCore: `7b2cecef92b271a468e39d89831b520b20ae06a8` (8 Octob
 - Revert staging binaries/configs to the known-good build after testing. Do not change production until all private-area, IP, Playerbots and rollback gates have been satisfied.
 
 **No live server install, recompile, SQL or map change is authorized by these tests.**
+
+
+## Isolated upstream compile workflow
+
+**New:** `.github/workflows/upstream-compile.yml` is a separate workflow which can run on changes to `src/`, `conf/` or its own workflow file on the development branch, or by manual dispatch. It:
+1. Fetches the exact public AzerothCore commit `7b2cecef92b271a468e39d89831b520b20ae06a8`, in a **disposable GitHub runner**, separate from the live server.
+2. Copies the current Strongholds `src/` and `conf/` (not SQL, other module folders, fake headers or scripts) into `core/modules/mod-guild-strongholds`.
+3. Installs upstream Clang/CMake/Ninja build dependencies and configures the real AzerothCore CMake project with static modules, tools disabled and housing config default off.
+4. Builds **only the actual `modules` target**, using real upstream game headers and static module source discovery.
+5. Verifies the resulting static archive contains both module-folder-name entry symbols.
+
+It never runs `worldserver`, installs anything to the user’s server, contacts MySQL, modifies database records, spawns NPCs or changes player phases. Source checkout and compilation take place exclusively on the hosted CI runner. It also avoids downloading any DBC/game-client assets.
+
+**Important test boundary:** compiling a static `modules` library is **not** equivalent to linking the entire `worldserver`. It is not proof of any live module stack, persistent private instances, phasing, safe return, playerbots, or actual NPC/quest functionality. If upstream builds change, this check must fail visibly and we must not infer deployed-fork compatibility. A separate real **staging worldserver build** will still be required before deployment.
+
+**Normal module behaviour:** the passive WorldScript remains disabled by default and `NAXX_GS_BUILD_STAGING_DIAGNOSTICS` is not provided. All `DevelopmentCapabilities` are false.

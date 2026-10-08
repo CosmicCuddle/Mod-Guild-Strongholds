@@ -1,0 +1,101 @@
+name: Upstream AzerothCore module compile (no realm)
+
+on:
+  push:
+    branches:
+      - feature/v0.1.0-foundations
+    paths:
+      - 'src/**'
+      - 'conf/**'
+      - '.github/workflows/upstream-compile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: upstream-module-compile-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  upstream-module-compile:
+    name: Compile passive module with real upstream headers (static)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - name: Check out isolated Strongholds development source
+        uses: actions/checkout@v4
+        with:
+          path: strongholds
+          persist-credentials: false
+      - name: Check out immutable upstream AzerothCore source
+        uses: actions/checkout@v4
+        with:
+          repository: azerothcore/azerothcore-wotlk
+          ref: 7b2cecef92b271a468e39d89831b520b20ae06a8
+          path: core
+          persist-credentials: false
+      - name: Assert safe staging-only registration and copy module source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f strongholds/src/StrongholdBootstrap.cpp
+          test -f strongholds/src/StrongholdStartupGate.h
+          grep -q "DevelopmentCapabilities{}" strongholds/src/StrongholdStartupGate.h
+          ! grep -q "NAXX_GS_BUILD_STAGING_DIAGNOSTICS" core/CMakeLists.txt
+          test ! -e core/modules/mod-guild-strongholds
+          mkdir -p core/modules/mod-guild-strongholds
+          cp -a strongholds/src core/modules/mod-guild-strongholds/
+          cp -a strongholds/conf core/modules/mod-guild-strongholds/
+          test ! -e core/modules/mod-guild-strongholds/tests
+          echo "Isolated upstream-only source checkout: no live server or database access"
+
+      - name: Install upstream build dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            clang-18 cmake ninja-build ccache make build-essential \
+            libboost-all-dev libbz2-dev libmysql++-dev \
+            libreadline6-dev libssl-dev libtool openssl zlib1g-dev \
+            libmysqlclient-dev libncurses-dev
+
+      - name: Configure AzerothCore with one disabled-by-default module
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake -S core -B core/build -G Ninja \
+            -DCMAKE_C_COMPILER=clang-18 \
+            -DCMAKE_CXX_COMPILER=clang++-18 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/guild-strongholds-never-install" \
+            -DAPPS_BUILD=all \
+            -DTOOLS_BUILD=none \
+            -DSCRIPTS=static \
+            -DMODULES=static \
+            -DWITH_WARNINGS=ON \
+            -DUSE_SCRIPTPCH=OFF \
+            -DUSE_COREPCH=OFF
+          grep -R -q 'Addmod_guild_strongholdsScripts' core/build/modules/gen_scriptloader
+
+      - name: Compile actual module target against upstream game headers
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake --build core/build --target modules --parallel 2
+
+      - name: Confirm loader symbols in compiled module library
+        shell: bash
+        run: |
+          set -euo pipefail
+          library="$(find core/build -type f -name 'libmodules.a' -print -quit)"
+          if [[ -z "$library" ]]; then
+            echo "::error::No compiled module archive found"
+            exit 1
+          fi
+          nm -C "$library" > "$RUNNER_TEMP/naxx-gs-symbols.txt"
+          grep -Fq 'Addmod_guild_strongholdsScripts()' "$RUNNER_TEMP/naxx-gs-symbols.txt"
+          grep -Fq 'AddMod_Guild_StrongholdsScripts()' "$RUNNER_TEMP/naxx-gs-symbols.txt"
+          echo "PASS: compiled both folder-name entry points with real upstream headers"
+          echo "NOT a full worldserver link, NOT the installed fork, NOT housing gameplay"

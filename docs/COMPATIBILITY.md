@@ -134,3 +134,10 @@ AzerothCore's upstream CMake loader uses the module folder's literal spelling, r
 The `scripts/check-azerothcore-module-loader.py` checker and separate CI job verify these contracts against the pinned public upstream AzerothCore commit `7b2cecef92b271a468e39d89831b520b20ae06a8`, including WorldScript and CommandScript signatures. Any drift fails the check. **It does not compile the user's actual customized core** and cannot certify the modules, staging GM command, housing or IP phasing.
 
 The entire housing feature remains hard-blocked under `DevelopmentCapabilities`. See [CORE_BUILD_CONTRACT.md](CORE_BUILD_CONTRACT.md).
+
+
+## Disposable pinned-upstream module compilation
+
+A new GitHub Actions compile check runs the current Strongholds source in a **temporary pinned upstream AzerothCore** CMake build, with real game headers and no runtime server or databases. It verifies the disabled-by-default module's source compiles and expected loader symbols are exported. This goes beyond matching CMake text and compiling mock headers.
+
+The deployed core may differ materially (Playerbots, Grimfeather IP, custom Naxxramas Core and other modules). Passing the public-upstream module target **cannot** replace a full separate staging build against the deployed complete sources, nor does it prove gameplay collision freedom, safe teleport recovery or privacy.

@@ -142,3 +142,10 @@ We found and fixed a genuine integration gap: AzerothCore derives the module C++
 A separate GitHub Actions job checks pinned **real upstream** AzerothCore CMake module-source collection, generated registration symbols and WorldScript/CommandScript interfaces. It confirms AzerothCore collects sources from this module's **`src/` directory only**, leaving standalone `tests/` outside the worldserver build. No extra `CMakeLists.txt` is required in this module for that upstream default discovery.
 
 **This is not a full AzerothCore build** and does not establish compatibility with the user's customized core/Playerbots. No production code or database was installed. Read [CORE_BUILD_CONTRACT.md](docs/CORE_BUILD_CONTRACT.md).
+
+
+## Real upstream C++ module compile check (isolated CI)
+
+GitHub Actions now has a **separate, isolated module compilation workflow** at `.github/workflows/upstream-compile.yml`. It checks out the *pinned public* AzerothCore upstream source and our **draft branch** into temporary GitHub runner directories, copies only the module's `src/` and `conf/` under a lowercase module folder, configures upstream CMake, and builds the genuine `modules` C++ target using real game headers. It also checks that both expected loader entry points are in the compiled archive.
+
+The job does **not** run `worldserver`, connect to MySQL, install to a server, apply SQL, or enable any gameplay. It is not a complete `worldserver` link or a compile against your customised AzerothCore/Playerbots/IP fork. Do not treat even a successful upstream compilation as permission to deploy housing. See [CORE_BUILD_CONTRACT.md](docs/CORE_BUILD_CONTRACT.md).
