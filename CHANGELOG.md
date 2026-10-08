@@ -87,3 +87,11 @@
 - Added C++ tests and disposable MariaDB contract for interrupted arrival, guild disband, return failure rollback, outstanding tickets, same-schema preservation and ticket deletion only after verified return.
 - Researched upstream MapMgr/MapInstanced/Player teleport routing; no production-safe guild-private isolation strategy selected.
 - **No playable housing, teleport, phase overwrite, character database migration or installed-module compatibility claim.**
+
+## v0.2.x — phase collision and module audit groundwork (unreleased)
+
+- Added pure C++ visibility model for AzerothCore's combined-bitmask and exact-phase-value comparison, including directional cross-guild checks.
+- Added regression tests for phase reuse, global/all-phase masks, cross-guild visibility, asymmetric modes, missing creatures or gameobjects, and correct instance separation within synthetic samples.
+- Added read-only Python compatibility auditor that inventories local module Git revisions and scans phase/teleport/instance hooks without reading configuration or editing source; deliberately never declares compatibility.
+- Added synthetic-checkout tests and isolation acceptance documentation.
+- Kept runtime `DevelopmentCapabilities.PrivacyIsolation` **false**; no WorldObject phase overrides, core patches, in-world teleports, NPCs or actual housing isolation introduced.

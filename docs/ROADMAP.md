@@ -61,3 +61,9 @@ Property lifecycle logic now addresses guild leadership changes, disband, stale 
 ## v0.2.x Safe Return — development progress
 
 `StrongholdVisitRecovery.*` and the disposable `naxx_gs_visit` database test now model a three-step entry/return process and recovery after a failed teleport or disband. **This is groundwork, not a completed v0.2.0.** Actual guild-private map/phase routing remains the release blocker. Read [SAFE_RETURN_CONTRACT.md](SAFE_RETURN_CONTRACT.md) and [ISOLATION_DECISION.md](ISOLATION_DECISION.md) before adding teleport scripts.
+
+## Isolation feasibility progress — source audit & model tests
+
+The development branch now contains a read-only source inventory scanner and C++ tests modelling both phase-comparison modes. In particular, two players can have **asymmetric** visibility if one uses combined phase bits and the other exact matching. These tests help specify what a staging experiment must catch; they cannot prove the chosen isolation mechanism works on the deployed server.
+
+Next gate is collecting the actual module fork versions, selecting a reserved private-area mechanism and completing a **real two-guild** staged visibility/teleport test. No production approach has been approved.

@@ -48,3 +48,13 @@ Not private by itself. A user could see or reach another guild's construction, s
 7. Record exact core/module Git revisions and pass/fail evidence.
 
 **Decision must remain unresolved until this demonstration is successful.** The new visit-record code supports future recovery but does not establish or simulate actual private map isolation.
+
+## Upstream phase-comparison implementation — concrete risk
+
+In current upstream `src/server/game/Entities/Object/Object.h`, `WorldObject::InSamePhase(uint32)` uses `m_useCombinedPhases ? (GetPhaseMask() & phasemask) : (GetPhaseMask() == phasemask)`. The initial value of `m_useCombinedPhases` is **true**, and `SetPhaseMask` dispatches `OnBeforeWorldObjectSetPhaseMask` before saving the new phase.
+
+The upstream `mod-guildhouse` `GuildHouseGlobal` sets `useCombinedPhases=false` in zone 876 and true elsewhere, which changes visibility interpretation for that zone. The upstream Individual Progression module casts several named `IPP_PHASE` spells according to progression and region. This is a *potential interaction*, not proof the deployed forks conflict.
+
+A combined mask permits at most **32 distinct single-bit slots**, and existing modules/auras can consume some or all of those; assigning `guildId % 32` guarantees collisions once sufficient guilds exist. The alternative exact-value mode can represent many phase IDs **only if every relevant object uses the same mode consistently** and all other installed scripts/auras cooperate. Even one object with a different comparison mode can produce one-way visibility. Do not use global phase overrides to solve guild property isolation without approval and staging evidence.
+
+See [PHASE_COMPATIBILITY_AUDIT.md](PHASE_COMPATIBILITY_AUDIT.md) for the model and read-only audit tool. The **privacy isolation capability remains unverified/disabled**.

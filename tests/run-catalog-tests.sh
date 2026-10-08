@@ -57,3 +57,9 @@ trap 'rm -rf "$work"' EXIT
   "$root/src/StrongholdVisitRecovery.cpp" "$root/tests/visit_recovery_tests.cpp" \
   -o "$work/visit_recovery_tests"
 "$work/visit_recovery_tests"
+
+# Synthetic visibility model: no map, object, player or phase mutations.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdIsolationProbe.cpp" \
+  "$root/tests/isolation_probe_tests.cpp" -o "$work/isolation_probe_tests"
+"$work/isolation_probe_tests"

@@ -93,3 +93,9 @@ Draft `naxx_gs_settlement` includes `guild_created_at`, `lifecycle_state`, and `
 ## Fail-closed visit admission and durable safe exit
 
 The new `StrongholdVisitRecovery.*` pure C++ layer depends on the combined guild/access/lifecycle policy, and requires durable pre-entry return tickets. Draft `naxx_gs_visit` records are uniquely keyed by character, with a separate globally unique server-generated visit nonce; only one outstanding return per character is permitted. An eventual worldserver adapter must validate safe source/destination maps with actual core APIs, persist/transition records with version checks and **retain an independent emergency evacuation path when the feature is disabled**. No real adapter exists yet. See [SAFE_RETURN_CONTRACT.md](SAFE_RETURN_CONTRACT.md).
+
+## Phase-comparison diagnostics and source inventory
+
+The upstream AzerothCore `WorldObject::InSamePhase` tests bitwise AND when `m_useCombinedPhases=true`, and equality when false. A global `OnBeforeWorldObjectSetPhaseMask` hook can select this comparison mode by zone. Modules choosing different modes can create **one-directional visibility**; checking only that guild A cannot see B is insufficient. The pure `StrongholdIsolationProbe` checks both directions among guild players, NPCs and gameobjects and reports a **sample-only** verdict.
+
+`scripts/audit-isolation-compatibility.py` gathers candidate phase/teleport hooks from a local checkout in read-only mode. It never certifies runtime safety and never sets the startup capability to true. See [PHASE_COMPATIBILITY_AUDIT.md](PHASE_COMPATIBILITY_AUDIT.md).

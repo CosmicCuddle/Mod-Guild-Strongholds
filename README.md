@@ -100,3 +100,9 @@ A new `StrongholdVisitGate` combines master enable, proven isolation, server-ver
 A new `StrongholdVisitRecovery` C++ policy layer requires a **server-captured**, structurally valid origin point and a unique outstanding visit record before a hypothetical guild-property entry teleport. Three ticket states — `prepared`, `inside`, and `returning` — support crash recovery and emergency return even if the guild disbands or housing is disabled. This is a **domain model**, not live teleport handling.
 
 The draft character SQL now includes a module-owned `naxx_gs_visit` table. GitHub Actions tests durable records and rollback in an isolated MariaDB DB; no map/phase modifications exist. See [SAFE_RETURN_CONTRACT.md](docs/SAFE_RETURN_CONTRACT.md) and [ISOLATION_DECISION.md](docs/ISOLATION_DECISION.md).
+
+## Phase/instance isolation diagnostic — non-playable research
+
+A new **bidirectional** phase visibility model reflects the upstream AzerothCore `WorldObject::InSamePhase` comparison: normal bitmask intersection versus an explicit exact-phase-value mode. This model demonstrates dangerous one-way visibility when modules disagree about phase mode, phase-mask collisions and the limits of a 32-bit phase mask. It does **not** set phases, select maps or prove in-game housing isolation.
+
+A read-only source audit helper `scripts/audit-isolation-compatibility.py` can later examine the server's *actual* local AzerothCore source checkout and module folders for relevant phase, teleport and instance APIs. It produces **REVIEW_REQUIRED**, never a compatibility certificate. No command needs to be run yet. See [PHASE_COMPATIBILITY_AUDIT.md](docs/PHASE_COMPATIBILITY_AUDIT.md).

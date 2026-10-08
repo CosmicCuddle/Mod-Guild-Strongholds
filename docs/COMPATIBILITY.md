@@ -94,3 +94,11 @@ A numeric guild ID alone is insufficient to restore a saved property. The propos
 ## Safe-return contract
 
 The new safe-return policy and MariaDB test preserve a player's server-captured original position before a hypothetical teleport, and keep the ticket until verified return. Entry remains blocked if isolation or guild ownership is unverified; exit must work even after loss of guild membership or module disable. Runtime integration needs IP phase restoration, Playerbots/logout/death/disband checks, map-coordinate/terrain validation and original core API compatibility. This code currently performs no worldserver teleport or data writes.
+
+## Read-only phase-hook inventory
+
+The optional `scripts/audit-isolation-compatibility.py` scans the AzerothCore source checkout's existing modules for phase-mask assignments, global phase hooks, Individual Progression phase spells, teleport calls, instance routing and guild-lifecycle hooks. It prints module names, independent Git revisions (when available) and **pattern identifiers/counts**, never configuration values. It reads source only and does not modify or upload anything.
+
+A match means **review needed**, not necessarily an actual conflict; lack of matches is **not proof of compatibility**. The output always says `REVIEW_REQUIRED`, even if no patterns are found. Current CI tests use an invented source fixture, not the user's live module inventory.
+
+The `StrongholdIsolationProbe` C++ tests model directional phase comparison and synthetic 2-guild player/NPC/gameobject visibility. Such passing tests cannot satisfy the live two-guild acceptance gate or change `DevelopmentCapabilities.PrivacyIsolation`.

@@ -23,6 +23,8 @@ jobs:
         run: bash tests/run-catalog-tests.sh
       - name: Validate namespaced SQL and matching uninstall targets (static lint)
         run: python3 tests/sql_safety_check.py
+      - name: Test read-only isolation compatibility scanner on fake source checkout
+        run: python3 tests/isolation_audit_tests.py
 
   mysql-construction:
     name: MariaDB construction transaction contract
