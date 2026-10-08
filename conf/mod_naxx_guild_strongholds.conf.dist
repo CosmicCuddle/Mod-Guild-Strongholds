@@ -43,3 +43,12 @@ NaxxGuildStrongholds.StagingSteward.Enabled = 0
 # A missing table is treated as UNKNOWN and logged by the DB subsystem.
 # Default: 0
 NaxxGuildStrongholds.StagingPropertyRead.Enabled = 0
+
+# EXTRA STAGING-ONLY, READ-ONLY DIRECT Grimfeather IP module lookup.
+# Requires NAXX_GS_BUILD_STAGING_IP_READ and
+# NAXX_GS_BUILD_STAGING_STEWARD, plus the reviewed IP fork's actual
+# headers/source included in the same isolated staging build.
+# This is NOT enabled merely because these options exist in a config.
+# Never enable on live realms. Gameplay and housing remain disabled.
+# Default: 0
+NaxxGuildStrongholds.StagingIpRead.Enabled = 0

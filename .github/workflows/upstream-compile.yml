@@ -29,9 +29,15 @@ jobs:
           - label: Real upstream full worldserver compile and link (housing disabled)
             compile_flags: ""
             link_worldserver: true
+            ip_checkout: false
           - label: Real upstream staging GM, Steward and read-only property DB compile (opt-in)
             compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_PROPERTY_READ"
             link_worldserver: false
+            ip_checkout: false
+          - label: Real upstream staging Guild Steward with reviewed Grimfeather IP source (opt-in)
+            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_PROPERTY_READ -DNAXX_GS_BUILD_STAGING_IP_READ"
+            link_worldserver: false
+            ip_checkout: true
     steps:
       - name: Check out isolated Strongholds development source
         uses: actions/checkout@v4
@@ -44,6 +50,14 @@ jobs:
           repository: azerothcore/azerothcore-wotlk
           ref: 7b2cecef92b271a468e39d89831b520b20ae06a8
           path: core
+          persist-credentials: false
+      - name: Check out pinned reviewed Grimfeather IP fork for source integration
+        if: matrix.ip_checkout
+        uses: actions/checkout@v4
+        with:
+          repository: Grimfeather/mod-individual-progression
+          ref: 706740808fee328b8557607f87b0548cf961e047
+          path: core/modules/mod-individual-progression
           persist-credentials: false
       - name: Assert safe isolated source and install NO game data
         shell: bash
@@ -77,6 +91,10 @@ jobs:
           NAXX_GS_COMPILE_FLAGS: ${{ matrix.compile_flags }}
         run: |
           set -euo pipefail
+          if [[ "${{ matrix.ip_checkout }}" == "true" ]]; then
+            test -f core/modules/mod-individual-progression/src/IndividualProgression.h
+            NAXX_GS_COMPILE_FLAGS="$NAXX_GS_COMPILE_FLAGS -I$GITHUB_WORKSPACE/core/modules/mod-individual-progression/src"
+          fi
           cmake -S core -B core/build -G Ninja \
             -DCMAKE_C_COMPILER=clang-18 \
             -DCMAKE_CXX_COMPILER=clang++-18 \
@@ -127,6 +145,10 @@ jobs:
               "$RUNNER_TEMP/naxx-gs-symbols.txt"
             grep -Fq 'NaxxGuildStrongholds::AddStagingStewardScripts()' \
               "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            if [[ "${{ matrix.ip_checkout }}" == "true" ]]; then
+              grep -Fq 'NaxxGuildStrongholds::ReadStagingIpState(' \
+                "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            fi
           fi
 
       - name: Link full real upstream worldserver with disabled housing

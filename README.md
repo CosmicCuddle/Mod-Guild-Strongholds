@@ -212,3 +212,12 @@ A narrow **read-only CharacterDatabase adapter** now exists at `StrongholdStagin
 On a Guild Steward evidence click, it first requires **actual AzerothCore guild membership and original creation time**. It then SELECTs only `guild_id, guild_created_at, lifecycle_state, lifecycle_version, development_level` for that guild. Missing SQL/table returns no proof, invalid rows fail closed and a recycled guild ID with a different creation timestamp is explicitly denied. Valid active or archived rows are reported as **read-only property-record evidence**, never private housing access.
 
 The SQL adapter never creates, updates or drops any table, never installs draft SQL or obtains Individual Progression status. **No staging or live database was queried in this development change**; only disposable GitHub MariaDB fixtures test the SELECT. See [STAGING_PROPERTY_READ.md](docs/STAGING_PROPERTY_READ.md).
+
+
+## Staging-only direct Individual Progression read (pinned fork)
+
+A further **independent optional** staging adapter, `StrongholdStagingIpAdapter.cpp`, now reads the **actual linked Grimfeather Individual Progression module object**, not approximate client quests or copied config guesses. It accesses only `sIndividualProgression->enabled`, `GetPlayerProgressionFromQuests(player)`, and the running `progressionLimit` field. The existing `EvaluateIpStage` policy then applies the effective tier cap. The GM-only Guild Steward's locked evidence page may display this **read-only** value *only* if all opt-ins have been deliberately compiled/configured.
+
+This adapter will intentionally **fail to compile** in an opt-in build without the reviewed IP header/source. The ordinary worldserver build includes no IP header or adapter calls. This is tested separately by checking out pinned public `Grimfeather/mod-individual-progression` into a disposable upstream AzerothCore compilation runner, not by modifying your installed fork. The compiled adapter still does not prove your deployed fork matches the pinned source.
+
+Nothing is granted: private housing, per-character activities, trophies and NPC rewards remain **disabled** even for a verified IP rank. See [STAGING_IP_RUNTIME_READ.md](docs/STAGING_IP_RUNTIME_READ.md).

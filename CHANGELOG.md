@@ -215,3 +215,12 @@
 - Validates persisted guild creation generation, lifecycle value, development level 1..7 and returns no proof for missing table/row, malformed state or invalid identity.
 - The Guild Steward can report an independently checked property row while ALL private housing services, Individual Progression status, quests, rewards and phase routing remain locked.
 - Added C++ row validation and policy composition tests, disposable MariaDB real SELECT tests and a static guard banning mutations; CI opt-in build compiles the actual adapter against pinned upstream AzerothCore game/database headers.
+
+
+## Staging IP runtime source adapter (development only)
+
+- Added an **extra opt-in**, GM/member-only, read-only `IndividualProgression.h` adapter to obtain enabled status, actual rewarded-quest stage and runtime `progressionLimit` from the linked Grimfeather fork.
+- The existing effective-stage evaluator caps rank 18 characters at the configured lower limit and refuses disabled/off-world/invalid sources.
+- Introduced `NAXX_GS_BUILD_STAGING_IP_READ` in addition to staging Steward compiler opt-in, and separate `NaxxGuildStrongholds.StagingIpRead.Enabled=0` runtime setting.
+- Added static no-mutation checks and a **third** real-header compilation variant with pinned public Grimfeather source `706740808fee328b8557607f87b0548cf961e047` checked out beside the module.
+- Normal build and property-read-only build exclude the new adapter. No installed-fork compatibility claim, phase change, quest progression update, reward or database operation.

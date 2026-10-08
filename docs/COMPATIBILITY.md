@@ -183,3 +183,10 @@ It is designed for a future backed-up **staging source copy**, not a production 
 `StrongholdStagingPropertyAdapter.cpp` uses public upstream `CharacterDatabase.Query`, `QueryResult` and typed `Field::Get` APIs for a single indexed read of the module-owned `naxx_gs_settlement` table. It is behind both staging Steward and **extra property-read** compiler definitions, plus `NaxxGuildStrongholds.StagingPropertyRead.Enabled=0` by default. No existing guild/character/core tables are modified.
 
 The protected disposable MariaDB CI test covers exact column types/order, archived/active property, missing row, recycled creation timestamp and repeated reads; C++ row-validation tests cover malicious/malformed lifecycle and invalid levels. Actual deployed Naxxramas/Playerbots/Grimfeather IP fork plus full staging database schema and worldserver startup remain **unverified**. No live query or migration was performed.
+
+
+## Source-linked staging IP runtime adapter
+
+The reviewed Grimfeather source at `706740808fee328b8557607f87b0548cf961e047` defines `sIndividualProgression`, its public `enabled`, `progressionLimit` and `GetPlayerProgressionFromQuests(Player*)`. The optional `StrongholdStagingIpAdapter.cpp` includes that **actual** module header only in a third CI compile variant. It deliberately has no config-only fallback and cannot be built with IP inspection enabled if the header is missing.
+
+Direct read is additionally limited to the staging GM Guild Steward, confirmed guild membership/original creation generation and opt-in config. This is still public source from Grimfeather, NOT the verified source SHA of the server's installed IP fork or any guarantee of cross-module compatibility.

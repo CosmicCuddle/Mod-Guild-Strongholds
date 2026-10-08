@@ -137,3 +137,10 @@ Remaining: version-matched deployed core, authoritative **property DB adapter**,
 Following real guild-member and original-generation verification, the Steward now has a second **independent opt-in staging-only** data seam for reading the draft module-owned `naxx_gs_settlement` row. It uses the actual AzerothCore characters database **SELECT** API but cannot run in a default build, and is configured off even for a staging-compiled build. Missing/untrusted rows, generation reuse and malformed lifecycle data fail closed; archived property remains archived.
 
 No real table is installed, no actual worldserver database was touched, and no ownership changes are supported. A successful SELECT is evidence that a module-owned row exists; it is **not** isolation proof, IP progress permission, or a claim to playable housing. Next stages require correct installed-fork IP and actual per-guild isolated destination, then real entry/exit recovery. [STAGING_PROPERTY_READ.md](STAGING_PROPERTY_READ.md).
+
+
+## Direct runtime IP state source seam
+
+The optional staging Guild Steward now has a guarded integration with the reviewed Grimfeather source, reading IP's **actual** enabled flag, quest-progression API and global limit; existing activity policies consume the capped result. The new public upstream build job checks out the *exact pinned* reviewed fork source to validate the integration together, separate from normal upstream-only builds. This is still a **non-operational housing** review page and not installed on the custom server.
+
+The next outstanding blockers remain source auditing of the actual deployed fork, real protected private guild isolation, durable entrance/exit, replay-safe construction/raid rewards and an explicit rollback plan.

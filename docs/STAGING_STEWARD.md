@@ -83,3 +83,10 @@ The Guild/IP Evidence page therefore displays a verified **guild member ID and o
 With **both** `NAXX_GS_BUILD_STAGING_STEWARD` and `NAXX_GS_BUILD_STAGING_PROPERTY_READ` explicitly defined, and `NaxxGuildStrongholds.StagingPropertyRead.Enabled=1` set only on a separately backed-up staging realm, the **Guild and IP Evidence** page may SELECT a row from draft `naxx_gs_settlement` after independently verifying the current guild member and original creation generation. It validates lifecycle, version, level and original-guild identity; archived or mismatched records cannot become active claims.
 
 This does **not** query any live production server, create tables, permit guild purchases, enter private guild housing, grant quest credit, or read IP progression. Property read is excluded from normal builds and config off by default. Without the separate staging schema the result remains unknown. See [STAGING_PROPERTY_READ.md](STAGING_PROPERTY_READ.md).
+
+
+## Optional live source-read of linked Grimfeather IP state (separate staging flag)
+
+A THIRD independent staging compilation option now exists: `NAXX_GS_BUILD_STAGING_IP_READ`, requiring `NAXX_GS_BUILD_STAGING_STEWARD` and a reviewed/linked `mod-individual-progression` source/header. `NaxxGuildStrongholds.StagingIpRead.Enabled=0` by default provides the separate runtime opt-in. The Guild and IP evidence page will then use the **actual linked module** to read its own `enabled` state, raw rewarded-quest rank and `progressionLimit`—not hidden quest ID guesses. It only runs for a verified GM guild member in-world.
+
+All housing, reward and service capability gates remain false, regardless of this source read. Missing/disabled IP or an unmatched installed fork is grounds to block staging release, not switch to an unverified fallback. See [STAGING_IP_RUNTIME_READ.md](STAGING_IP_RUNTIME_READ.md).

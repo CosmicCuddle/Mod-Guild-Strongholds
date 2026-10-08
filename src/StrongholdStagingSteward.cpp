@@ -11,6 +11,9 @@
 #include "StrongholdStewardReadOnlyContent.h"
 #include "StrongholdStewardEvidence.h"
 #include "StrongholdStagingGuildAdapter.h"
+#if defined(NAXX_GS_BUILD_STAGING_IP_READ)
+#include "StrongholdStagingIpAdapter.h"
+#endif
 #if defined(NAXX_GS_BUILD_STAGING_PROPERTY_READ)
 #include "StrongholdStagingPropertyAdapter.h"
 #endif
@@ -117,7 +120,12 @@ void ShowDetailPage(Player* player, Creature* creature, StewardPreviewAction pag
             }
         }
 #endif
-        // Installed-fork IP is STILL unknown, so all services remain locked.
+#if defined(NAXX_GS_BUILD_STAGING_IP_READ)
+        // Separate opt-in and compile-time dependency on reviewed IP header.
+        // The actual module's enabled flag, quest rank and cap are READ only.
+        // Even valid guild/property/IP proof NEVER enables private housing.
+        evidence.Ip = ReadStagingIpState(player, guild.IsVerified());
+#endif
         rows = BuildStewardEvidenceRows(evidence);
     }
     else
