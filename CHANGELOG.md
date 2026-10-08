@@ -197,3 +197,12 @@
 - The status page now truthfully displays current verified member guild ID and creation timestamp while leaving property ownership, settlement level, IP state and housing **LOCKED**.
 - Added C++ tests for missing registry, foreign/stale ID, removed guild member, invalid creation generation, revoked privileges and never exposing stale proof.
 - Added source-only no-mutator guard to GitHub Actions and adjusted upstream-build concurrency so new commits do not repeatedly cancel long worldserver links; no live data touched.
+
+
+## Staging module inventory safety refinement (development)
+
+- Extended the existing read-only module inventory to record tracked-source Git modification state alongside exact AzerothCore and independently cloned module SHAs.
+- Reports standalone modules with no independent Git history as `NO_INDEPENDENT_GIT`; never silently trusts their parent revision.
+- Suppresses modified-file paths, patch contents, remotes and configuration secrets; explicitly warns that untracked sources and enabled/compiled modules remain unaudited.
+- Added disposable Git fixture tests for clean core, dirty independent module, unversioned module, dirty core and rejected invalid directory.
+- No server command has been executed, no source patch or database changed.

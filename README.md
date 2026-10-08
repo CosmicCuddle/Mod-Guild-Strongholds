@@ -196,3 +196,10 @@ The optional Guild Steward now reads **actual AzerothCore guild registry state**
 The Guild/IP Evidence page can now honestly show the **verified member guild ID and original creation timestamp**. It still marks **property ownership, settlement level, Individual Progression stage and all housing gameplay LOCKED**: none of those server adapters exist. The new domain test suite rejects stale/recycled guild ID data, lost membership and missing creation timestamps; a source-only safety test rejects game/database mutator APIs.
 
 **Staging-only:** direct guild API adapter is compiled only under `NAXX_GS_BUILD_STAGING_STEWARD`. Normal builds contain neither staging gossip nor guild API glue. Real upstream compilation will verify signatures; the deployed custom fork still needs a separate build. See [STAGING_GUILD_IDENTITY.md](docs/STAGING_GUILD_IDENTITY.md).
+
+
+## Safe future staging module inventory — local changes matter
+
+`scripts/check-module-inventory.sh` has been strengthened to report the core Git SHA, each independently versioned module SHA, and whether **tracked source files are locally modified**. It also labels modules without their own Git checkout as `NO_INDEPENDENT_GIT` rather than guessing a revision. It never prints configuration data, local diff contents, Git remote credentials or source paths of modified files.
+
+This is a **read-only aid for a future separate staging checkout**, not something you need to run on your live server now. A clean Git SHA is not enough to prove full compatibility, because untracked source files, custom binaries and installed config may still differ. CI uses synthetic local Git repositories to check dirty-state reporting and refusal of invalid source directories. See [STAGING_SOURCE_INVENTORY.md](docs/STAGING_SOURCE_INVENTORY.md).

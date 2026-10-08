@@ -169,3 +169,10 @@ The opt-in staging `CreatureScript` now links the `StrongholdCatalog`, `Strongho
 Opt-in staging guild proof uses `Guild::GetMember(ObjectGuid)`, `Guild::GetCreatedDate()`, `Guild::GetId()` and `Player::GetGuild()`/ `GetGuildId()`/ `GetGUID()`. These were inspected in pinned public AzerothCore commit `7b2cecef92b271a468e39d89831b520b20ae06a8`. It never uses guild bank access or writes guild/world/character SQL. The actual custom fork/Playerbots combination still requires a separate compiler and source compatibility audit.
 
 An explicit `tests/staging_guild_adapter_source_tests.py` guards the opt-in read path against known state-mutating APIs, while C++ negative tests guard stale guild membership/creation evidence. The new upstream real-header compiler job is the authoritative C++ signature check for the **public** pinned core, not for the user's deployed modifications.
+
+
+## Staging local-change inventory (optional read-only audit)
+
+The module compatibility blocker includes **uncommitted local changes**, not only a Git SHA. The revised `check-module-inventory.sh` lists exact core and independent module commit IDs and marks tracked files `CLEAN_TRACKED` or `MODIFIED_OR_UNVERIFIED_TRACKED`. A module without separate Git metadata is explicitly `NO_INDEPENDENT_GIT`. It does **not** expose local diffs, filenames, secrets or remote URLs, nor determine which source modules actually got compiled.
+
+It is designed for a future backed-up **staging source copy**, not a production action. The script itself is read-only and automatically exercised in CI fixtures. A modified tree still requires human comparison/approval before linking runtime Guild, IP, Playerbots or WorldScript adapters.
