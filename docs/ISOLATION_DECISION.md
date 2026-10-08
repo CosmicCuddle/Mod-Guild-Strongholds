@@ -58,3 +58,7 @@ The upstream `mod-guildhouse` `GuildHouseGlobal` sets `useCombinedPhases=false` 
 A combined mask permits at most **32 distinct single-bit slots**, and existing modules/auras can consume some or all of those; assigning `guildId % 32` guarantees collisions once sufficient guilds exist. The alternative exact-value mode can represent many phase IDs **only if every relevant object uses the same mode consistently** and all other installed scripts/auras cooperate. Even one object with a different comparison mode can produce one-way visibility. Do not use global phase overrides to solve guild property isolation without approval and staging evidence.
 
 See [PHASE_COMPATIBILITY_AUDIT.md](PHASE_COMPATIBILITY_AUDIT.md) for the model and read-only audit tool. The **privacy isolation capability remains unverified/disabled**.
+
+## Optional snapshot mechanism (not an isolation solution)
+
+The development branch now contains a **compile-time opt-in**, GM-restricted, configuration-gated read-only snapshot command that reports only the issuing character's map ID, instance ID and phase mask alongside guild/area identifiers. It does not instantiate maps, change phases, grant property access or report another guild's data. See [STAGING_DIAGNOSTICS.md](STAGING_DIAGNOSTICS.md). This is evidence gathering infrastructure only, not real guild isolation.

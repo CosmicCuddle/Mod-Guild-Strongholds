@@ -18,3 +18,10 @@ NaxxGuildStrongholds.Debug = 0
 # Will stay disabled until bot-related abuse protections are tested.
 # Default: 0
 NaxxGuildStrongholds.Playerbots.Enabled = 0
+
+# STAGING-ONLY READ-ONLY GM DIAGNOSTICS (NOT housing enablement).
+# Requires an explicit NAXX_GS_BUILD_STAGING_DIAGNOSTICS compile flag
+# in addition to this setting. No command exists in normal builds.
+# Even with diagnostics on, private housing remains blocked.
+# Default: 0
+NaxxGuildStrongholds.Diagnostics.Enabled = 0

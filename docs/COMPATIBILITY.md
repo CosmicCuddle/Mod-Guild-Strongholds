@@ -102,3 +102,7 @@ The optional `scripts/audit-isolation-compatibility.py` scans the AzerothCore so
 A match means **review needed**, not necessarily an actual conflict; lack of matches is **not proof of compatibility**. The output always says `REVIEW_REQUIRED`, even if no patterns are found. Current CI tests use an invented source fixture, not the user's live module inventory.
 
 The `StrongholdIsolationProbe` C++ tests model directional phase comparison and synthetic 2-guild player/NPC/gameobject visibility. Such passing tests cannot satisfy the live two-guild acceptance gate or change `DevelopmentCapabilities.PrivacyIsolation`.
+
+## Optional staging-only administrative snapshot
+
+The prospective `.naxxgs snapshot` command is **not compiled into normal builds**, nor available without an independent diagnostics config opt-in and AzerothCore `RBAC_PERM_COMMAND_DEBUG_INFO` permission. It reports only the calling staff character's guild/map/instance/zone/area/phase numbers for future staging review. The command cannot reveal internal phase comparison mode, and any mismatch with installed command/RBAC APIs must be resolved before a staging build. It never teleports or assigns phase. **It does not certify privacy** and cannot mark housing ready.

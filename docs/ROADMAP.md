@@ -67,3 +67,9 @@ Property lifecycle logic now addresses guild leadership changes, disband, stale 
 The development branch now contains a read-only source inventory scanner and C++ tests modelling both phase-comparison modes. In particular, two players can have **asymmetric** visibility if one uses combined phase bits and the other exact matching. These tests help specify what a staging experiment must catch; they cannot prove the chosen isolation mechanism works on the deployed server.
 
 Next gate is collecting the actual module fork versions, selecting a reserved private-area mechanism and completing a **real two-guild** staged visibility/teleport test. No production approach has been approved.
+
+## v0.2.x — optional in-game observational diagnostic code
+
+An opt-in, disabled-by-default `.naxxgs snapshot` command now exists in source solely to collect future **staging** measurements of an administrator character's current map/instance/phase/guild. It needs both a compile flag and a runtime config flag; no housing subsystem is enabled by it. Mock headers tests compile it, but the deployed AzerothCore fork and RBAC permissions have **not** been tested. See [STAGING_DIAGNOSTICS.md](STAGING_DIAGNOSTICS.md).
+
+Next step remains a real, owner-approved two-guild isolation feasibility spike. The probe and offline code tests cannot prove map isolation.

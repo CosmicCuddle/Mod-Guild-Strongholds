@@ -73,3 +73,9 @@ No need to run this on the user's server during documentation/source development
 | Disable, evacuation, uninstall and reinstall | To be recorded | NOT TESTED |
 
 Any failure or missing evidence blocks the live release. See [ISOLATION_DECISION.md](ISOLATION_DECISION.md) and [COMPATIBILITY.md](COMPATIBILITY.md).
+
+## Future in-game measurements
+
+An opt-in `.naxxgs snapshot` staging command is now implemented but **not registered or compiled in ordinary server builds**. It can report the invoking GM's guild ID, map ID, instance ID, zone, area and phase mask without changing the world. Its value is collecting *observations* when a staging server and dedicated guilds are ready. It cannot detect the object's exact/combined phase comparison mode or directly observe whether other guilds see its gameobjects. Guild A/B snapshots must be supplemented with independent visibility and interaction tests in both directions.
+
+See [STAGING_DIAGNOSTICS.md](STAGING_DIAGNOSTICS.md). No actual staging measurements have been collected.

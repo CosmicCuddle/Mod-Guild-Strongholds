@@ -106,3 +106,9 @@ The draft character SQL now includes a module-owned `naxx_gs_visit` table. GitHu
 A new **bidirectional** phase visibility model reflects the upstream AzerothCore `WorldObject::InSamePhase` comparison: normal bitmask intersection versus an explicit exact-phase-value mode. This model demonstrates dangerous one-way visibility when modules disagree about phase mode, phase-mask collisions and the limits of a 32-bit phase mask. It does **not** set phases, select maps or prove in-game housing isolation.
 
 A read-only source audit helper `scripts/audit-isolation-compatibility.py` can later examine the server's *actual* local AzerothCore source checkout and module folders for relevant phase, teleport and instance APIs. It produces **REVIEW_REQUIRED**, never a compatibility certificate. No command needs to be run yet. See [PHASE_COMPATIBILITY_AUDIT.md](docs/PHASE_COMPATIBILITY_AUDIT.md).
+
+## Optional, two-key staging diagnostic (not available in normal builds)
+
+The source now contains a **read-only** administrator command, `.naxxgs snapshot`, compiled and registered **only when** `NAXX_GS_BUILD_STAGING_DIAGNOSTICS` is explicitly set, and answering only when `NaxxGuildStrongholds.Diagnostics.Enabled=1`. The command requires a GM RBAC permission and reports **only the issuing player's own** map, instance, zone, area, guild ID and phase-mask values. It never changes phase, moves a player, spawns objects or reads SQL. This provides future staging evidence without pretending to prove privacy.
+
+Normal builds do not register the command, and the housing startup guard remains blocked. The command is only mock-compiled so far—not built or exercised on the user's deployed core. See [STAGING_DIAGNOSTICS.md](docs/STAGING_DIAGNOSTICS.md). **There is nothing to install on the live server.**

@@ -63,3 +63,13 @@ trap 'rm -rf "$work"' EXIT
   -I"$root/src" "$root/src/StrongholdIsolationProbe.cpp" \
   "$root/tests/isolation_probe_tests.cpp" -o "$work/isolation_probe_tests"
 "$work/isolation_probe_tests"
+
+# Opt-in staging command compiled using fake interfaces ONLY.
+# No live character/phase/map/teleport code is run by this test.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -DNAXX_GS_BUILD_STAGING_DIAGNOSTICS \
+  -I"$root/tests/fake_diagnostics" -I"$root/src" \
+  "$root/src/StrongholdStagingDiagnostics.cpp" \
+  "$root/tests/staging_diagnostics_tests.cpp" \
+  -o "$work/staging_diagnostics_tests"
+"$work/staging_diagnostics_tests"

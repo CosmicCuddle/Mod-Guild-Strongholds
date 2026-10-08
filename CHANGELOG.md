@@ -95,3 +95,11 @@
 - Added read-only Python compatibility auditor that inventories local module Git revisions and scans phase/teleport/instance hooks without reading configuration or editing source; deliberately never declares compatibility.
 - Added synthetic-checkout tests and isolation acceptance documentation.
 - Kept runtime `DevelopmentCapabilities.PrivacyIsolation` **false**; no WorldObject phase overrides, core patches, in-world teleports, NPCs or actual housing isolation introduced.
+
+## v0.2.x — opt-in map/phase observation command (unreleased)
+
+- Added `StrongholdStagingDiagnostics.cpp`, a **read-only, administrator-permission** map/phase information command explicitly excluded from normal builds.
+- Requires BOTH `NAXX_GS_BUILD_STAGING_DIAGNOSTICS` compiler define and `NaxxGuildStrongholds.Diagnostics.Enabled=1` config; its default remains off.
+- Exposes the issuing player's guild ID, map ID, instance ID, zone, area and phase mask as staging evidence only. Does not guess internal comparison mode or certify guild isolation.
+- Added mock-core C++ tests for command tree/RBAC, disabled default, opt-in observations and no player changes.
+- No real player movement, world phase hook, SQL write, housing spawn or deployed-worldserver build.
