@@ -19,6 +19,9 @@ void AddStagingDiagnosticsScripts();
 #if defined(NAXX_GS_BUILD_STAGING_STEWARD)
 void AddStagingStewardScripts();
 #endif
+#if defined(NAXX_GS_BUILD_STAGING_RAID_OBSERVER)
+void AddStagingRaidObserverScripts();
+#endif
 }
 
 void Addmod_guild_strongholdsScripts()
@@ -29,6 +32,9 @@ void Addmod_guild_strongholdsScripts()
 #endif
 #if defined(NAXX_GS_BUILD_STAGING_STEWARD)
     NaxxGuildStrongholds::AddStagingStewardScripts();
+#endif
+#if defined(NAXX_GS_BUILD_STAGING_RAID_OBSERVER)
+    NaxxGuildStrongholds::AddStagingRaidObserverScripts();
 #endif
 }
 

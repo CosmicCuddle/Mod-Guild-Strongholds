@@ -197,3 +197,10 @@ Direct read is additionally limited to the staging GM Guild Steward, confirmed g
 The developer-only characters template now declares **11** module-owned tables; two are generation-qualified raid trophy receipts/unlocks. The older generic `naxx_gs_unlock` remains untouched to avoid silently rewriting legacy rows or treating guild-ID-only achievements as trustworthy. The explicit optional destructive purge list is updated to include the two new tables; normal uninstall still retains all data.
 
 MariaDB 10.11 test-only code serializes per-guild receipt/unlock/audit writes by `SELECT ... FOR UPDATE` on `naxx_gs_settlement`, and tests failpoints/concurrency in `naxx_gs_ci_test` only. No C++ real database write/kill/quest/Playerbots hook exists. Both template schema and optional purge require a manually approved **separate staging** migration rehearsal and backups before any game-server use. A successful upstream core compilation does not prove SQL or runtime compatibility with the deployed custom server.
+
+
+## Verified pinned-upstream raid-death hook (extra opt-in)
+
+The pinned public AzerothCore source defines `UnitScript::OnUnitDeath(Unit*, Unit*)` and `UNITHOOK_ON_UNIT_DEATH`, `Map::IsRaid()`, and `Creature::IsDungeonBoss()`. The staging-only `StrongholdStagingRaidObserver.cpp` observes the callback under its own off-by-default config and logs only a candidate map/instance/creature ID, not player data. The normal build does not register the observer.
+
+The custom production AzerothCore/Playerbots/IP fork **may differ**, and the callback alone provides **no** verified human raid-participation or original Classic raid difficulty. No SQL transactions, quest rewards, trophy unlocks or game objects are connected. The staging compilation test is separate from actual installed-fork source verification.

@@ -157,3 +157,10 @@ The trophy records cannot be connected to the current draft `naxx_gs_unlock` tab
 Added generation-qualified trophy receipt and trophy unlock **draft** tables without replacing any existing general unlock records. In a disposable MariaDB test database, a simulated validated server kill is recorded under an InnoDB settlement row lock with a unique receipt, one-time trophy unlock and audit entry in one transaction. Rollback, concurrency, mixed-guild raids, guild ID reuse, archival and schema-reapplication tests prevent duplicate or partially committed history.
 
 A production C++ event listener, authentic boss/map/Playerbots checks and an approved migration path **do not exist**. Next: decide guild raid participation requirements with the owner; inspect the installed AzerothCore kill/group hooks and actual Classic raid IDs; design read-only earned-trophy display and vetted 3.3.5 GO models, only after the real guild-private destination is safe. See [RAID_TROPHY_STORAGE.md](RAID_TROPHY_STORAGE.md).
+
+
+## Actual AzerothCore death signal milestone (not yet boss achievement credit)
+
+A staging-only `UnitScript` now registers the **real upstream** `UNITHOOK_ON_UNIT_DEATH` and can observe when a `Creature::IsDungeonBoss()` dies on `Map::IsRaid()` with a nonzero instance identity. The module logs metadata only and never calls the trophy unlock/persistence proposal. This proves a possible safe event-integration seam without guessing which map/boss difficulty corresponds to original Classic Onyxia, Naxxramas or Wrath variants.
+
+**Still required before any trophy credit:** source-verified real boss/raid difficulty allowlist on the owner's custom server; verified instance completion; encounter-participation records not just being in the map; exact member GUID/guild generation and a trustworthy Playerbots classification. A killing blow, map presence, loot tag or NPC flag is NOT enough to award anything. See [STAGING_RAID_OBSERVER.md](STAGING_RAID_OBSERVER.md).

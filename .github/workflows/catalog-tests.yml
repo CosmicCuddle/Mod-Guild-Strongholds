@@ -37,6 +37,8 @@ jobs:
         run: python3 tests/staging_ip_read_contract_tests.py
       - name: Ensure raid trophy policies cannot mutate SQL or the game world
         run: python3 tests/trophy_no_effects_tests.py
+      - name: Verify read-only raid death hook never awards guild trophies
+        run: python3 tests/raid_death_observer_source_tests.py
       - name: Verify safe module inventory and local Git modification reporting
         run: bash tests/module_inventory_tests.sh
 

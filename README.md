@@ -238,3 +238,12 @@ Two new module-owned **draft** characters tables model permanent guild trophies 
 The disposable MariaDB transaction fixture obtains an InnoDB **settlement row lock first**, verifies the original guild creation date and active lifecycle, then atomically inserts the receipt, unlock and append-only `naxx_gs_ledger` audit record. Fault injection and concurrent calls verify no partial awards, replayed receipts, or doubled unlocks. Two independently qualified guilds can record the same raid-event receipt under different guild generations. Historical awards are retained on archive or schema reapplication.
 
 **This code is a test-only SQL contract, not a production C++ persistence adapter or real raid boss hook.** The fixture simulates trusted server kill and roster evidence, never confirms real in-game encounters. No new SQL has been applied to the user's server, and no WorldScript, loot, creature, gameobject, quest or player inventory path was changed. Do NOT apply the draft install/purge scripts to production. See [RAID_TROPHY_STORAGE.md](docs/RAID_TROPHY_STORAGE.md).
+
+
+## Staging-only real AzerothCore boss-death observer — NO raid credit
+
+The module now contains a real opt-in `UnitScript::OnUnitDeath` staging observer. It uses **pinned upstream AzerothCore** `UNITHOOK_ON_UNIT_DEATH`, filters raid-instance creatures using `Map::IsRaid()` and `Creature::IsDungeonBoss()`, and logs **only** the map, instance and creature-entry numbers as an **unverified death candidate**. It does not identify a named raid encounter, assign a guild, count Playerbots as human players, allocate trophies, write SQL or spawn anything.
+
+It is **compiled out of normal builds**. Staging compilation requires `NAXX_GS_BUILD_STAGING_RAID_OBSERVER`; running it additionally requires the separate disabled-by-default `NaxxGuildStrongholds.StagingRaidObserver.Enabled=1` config. The observer never supplies `TrophyKillProof.ServerBossKillConfirmed` or `GuildParticipationVerified`, because an ordinary death callback alone does not prove a guild's qualifying raid participation.
+
+Pure C++ negative tests and no-side-effects source checks ensure this remains a metadata observer, not an achievement listener. Public-upstream CI compiles the staging opt-in and asserts that normal worldserver builds omit its registration. See [STAGING_RAID_OBSERVER.md](docs/STAGING_RAID_OBSERVER.md).

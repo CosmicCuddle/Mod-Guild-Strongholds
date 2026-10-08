@@ -52,3 +52,11 @@ NaxxGuildStrongholds.StagingPropertyRead.Enabled = 0
 # Never enable on live realms. Gameplay and housing remain disabled.
 # Default: 0
 NaxxGuildStrongholds.StagingIpRead.Enabled = 0
+
+# EXTRA staging-only UNIT DEATH observation (never grants raid credit).
+# Requires NAXX_GS_BUILD_STAGING_RAID_OBSERVER at compilation AND this
+# independently disabled config option. No SQL, boss mapping, character
+# names/GUIDs, IP reads, Playerbot classification or actual trophy writes.
+# Do not enable on production; high-volume raid logs require review.
+# Default: 0
+NaxxGuildStrongholds.StagingRaidObserver.Enabled = 0

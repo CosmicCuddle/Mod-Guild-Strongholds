@@ -31,11 +31,11 @@ jobs:
             link_worldserver: true
             ip_checkout: false
           - label: Real upstream staging GM, Steward and read-only property DB compile (opt-in)
-            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_PROPERTY_READ"
+            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_RAID_OBSERVER -DNAXX_GS_BUILD_STAGING_PROPERTY_READ"
             link_worldserver: false
             ip_checkout: false
           - label: Real upstream staging Guild Steward with reviewed Grimfeather IP source (opt-in)
-            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_PROPERTY_READ -DNAXX_GS_BUILD_STAGING_IP_READ"
+            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_RAID_OBSERVER -DNAXX_GS_BUILD_STAGING_PROPERTY_READ -DNAXX_GS_BUILD_STAGING_IP_READ"
             link_worldserver: false
             ip_checkout: true
     steps:
@@ -140,10 +140,17 @@ jobs:
               echo "::error::Staging Guild Steward symbol present in normal build"
               exit 1
             fi
+            if grep -Fq 'NaxxGuildStrongholds::AddStagingRaidObserverScripts()' \
+                "$RUNNER_TEMP/naxx-gs-symbols.txt"; then
+              echo "::error::Staging raid observer present in normal build"
+              exit 1
+            fi
           else
             grep -Fq 'NaxxGuildStrongholds::AddStagingDiagnosticsScripts()' \
               "$RUNNER_TEMP/naxx-gs-symbols.txt"
             grep -Fq 'NaxxGuildStrongholds::AddStagingStewardScripts()' \
+              "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            grep -Fq 'NaxxGuildStrongholds::AddStagingRaidObserverScripts()' \
               "$RUNNER_TEMP/naxx-gs-symbols.txt"
             if [[ "${{ matrix.ip_checkout }}" == "true" ]]; then
               grep -Fq 'NaxxGuildStrongholds::ReadStagingIpState(' \

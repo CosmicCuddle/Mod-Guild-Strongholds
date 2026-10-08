@@ -80,3 +80,10 @@ The prototype now includes `naxx_gs_trophy_receipt` and `naxx_gs_trophy_unlock` 
 The **disposable CI-only** InnoDB transaction simulates future persistence by taking the matching `naxx_gs_settlement` row `FOR UPDATE`, rejecting missing/recycled/archived guilds, checking replay and existing unlock, then writing a unique kill receipt, matching trophy unlock and ledger audit in ONE transaction. Injected errors after any insert roll all three back; concurrent races commit only one. Test data is fabricated and does not prove a real kill, bot roster, map instance, IP phase or housing location. This provides the persistence **contract**, not a deployable C++ reward handler. Full detail: [RAID_TROPHY_STORAGE.md](RAID_TROPHY_STORAGE.md).
 
 The previous 'before introducing real awards' storage requirement is partly satisfied at **draft schema and isolated DB test** level only. Actual migration validation, real server-side encounter evidence, trusted runtime C++ adapter, genuine models and secure placement remain pending.
+
+
+## Source-verified passive boss-death callback observation
+
+Added `StrongholdStagingRaidObserver.cpp`, a **separately opt-in real AzerothCore `UnitScript`** that can listen to generic `OnUnitDeath` callbacks and log a raid boss-like creature's **map ID, instance ID and creature entry**. This is *candidate telemetry*, not trusted Classic boss completion. There is deliberately no hard-coded boss/raid ID mapping and no player/Playerbot/Guild or individual-progression access.
+
+This new staging observer **never calls `ProposeTrophyUnlock`**, the test-only Python receipt recorder or any database API. Its pure-core-independent policy explicitly keeps `BossEncounterVerified`, `GuildParticipationVerified` and `GuildTrophyGranted` false. User-approved actual boss/instance validation and a safely sourced human guild participation audit are mandatory before event-derived credit. See [STAGING_RAID_OBSERVER.md](STAGING_RAID_OBSERVER.md).

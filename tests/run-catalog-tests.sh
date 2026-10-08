@@ -159,3 +159,10 @@ trap 'rm -rf "$work"' EXIT
   "$root/src/StrongholdTrophies.cpp" "$root/tests/trophy_tests.cpp" \
   -o "$work/trophy_tests"
 "$work/trophy_tests"
+
+# Only staging death-candidate metadata, never guild/raid participation proof.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdRaidDeathObservation.cpp" \
+  "$root/tests/raid_death_observation_tests.cpp" \
+  -o "$work/raid_death_observation_tests"
+"$work/raid_death_observation_tests"

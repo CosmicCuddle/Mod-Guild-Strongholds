@@ -243,3 +243,13 @@
 - Added a disposable MariaDB transaction contract: lock the active matching settlement row, validate verified source/roster policy, ensure no duplicate event or trophy, then commit the receipt, unlock and audit-ledger row **together**.
 - Added fault-injection rollback tests after receipt, unlock and ledger inserts; concurrent same-event and different-event/same-trophy races; mixed-guild receipt reuse with independent generation keys; disband/archive refusal with historical preservation; simulated guild-ID reuse; same-schema reinstall preservation.
 - Updated SQL-to-purge name safety lint, 11-table count and CI MariaDB job. No production database or gameplay actions, C++ world hooks, GO IDs or client patches.
+
+
+## Real upstream raid death callback: read-only staging observer (unreleased)
+
+- Added an optional `UnitScript` implementing actual pinned-AzerothCore `OnUnitDeath(Unit*, Unit*)`, with the `UNITHOOK_ON_UNIT_DEATH` registration hook.
+- Filters for raid map, creature classified as dungeon boss, nonzero map/instance ID and creature entry, and explicitly enabled staging config.
+- Logs only a numerical **raid death candidate**, not raid completion. NO player names/GUIDs, group/Playerbots assumptions, guild credit, Individual Progression changes, SQL inserts or trophy gameobjects.
+- Two independent opt-ins: `NAXX_GS_BUILD_STAGING_RAID_OBSERVER` compiler definition and `NaxxGuildStrongholds.StagingRaidObserver.Enabled=1` (off by default).
+- Pure negative/positive death-observation C++ tests and static source guard assert no false named-boss, participating-guild or trophy-award proof.
+- Pinned public upstream staging compiler variant includes the observer; normal full worldserver compilation must exclude its symbol.
