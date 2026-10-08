@@ -3,6 +3,7 @@
 #include "StrongholdActivities.h"
 #include "StrongholdCatalog.h"
 #include "StrongholdConstruction.h"
+#include "StrongholdTrophies.h"
 
 #include <string>
 #include <string_view>
@@ -48,6 +49,15 @@ std::vector<std::string> PlannedBuildings(std::string_view theme)
     return result;
 }
 
+std::vector<std::string> PlannedTrophies()
+{
+    std::vector<std::string> result;
+    for (Trophy const& item : GetTrophyCatalog())
+        result.push_back("[PLAN] " + std::string(item.DisplayName) +
+            " | " + std::string(item.DecorationConcept));
+    return result;
+}
+
 std::vector<std::string> PlannedActivities(Cadence cadence)
 {
     std::vector<std::string> result;
@@ -82,7 +92,7 @@ std::vector<std::string> BuildStewardPreviewRows(StewardPreviewAction action)
         case StewardPreviewAction::WeeklyActivities:
             return PlannedActivities(Cadence::Weekly);
         case StewardPreviewAction::Trophies:
-            return PlannedActivities(Cadence::OneTime);
+            return PlannedTrophies();
         default:
             return {};
     }

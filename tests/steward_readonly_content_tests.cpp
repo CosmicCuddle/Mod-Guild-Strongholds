@@ -51,16 +51,17 @@ int main()
     const auto daily = BuildStewardPreviewRows(StewardPreviewAction::DailyActivities);
     const auto weekly = BuildStewardPreviewRows(StewardPreviewAction::WeeklyActivities);
     const auto trophies = BuildStewardPreviewRows(StewardPreviewAction::Trophies);
-    test(daily.size() == 3 && weekly.size() == 4 && trophies.size() == 2,
-        "Existing daily, weekly, one-time activities are classified correctly");
+    test(daily.size() == 3 && weekly.size() == 4 && trophies.size() == 5,
+        "Dailies/weeklies and five independent trophy concepts from catalogues");
     test(weekly[2].find("Outland") != std::string::npos &&
         weekly[2].find("IP milestone 8") != std::string::npos,
         "Outland activity advertises required IP milestone, not unlocked status");
     test(weekly[3].find("IP milestone 13") != std::string::npos,
         "Northrend reference milestone remains capped");
-    test(trophies[0].find("Dragon") != std::string::npos &&
-        trophies[1].find("Icecrown") != std::string::npos,
-        "Trophies draw from catalogue, no simulated reward");
+    test(trophies[0].find("Onyxia") != std::string::npos &&
+        trophies[4].find("Kel") != std::string::npos &&
+        trophies[0].find("[PLAN]") == 0,
+        "Five raid trophies derive from real symbolic concepts, not rewards");
     test(BuildStewardPreviewRows(StewardPreviewAction::Back).empty() &&
         BuildStewardPreviewRows(StewardPreviewAction::Close).empty() &&
         BuildStewardPreviewRows(StewardPreviewAction::EvidenceReview).empty(),

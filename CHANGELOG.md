@@ -224,3 +224,13 @@
 - Introduced `NAXX_GS_BUILD_STAGING_IP_READ` in addition to staging Steward compiler opt-in, and separate `NaxxGuildStrongholds.StagingIpRead.Enabled=0` runtime setting.
 - Added static no-mutation checks and a **third** real-header compilation variant with pinned public Grimfeather source `706740808fee328b8557607f87b0548cf961e047` checked out beside the module.
 - Normal build and property-read-only build exclude the new adapter. No installed-fork compatibility claim, phase change, quest progression update, reward or database operation.
+
+## Guild raid trophies: five symbolic encounters and placement rules (development only)
+
+- Added conceptual trophy catalogue for Onyxia's Head, Ragnaros' Flame, Nefarian's Banner, C'Thun Relic and Kel'Thuzad Sigil.
+- Added source-independent guild raid eligibility requiring independently verified boss kill and encounter source, current original-guild ownership, replay-checked unique server receipt and distinct encounter-participating human guild members.
+- Explicitly supports mixed-guild and 40-person raid rosters. Bots can assist but cannot satisfy human guild attendance; no hard-coded majority/full-guild restriction.
+- Added per-generation placement policy verifying earned unlock, logical decoration slot, no slot conflict and reviewed gameobject entry. Neither proposal ever awards or spawns anything.
+- Guild Steward optional staging trophy preview now shows five concepts from the source catalogue, each explicitly [PLAN].
+- Expanded source-only no-world-mutation guard and extensive C++ regression tests for guild reuse, archiving, mixed raids, fake kills, bots, replay receipts, forged roster, 40 members and invalid object placement.
+- Current draft `naxx_gs_unlock` is **NOT adequate** for generation-qualified trophy receipts and must not be used for live awards until a versioned schema and audit-transaction design are reviewed. No SQL migration made.

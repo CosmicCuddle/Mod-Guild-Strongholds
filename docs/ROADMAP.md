@@ -144,3 +144,9 @@ No real table is installed, no actual worldserver database was touched, and no o
 The optional staging Guild Steward now has a guarded integration with the reviewed Grimfeather source, reading IP's **actual** enabled flag, quest-progression API and global limit; existing activity policies consume the capped result. The new public upstream build job checks out the *exact pinned* reviewed fork source to validate the integration together, separate from normal upstream-only builds. This is still a **non-operational housing** review page and not installed on the custom server.
 
 The next outstanding blockers remain source auditing of the actual deployed fork, real protected private guild isolation, durable entrance/exit, replay-safe construction/raid rewards and an explicit rollback plan.
+
+## Guild raid trophy gameplay design milestone
+
+The source now provides five specifically named **raid trophy concepts** with strict no-side-effect unlock/placement proposal policies. A verified guild raid requires authoritative server kill/encounter proof, unique receipt, original guild generation, an active stronghold and separately verified real human guild participants. Mixed guilds can independently qualify; Playerbots do not count as qualifying human guild players; any proposal is still not a reward.
+
+The trophy records cannot be connected to the current draft `naxx_gs_unlock` table without schema hardening for **original guild generation and idempotent encounter receipts**. The future kill hook must be audited against the exact deployed AzerothCore/Playerbots modules, the boss/map IDs verified for *classic* versus 3.3.5 Onyxia variants, and a transaction adapter must persist unlocks with audit receipts. No loot or gameobject IDs have been allocated. See [RAID_TROPHIES.md](RAID_TROPHIES.md).

@@ -90,3 +90,9 @@ This does **not** query any live production server, create tables, permit guild 
 A THIRD independent staging compilation option now exists: `NAXX_GS_BUILD_STAGING_IP_READ`, requiring `NAXX_GS_BUILD_STAGING_STEWARD` and a reviewed/linked `mod-individual-progression` source/header. `NaxxGuildStrongholds.StagingIpRead.Enabled=0` by default provides the separate runtime opt-in. The Guild and IP evidence page will then use the **actual linked module** to read its own `enabled` state, raw rewarded-quest rank and `progressionLimit`—not hidden quest ID guesses. It only runs for a verified GM guild member in-world.
 
 All housing, reward and service capability gates remain false, regardless of this source read. Missing/disabled IP or an unmatched installed fork is grounds to block staging release, not switch to an unverified fallback. See [STAGING_IP_RUNTIME_READ.md](STAGING_IP_RUNTIME_READ.md).
+
+## Five planned raid trophy concepts in the Guild Steward
+
+The Guild Steward's **Raid trophies [PLAN]** page now uses the five-entry `StrongholdTrophies` design catalogue instead of presenting the two general one-time activity requests as actual decoration objects. The preview lists Onyxia's Head, Ragnaros' Flame, Nefarian's Banner, C'Thun Relic and Kel'Thuzad Sigil with concept descriptions and [PLAN] labels.
+
+These entries are NOT earned, not saved, not placeable and not linked to a live raid boss, gameobject ID or housing location. The new guild-credit and placement logic is a **pure C++ proposal**, not a server hook. See [RAID_TROPHIES.md](RAID_TROPHIES.md).

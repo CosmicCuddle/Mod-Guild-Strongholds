@@ -118,6 +118,7 @@ trap 'rm -rf "$work"' EXIT
 "${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
   -I"$root/src" "$root/src/StrongholdCatalog.cpp" \
   "$root/src/StrongholdActivities.cpp" "$root/src/StrongholdConstruction.cpp" \
+  "$root/src/StrongholdLifecycle.cpp" "$root/src/StrongholdTrophies.cpp" \
   "$root/src/StrongholdStewardReadOnlyContent.cpp" \
   "$root/tests/steward_readonly_content_tests.cpp" \
   -o "$work/steward_readonly_content_tests"
@@ -150,3 +151,11 @@ trap 'rm -rf "$work"' EXIT
   "$root/tests/property_read_evidence_tests.cpp" \
   -o "$work/property_read_evidence_tests"
 "$work/property_read_evidence_tests"
+
+# Guild raid trophies: 40-player/mixed-guild raid, verified boss event,
+# unique human guild participants, no bot-as-proof, no actual awards/spawns.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdLifecycle.cpp" \
+  "$root/src/StrongholdTrophies.cpp" "$root/tests/trophy_tests.cpp" \
+  -o "$work/trophy_tests"
+"$work/trophy_tests"

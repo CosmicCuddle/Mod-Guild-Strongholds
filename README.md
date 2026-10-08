@@ -221,3 +221,11 @@ A further **independent optional** staging adapter, `StrongholdStagingIpAdapter.
 This adapter will intentionally **fail to compile** in an opt-in build without the reviewed IP header/source. The ordinary worldserver build includes no IP header or adapter calls. This is tested separately by checking out pinned public `Grimfeather/mod-individual-progression` into a disposable upstream AzerothCore compilation runner, not by modifying your installed fork. The compiled adapter still does not prove your deployed fork matches the pinned source.
 
 Nothing is granted: private housing, per-character activities, trophies and NPC rewards remain **disabled** even for a verified IP rank. See [STAGING_IP_RUNTIME_READ.md](docs/STAGING_IP_RUNTIME_READ.md).
+
+## Earned guild raid trophies — policy prototype (NOT awards)
+
+A new **five-trophy** guild raid catalogue now covers Onyxia, Ragnaros, Nefarian, C'Thun and Kel'Thuzad, with themed *concepts* for future stronghold decorations. The staging Guild Steward's trophy page browses these concepts directly from the C++ catalogue.
+
+We built independent fail-closed **guild raid credit proposals** requiring a real server-verified boss kill/encounter/instance, unique kill receipt, verified original guild generation and active property, non-duplicate unlock lookup and a configured minimum number of **distinct, confirmed human guild raiders**. Playerbots may assist with a raid but **cannot be counted as qualifying guild humans**. Mixed-guild raids can credit **more than one guild independently** if each meets its own configured participation requirement, including 40-player raids. The module makes **no assumption** that all 40 must belong to the same guild.
+
+The placement policy separately requires a generation-qualified earned trophy, empty approved logical slot, approved decoration entry and verified active guild property. Both successful outcomes are **proposals only**: no raid kill hook, SQL receipt, GO model/ID, NPC spawn, quest credit, event write or private housing is wired in. See [RAID_TROPHIES.md](docs/RAID_TROPHIES.md).
