@@ -19,8 +19,8 @@ int main()
             std::cerr << "FAILED: " << text << '\n';
         }
     };
-    auto snapshot = ProjectSnapshot{42, "human_crafting", 7, {0, 0, 0}};
-    auto context = ContributionContext{true, true, 42, true, false, false, true, false, 2};
+    auto snapshot = ProjectSnapshot{42, "human_crafting", "crafting", 7, {0, 0, 0}};
+    auto context = ContributionContext{true, true, 42, true, false, false, true, false, 2, "human"};
     auto request = ContributionRequest{"craft-receipt_0001", {100, 50, 25}};
 
     expect(ValidateBuildingProjects(), "Project catalog matches theme layouts");
@@ -48,11 +48,13 @@ int main()
     expect(duplicate.Status == ContributionStatus::DuplicateReceipt, "Already used receipt denied");
     expect(duplicate.Proposed.Delivered.Supplies == 100, "Duplicate proposal doesn't alter progress");
     context.ReceiptAlreadyCommitted = false;
+    request.ReceiptKey = "craft-receipt_0002";
     auto finishing = PlanContribution(first.Proposed, request, context);
     expect(finishing.Status == ContributionStatus::Accepted && finishing.Stage == ConstructionStage::Completed,
         "Second distinct delivery would complete if unique receipt");
     auto finished = finishing.Proposed;
     expect(PlanContribution(finished, request, context).Status == ContributionStatus::AlreadyCompleted, "Completed project locked");
+    request.ReceiptKey = "craft-receipt_0001";
 
     context.Enabled = false;
     expect(PlanContribution(snapshot, request, context).Status == ContributionStatus::Disabled, "Master switch");
@@ -60,6 +62,9 @@ int main()
     context.IdentityVerified = false;
     expect(PlanContribution(snapshot, request, context).Status == ContributionStatus::IdentityUnverified, "Server identity must be verified");
     context.IdentityVerified = true;
+    context.SettlementThemeKey = "orc";
+    expect(PlanContribution(snapshot, request, context).Status == ContributionStatus::IdentityUnverified, "Wrong racial property theme denied");
+    context.SettlementThemeKey = "human";
     context.ActorGuildId = 0;
     expect(PlanContribution(snapshot, request, context).Status == ContributionStatus::NoGuild, "Guildless denied");
     context.ActorGuildId = 43;
@@ -103,6 +108,9 @@ int main()
     snapshot.ProjectKey = "unlisted";
     expect(PlanContribution(snapshot, request, context).Status == ContributionStatus::UnknownProject, "Unknown snapshot project denied");
     snapshot.ProjectKey = "human_crafting";
+    snapshot.PlotKey = "prestige";
+    expect(PlanContribution(snapshot, request, context).Status == ContributionStatus::InvalidSnapshot, "Wrong plot/project mapping rejected");
+    snapshot.PlotKey = "crafting";
     snapshot.Version = std::numeric_limits<std::uint64_t>::max();
     expect(PlanContribution(snapshot, request, context).Status == ContributionStatus::VersionOverflow, "Version overflow guarded");
 

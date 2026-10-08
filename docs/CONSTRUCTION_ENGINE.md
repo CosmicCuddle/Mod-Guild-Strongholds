@@ -56,3 +56,8 @@ Guild Supplies are currently also recorded on `naxx_gs_settlement`, so the futur
 ## Release gates
 
 The GitHub unit test suite checks domain rules. Before declaring playable: test storage concurrency, rollback/restart, actual world objects, inventory accounting, all installed modules and safe housing privacy.
+
+
+## Stronghold theme and plot validation
+
+The domain snapshot now includes the **stored plot key**, and its context includes a **server-verified settlement theme**. A Human guild project is not valid at an Orc property (and a project cannot claim another plot). These values must originate from the database, not client-submitted NPC menu IDs.

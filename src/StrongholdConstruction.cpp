@@ -127,12 +127,13 @@ ContributionPlan PlanContribution(ProjectSnapshot const& stored,
     BuildingProject const* project = FindBuildingProject(stored.ProjectKey);
     if (!project)
         return reject(ContributionStatus::UnknownProject);
-    if (!stored.GuildId || !Within(stored.Delivered, project->Cost))
+    if (!stored.GuildId || stored.PlotKey != project->PlotKey ||
+        !Within(stored.Delivered, project->Cost))
         return reject(ContributionStatus::InvalidSnapshot);
 
     plan.Stage = DeriveConstructionStage(stored.Delivered, project->Cost);
 
-    if (!context.IdentityVerified)
+    if (!context.IdentityVerified || context.SettlementThemeKey != project->ThemeKey)
         return reject(ContributionStatus::IdentityUnverified);
     if (!context.ActorGuildId)
         return reject(ContributionStatus::NoGuild);

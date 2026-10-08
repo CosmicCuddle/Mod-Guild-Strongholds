@@ -41,6 +41,7 @@ struct ProjectSnapshot
 {
     std::uint32_t GuildId = 0;
     std::string ProjectKey;
+    std::string PlotKey;
     std::uint64_t Version = 0;
     Materials Delivered;
 };
@@ -62,6 +63,7 @@ struct ContributionContext
     bool ReceiptLookupVerified = false;
     bool ReceiptAlreadyCommitted = false;
     std::uint8_t SettlementLevel = 0;
+    std::string_view SettlementThemeKey;  // Server-verified selected theme
 };
 
 enum class ContributionStatus : std::uint8_t
