@@ -149,3 +149,15 @@ A separate GitHub Actions job checks pinned **real upstream** AzerothCore CMake 
 GitHub Actions now has a **separate, isolated module compilation workflow** at `.github/workflows/upstream-compile.yml`. It checks out the *pinned public* AzerothCore upstream source and our **draft branch** into temporary GitHub runner directories, copies only the module's `src/` and `conf/` under a lowercase module folder, configures upstream CMake, and builds the genuine `modules` C++ target using real game headers. It also checks that both expected loader entry points are in the compiled archive.
 
 The job does **not** run `worldserver`, connect to MySQL, install to a server, apply SQL, or enable any gameplay. It is not a complete `worldserver` link or a compile against your customised AzerothCore/Playerbots/IP fork. Do not treat even a successful upstream compilation as permission to deploy housing. See [CORE_BUILD_CONTRACT.md](docs/CORE_BUILD_CONTRACT.md).
+
+
+## Expanded upstream integration: full link + opt-in diagnostics
+
+The isolated GitHub Actions build now checks **two independent compiler configurations** against the immutable public upstream AzerothCore source:
+
+1. **Normal game configuration:** build the real `modules` C++ target, check both case-sensitive loader symbols, verify the staging GM command is absent and attempt to compile **and link the full `worldserver` executable**. No realm is started.
+2. **Staging diagnostics opt-in:** explicitly enable `NAXX_GS_BUILD_STAGING_DIAGNOSTICS` in the temporary CI compiler flags and build the real upstream module target to check that the GM command compiles against actual `ChatHandler`, `Player`, `CommandScript` and RBAC headers. Does not link or run a realm.
+
+Both paths use a disposable GitHub Actions runner with no real player data, SQL updates or user server access. **Neither verifies the user's custom deployed AzerothCore/Grimfeather IP/Playerbots stack**, nor private housing functionality.
+
+This expands the workflow after the initial module-target compilation succeeded. See [CORE_BUILD_CONTRACT.md](docs/CORE_BUILD_CONTRACT.md).

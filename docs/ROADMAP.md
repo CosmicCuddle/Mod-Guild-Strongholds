@@ -102,3 +102,8 @@ Next non-negotiable validation: compile against the **user's actual deployed Aze
 Added a separate, opt-in-capable GitHub workflow that attempts to compile the **actual upstream** AzerothCore `modules` target with this development code using Clang, CMake and Ninja. This closes a gap between prior fake-header smoke tests and a genuine build of C++ code against actual upstream core headers.
 
 The job does not build/link the whole user's customised worldserver, start any realm, interact with databases or certify coexistence with deployed modules. A successful run would improve *upstream source compatibility* only. A full staging build on the **user's version-matched complete module stack** and two-guild privacy validation remain release blockers.
+
+
+## Follow-on upstream build gate
+
+The initial passive upstream module compilation passed. The next automated gate now attempts a **complete public-upstream worldserver compile and link** with the disabled module, plus a second **diagnostics-enabled** module compile checking real upstream command interfaces. These are isolated CI-only jobs and intentionally exclude user's deployed modules and real databases. Neither result can certify private guild routing or game features.

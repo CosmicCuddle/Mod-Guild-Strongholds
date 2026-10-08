@@ -44,3 +44,8 @@ The diagnostic is therefore never a way to change `DevelopmentCapabilities.Priva
 ## Undo
 
 Remove the compile definition and rebuild the known-good staging binary; leave `NaxxGuildStrongholds.Diagnostics.Enabled=0`. This feature creates no persistent records or world objects. The rest of the module continues to be blocked from enabling housing.
+
+
+## New real-header staging build check
+
+A separate GitHub Actions compile variant now compiles `StrongholdStagingDiagnostics.cpp` with its explicit staging flag against pinned *real upstream* AzerothCore headers, in addition to the existing fake-interface tests. It validates that the GM command is **absent** from the normal module build and **present** in a separately isolated staging compile. This does not enable or install that command on your actual server; its config setting still defaults to off. Complete fork-specific staging tests are still necessary before use.

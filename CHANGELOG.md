@@ -146,3 +146,11 @@
 - The CI job copies only Strongholds source/config into an ephemeral AzerothCore `modules/mod-guild-strongholds` folder, builds target `modules` with real core headers, and checks both folder-case registration symbols.
 - No database, game server, SQL migration, world object, DBC or live user data accessed. This is a **static module target compile**, not a full worldserver link nor a deployed-fork compatibility test.
 - Housing gameplay remains disabled, unimplemented and blocked by incomplete privacy isolation.
+
+
+## Upstream full-link and staging-command API validation (development)
+
+- Confirmed initial passive module compiled with real upstream AzerothCore headers and both folder-case registration exports.
+- Expanded ephemeral GitHub build into two variants: normal full-worldserver compile/link, and separate diagnostics-enabled module compilation using real AzerothCore headers.
+- Added binary-level checks to ensure the normal build **does not include** the staging GM command and the explicitly opted-in build does.
+- Neither CI mode starts a realm, applies SQL or touches live data. Full deployed-fork compatibility and guild privacy remain unverified.

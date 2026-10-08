@@ -1,4 +1,4 @@
-name: Upstream AzerothCore module compile (no realm)
+name: Upstream AzerothCore compile and link (no realm)
 
 on:
   push:
@@ -18,10 +18,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  upstream-module-compile:
-    name: Compile passive module with real upstream headers (static)
+  compile-against-upstream:
+    name: ${{ matrix.label }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 55
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: Real upstream full worldserver compile and link (housing disabled)
+            compile_flags: ""
+            link_worldserver: true
+          - label: Real upstream staging GM diagnostics module compile (opt-in)
+            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS"
+            link_worldserver: false
     steps:
       - name: Check out isolated Strongholds development source
         uses: actions/checkout@v4
@@ -35,22 +45,22 @@ jobs:
           ref: 7b2cecef92b271a468e39d89831b520b20ae06a8
           path: core
           persist-credentials: false
-      - name: Assert safe staging-only registration and copy module source
+      - name: Assert safe isolated source and install NO game data
         shell: bash
         run: |
           set -euo pipefail
           test -f strongholds/src/StrongholdBootstrap.cpp
           test -f strongholds/src/StrongholdStartupGate.h
-          grep -q "DevelopmentCapabilities{}" strongholds/src/StrongholdStartupGate.h
-          ! grep -q "NAXX_GS_BUILD_STAGING_DIAGNOSTICS" core/CMakeLists.txt
+          grep -Fq 'DevelopmentCapabilities{}' strongholds/src/StrongholdStartupGate.h
           test ! -e core/modules/mod-guild-strongholds
           mkdir -p core/modules/mod-guild-strongholds
           cp -a strongholds/src core/modules/mod-guild-strongholds/
           cp -a strongholds/conf core/modules/mod-guild-strongholds/
           test ! -e core/modules/mod-guild-strongholds/tests
-          echo "Isolated upstream-only source checkout: no live server or database access"
+          test ! -e core/modules/mod-guild-strongholds/data
+          echo "CI-only source checkout, NO databases, no DBC, no live server"
 
-      - name: Install upstream build dependencies
+      - name: Install upstream C++ build dependencies
         shell: bash
         run: |
           set -euo pipefail
@@ -61,15 +71,18 @@ jobs:
             libreadline6-dev libssl-dev libtool openssl zlib1g-dev \
             libmysqlclient-dev libncurses-dev
 
-      - name: Configure AzerothCore with one disabled-by-default module
+      - name: Configure real upstream AzerothCore
         shell: bash
+        env:
+          NAXX_GS_COMPILE_FLAGS: ${{ matrix.compile_flags }}
         run: |
           set -euo pipefail
           cmake -S core -B core/build -G Ninja \
             -DCMAKE_C_COMPILER=clang-18 \
             -DCMAKE_CXX_COMPILER=clang++-18 \
+            -DCMAKE_CXX_FLAGS="$NAXX_GS_COMPILE_FLAGS" \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/guild-strongholds-never-install" \
+            -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/guild-strongholds-no-install" \
             -DAPPS_BUILD=all \
             -DTOOLS_BUILD=none \
             -DSCRIPTS=static \
@@ -79,23 +92,51 @@ jobs:
             -DUSE_COREPCH=OFF
           grep -R -q 'Addmod_guild_strongholdsScripts' core/build/modules/gen_scriptloader
 
-      - name: Compile actual module target against upstream game headers
+      - name: Compile actual module against upstream headers
         shell: bash
         run: |
           set -euo pipefail
           cmake --build core/build --target modules --parallel 2
 
-      - name: Confirm loader symbols in compiled module library
+      - name: Check module binary symbol exports
         shell: bash
         run: |
           set -euo pipefail
           library="$(find core/build -type f -name 'libmodules.a' -print -quit)"
           if [[ -z "$library" ]]; then
-            echo "::error::No compiled module archive found"
+            echo "::error::Compiled module static archive was not found"
             exit 1
           fi
           nm -C "$library" > "$RUNNER_TEMP/naxx-gs-symbols.txt"
           grep -Fq 'Addmod_guild_strongholdsScripts()' "$RUNNER_TEMP/naxx-gs-symbols.txt"
           grep -Fq 'AddMod_Guild_StrongholdsScripts()' "$RUNNER_TEMP/naxx-gs-symbols.txt"
-          echo "PASS: compiled both folder-name entry points with real upstream headers"
-          echo "NOT a full worldserver link, NOT the installed fork, NOT housing gameplay"
+          if [[ "${{ matrix.link_worldserver }}" == "true" ]]; then
+            # Opt-in diagnostic must not be part of the regular linked server.
+            if grep -Fq 'NaxxGuildStrongholds::AddStagingDiagnosticsScripts()' \
+                "$RUNNER_TEMP/naxx-gs-symbols.txt"; then
+              echo "::error::Staging GM diagnostic symbol unexpectedly present in normal build"
+              exit 1
+            fi
+          else
+            grep -Fq 'NaxxGuildStrongholds::AddStagingDiagnosticsScripts()' \
+              "$RUNNER_TEMP/naxx-gs-symbols.txt"
+          fi
+
+      - name: Link full real upstream worldserver with disabled housing
+        if: matrix.link_worldserver
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake --build core/build --target worldserver --parallel 2
+          test -x core/build/bin/worldserver || \
+            test -x core/build/src/server/apps/worldserver/worldserver || \
+            find core/build -type f -name worldserver -perm /111 | grep -q .
+          echo "PASS: built and linked actual upstream worldserver with passive Strongholds"
+          echo "No realm started, no SQL loaded, no phase changed"
+
+      - name: Explicitly report test limitations
+        shell: bash
+        run: |
+          echo "COMPILED: pinned public upstream AzerothCore only"
+          echo "NOT TESTED: deployed Naxxramas core, IP, Playerbots, other installed modules"
+          echo "NOT TESTED: private housing map, quests, NPCs, real SQL, or safe teleports"

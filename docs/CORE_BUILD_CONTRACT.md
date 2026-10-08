@@ -61,3 +61,15 @@ It never runs `worldserver`, installs anything to the user’s server, contacts 
 **Important test boundary:** compiling a static `modules` library is **not** equivalent to linking the entire `worldserver`. It is not proof of any live module stack, persistent private instances, phasing, safe return, playerbots, or actual NPC/quest functionality. If upstream builds change, this check must fail visibly and we must not infer deployed-fork compatibility. A separate real **staging worldserver build** will still be required before deployment.
 
 **Normal module behaviour:** the passive WorldScript remains disabled by default and `NAXX_GS_BUILD_STAGING_DIAGNOSTICS` is not provided. All `DevelopmentCapabilities` are false.
+
+
+## Full worldserver link and staging diagnostic real-API checks
+
+After the initial isolated `modules` target compilation passed, the workflow was expanded into **two independently compiled matrix jobs**:
+
+- **Normal:** uses real public upstream game headers, builds static `modules`, verifies expected loader exports and **rejects the GM diagnostic symbol**, then attempts the entire `worldserver` target including linking the module into the executable.
+- **Staging diagnostic:** explicitly supplies `-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS` in a separate disposable CMake build, compiles the `modules` target against upstream `ChatHandler`, `Player`, RBAC and `CommandScript`, and requires the opt-in symbol to be present. It does NOT start a realm, read actual characters, execute the GM command or write SQL.
+
+If a job fails, the module must be fixed before promoting any compile compatibility claim. A completed full link proves only that the source links with the **pinned upstream** source in CI, not with a customised server fork or installed Playerbots/Individual Progression stack. `DevelopmentCapabilities` remain hard-blocked.
+
+GitHub workflow: [upstream-compile.yml](../.github/workflows/upstream-compile.yml).

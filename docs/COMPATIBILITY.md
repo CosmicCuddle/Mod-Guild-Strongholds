@@ -141,3 +141,8 @@ The entire housing feature remains hard-blocked under `DevelopmentCapabilities`.
 A new GitHub Actions compile check runs the current Strongholds source in a **temporary pinned upstream AzerothCore** CMake build, with real game headers and no runtime server or databases. It verifies the disabled-by-default module's source compiles and expected loader symbols are exported. This goes beyond matching CMake text and compiling mock headers.
 
 The deployed core may differ materially (Playerbots, Grimfeather IP, custom Naxxramas Core and other modules). Passing the public-upstream module target **cannot** replace a full separate staging build against the deployed complete sources, nor does it prove gameplay collision freedom, safe teleport recovery or privacy.
+
+
+## Separate normal and staging compiler variants
+
+The upstream GitHub build now tests that a normal `worldserver` can link against the module with no staging GM diagnostic, and separately compiles the opt-in diagnostics using real public upstream command API headers. A *successful* public-source full link cannot prove compatibility with your installed fork, Playerbots, custom Naxxramas-Core or Individual Progression. Their versions and coexistence remain release blockers.
