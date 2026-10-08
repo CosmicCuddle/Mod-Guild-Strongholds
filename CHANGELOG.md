@@ -170,3 +170,12 @@
 - Current staff/GM and guild membership are revalidated on every gossip click; forged menu senders/actions fail closed.
 - Added independent pure C++ steward permission/action tests and real upstream CI opt-in compilation; normal build must exclude both staging registrations.
 - No property purchase, building placement, currency change, quest reward, map phase or teleport.
+
+## Guild Steward catalogue-driven gossip pages (development only)
+
+- Replaced two static teaser lines with navigable planning-only pages sourced from the existing 10 race themes, Human/Orc building projects, 3 daily, 4 weekly and 2 one-time activity definitions.
+- Added planned resource cost, settlement level and Individual Progression milestone labels without claiming a player's actual progress.
+- Added `Back`/Close navigation and only self-looping detail rows; no claim, unlock, donation, quest, teleport or reward actions exist.
+- Rechecks staff status, guild membership and config for every gossip selection, including navigation. Unknown/forged selections fail closed.
+- Added C++ regression tests checking catalogue-derived labels, planned-only wording, page size limits, all defined menu actions and revoked permissions.
+- Real NPC remains staging-flag-only, config off by default, and has no creature template or spawn.

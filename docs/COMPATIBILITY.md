@@ -153,3 +153,7 @@ The upstream GitHub build now tests that a normal `worldserver` can link against
 The new `StrongholdStagingSteward.cpp` is an upstream-AzerothCore `CreatureScript`, explicitly compiled only with the separate `NAXX_GS_BUILD_STAGING_STEWARD` definition. It uses `ScriptedGossip.h`, server-read `Player::IsGameMaster()` and `GetGuildId()`, `OnGossipHello` and `OnGossipSelect`. Every gossip selection is checked again for active config, GM mode, guild membership, exact sender and approved informational action.
 
 There is deliberately **no** assigned `creature_template` row, SQL or spawn, nor housing service code. The optional script must be compiled and verified against the user's actual installed AzerothCore fork on a separate staging server before *any* bind is permitted. Existing Individual Progression quests, spells and Playerbots are untouched. See [STAGING_STEWARD.md](STAGING_STEWARD.md).
+
+## Guild Steward script uses only read-only catalogue data
+
+The opt-in staging `CreatureScript` now links the `StrongholdCatalog`, `StrongholdConstruction`, and `StrongholdActivities` definitions to generate gossip pages. It has no runtime IP header, DB adapter, Playerbots mutation, inventory, quest reward or phase APIs. The real-header upstream opt-in compilation is the next check; the deployed fork and in-game gossip remain untested. Normal server builds never register the staging script.

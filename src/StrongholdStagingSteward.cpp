@@ -1,34 +1,34 @@
 /*
- * STAGING-ONLY read-only Guild Steward (NOT gameplay).
+ * STAGING-ONLY read-only Guild Steward (NOT housing gameplay).
  *
- * A normal worldserver build does NOT compile/register this script.
- * Even in a staging build it must be explicitly enabled in config,
- * invoked by a real staff/GM character in a guild, and bound manually
- * to a separately reviewed creature_template.ScriptName on staging.
- *
- * No production NPC entry, creature spawn, SQL, phase, map or teleport.
+ * Not compiled/registered in normal builds. Requires a separate compile
+ * flag, disabled-by-default config, GM character in guild, and a manually
+ * authorised staging NPC ScriptName binding. No SQL or world changes.
  */
 #if defined(NAXX_GS_BUILD_STAGING_STEWARD)
 
 #include "StrongholdStewardPreview.h"
+#include "StrongholdStewardReadOnlyContent.h"
 #include "Config.h"
 #include "Creature.h"
 #include "Player.h"
 #include "ScriptMgr.h"
 #include "ScriptedGossip.h"
 
+#include <cstdint>
 #include <string>
+#include <utility>
 
 namespace NaxxGuildStrongholds
 {
 namespace
 {
-constexpr std::uint32_t kActionOverview =
-    GOSSIP_ACTION_INFO_DEF + static_cast<std::uint32_t>(StewardPreviewAction::Overview);
-constexpr std::uint32_t kActionBuildings =
-    GOSSIP_ACTION_INFO_DEF + static_cast<std::uint32_t>(StewardPreviewAction::FutureBuildings);
-constexpr std::uint32_t kActionClose =
-    GOSSIP_ACTION_INFO_DEF + static_cast<std::uint32_t>(StewardPreviewAction::Close);
+constexpr std::uint32_t kActionBase = GOSSIP_ACTION_INFO_DEF;
+
+std::uint32_t EncodeAction(StewardPreviewAction action)
+{
+    return kActionBase + static_cast<std::uint32_t>(action);
+}
 
 StewardPreviewContext ReadContext(Player const* player)
 {
@@ -43,6 +43,55 @@ StewardPreviewContext ReadContext(Player const* player)
     return ctx;
 }
 
+void AddNavigation(Player* player)
+{
+    AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Back to overview",
+        GOSSIP_SENDER_MAIN, EncodeAction(StewardPreviewAction::Back));
+    AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Close staging preview",
+        GOSSIP_SENDER_MAIN, EncodeAction(StewardPreviewAction::Close));
+}
+
+void ShowMainMenu(Player* player, Creature* creature)
+{
+    ClearGossipMenuFor(player);
+    // Explicit PREVIEW wording: never imply these styles, buildings,
+    // guild levels or quests have been earned or made available.
+    for (std::pair<StewardPreviewAction, char const*> const& item : {
+        std::pair{StewardPreviewAction::Overview, "Development overview [LOCKED]"},
+        std::pair{StewardPreviewAction::AllianceThemes, "Alliance racial themes [PLAN]"},
+        std::pair{StewardPreviewAction::HordeThemes, "Horde racial themes [PLAN]"},
+        std::pair{StewardPreviewAction::HumanBuildings, "Human buildings [PLAN]"},
+        std::pair{StewardPreviewAction::OrcBuildings, "Orc buildings [PLAN]"},
+        std::pair{StewardPreviewAction::DailyActivities, "Daily activity ideas [PLAN]"},
+        std::pair{StewardPreviewAction::WeeklyActivities, "Weekly activity ideas [PLAN]"},
+        std::pair{StewardPreviewAction::Trophies, "Raid trophies [PLAN]"}
+    })
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, item.second,
+            GOSSIP_SENDER_MAIN, EncodeAction(item.first));
+
+    AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Close staging preview",
+        GOSSIP_SENDER_MAIN, EncodeAction(StewardPreviewAction::Close));
+    SendGossipMenuFor(player, player->GetGossipTextId(creature), creature);
+}
+
+void ShowDetailPage(Player* player, Creature* creature, StewardPreviewAction page)
+{
+    ClearGossipMenuFor(player);
+    auto rows = BuildStewardPreviewRows(page);
+    // Defensive cap: never flood client with an unbounded source catalogue.
+    // Every detail line is itself a self-loop; it cannot trigger gameplay.
+    std::size_t rendered = 0;
+    for (std::string const& row : rows)
+    {
+        if (rendered++ >= 7)
+            break;
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, row,
+            GOSSIP_SENDER_MAIN, EncodeAction(page));
+    }
+    AddNavigation(player);
+    SendGossipMenuFor(player, player->GetGossipTextId(creature), creature);
+}
+
 class GuildStrongholdsStagingSteward final : public CreatureScript
 {
 public:
@@ -53,26 +102,13 @@ public:
     {
         if (!player || !creature)
             return true;
-        ClearGossipMenuFor(player);
-
-        if (CheckStewardPreview(ReadContext(player)) !=
-            StewardPreviewDecision::Allowed)
+        if (CheckStewardPreview(ReadContext(player)) != StewardPreviewDecision::Allowed)
         {
+            ClearGossipMenuFor(player);
             CloseGossipMenuFor(player);
             return true;
         }
-
-        // All options are informative; NO action changes the game world.
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT,
-            "Guild " + std::to_string(player->GetGuildId()) +
-            ": view development status",
-            GOSSIP_SENDER_MAIN, kActionOverview);
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT,
-            "Planned guild buildings and raid trophies",
-            GOSSIP_SENDER_MAIN, kActionBuildings);
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT,
-            "Close preview", GOSSIP_SENDER_MAIN, kActionClose);
-        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature);
+        ShowMainMenu(player, creature);
         return true;
     }
 
@@ -82,43 +118,29 @@ public:
         if (!player || !creature)
             return true;
 
-        ClearGossipMenuFor(player);
-        // SECURITY: sender and selection can be fabricated in client packets.
-        // Validate *current* GM status, guild and config on each click.
-        if (action < GOSSIP_ACTION_INFO_DEF ||
+        // SECURITY: client-supplied sender and action can be forged.
+        // Validate current staff, guild and config before EVERY selection.
+        if (action < kActionBase ||
             CheckStewardSelection(ReadContext(player),
                 sender == GOSSIP_SENDER_MAIN,
-                action - GOSSIP_ACTION_INFO_DEF) != StewardPreviewDecision::Allowed)
+                action - kActionBase) != StewardPreviewDecision::Allowed)
         {
+            ClearGossipMenuFor(player);
             CloseGossipMenuFor(player);
             return true;
         }
 
-        if (action == kActionClose)
+        StewardPreviewAction const choice =
+            static_cast<StewardPreviewAction>(action - kActionBase);
+        if (choice == StewardPreviewAction::Close)
         {
+            ClearGossipMenuFor(player);
             CloseGossipMenuFor(player);
-            return true;
         }
-
-        if (action == kActionOverview)
-        {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT,
-                "Development preview only: private housing is not available.",
-                GOSSIP_SENDER_MAIN, kActionClose);
-        }
-        else if (action == kActionBuildings)
-        {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT,
-                "Future: guild buildings, raid trophies and decorations. Not unlocked.",
-                GOSSIP_SENDER_MAIN, kActionClose);
-        }
+        else if (choice == StewardPreviewAction::Back)
+            ShowMainMenu(player, creature);
         else
-        {
-            CloseGossipMenuFor(player);
-            return true;
-        }
-
-        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature);
+            ShowDetailPage(player, creature, choice);
         return true;
     }
 };
@@ -130,4 +152,4 @@ void AddStagingStewardScripts()
 }
 }
 
-#endif // NAXX_GS_BUILD_STAGING_STEWARD
+#endif

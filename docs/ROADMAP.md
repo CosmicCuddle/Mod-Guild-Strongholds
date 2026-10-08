@@ -114,3 +114,7 @@ The initial passive upstream module compilation passed. The next automated gate 
 The first actual AzerothCore `CreatureScript` now exists: an explicitly opt-in read-only Guild Steward information menu with GM/guild requirements. It is not spawned, does not bind to any live creature template and cannot perform housing operations. The upstream CI checks that the opt-in script compiles and is absent from normal builds. This prepares real gossip integration while protecting players and existing modules.
 
 Next step is **full upstream/staging build validation**, then decide a safe guild-private location and real server-side persistence; only after a complete staged compatibility review should an approved dedicated Guild Steward NPC template/SQL be drafted. See [STAGING_STEWARD.md](STAGING_STEWARD.md).
+
+## Staging Guild Steward menu expansion
+
+The actual opt-in `CreatureScript` preview now reuses existing C++ source catalogues rather than maintaining disconnected placeholder text. Its read-only gossip pages expose prospective architecture, Human/Orc building costs and minimum guild/IP activity thresholds. Everything is shown as planned and locked; **no player/guild status is loaded and no gameplay action exists**. The separate C++ content tests and real-header opt-in compile provide a foundation for eventual version-verified data-backed NPC interactions.

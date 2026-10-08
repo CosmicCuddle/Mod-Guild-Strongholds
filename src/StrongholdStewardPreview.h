@@ -4,8 +4,8 @@
 #include <cstdint>
 
 // Pure, fail-closed staging-only NPC interaction policy.
-// There is NO character DB access, teleport, phase write, property purchase,
-// material deduction, raid credit, quest assignment, or housing activation.
+// No DB access, teleport, phase write, property purchase, material
+// deduction, raid credit, quest assignment, or housing activation.
 namespace NaxxGuildStrongholds
 {
 struct StewardPreviewContext
@@ -25,20 +25,23 @@ enum class StewardPreviewDecision : std::uint8_t
     InvalidAction
 };
 
-// Menu action values are only local, read-only information requests.
 enum class StewardPreviewAction : std::uint32_t
 {
     Overview = 1,
-    FutureBuildings = 2,
-    Close = 3
+    AllianceThemes = 2,
+    HordeThemes = 3,
+    HumanBuildings = 4,
+    OrcBuildings = 5,
+    DailyActivities = 6,
+    WeeklyActivities = 7,
+    Trophies = 8,
+    Back = 9,
+    Close = 10
 };
 
 StewardPreviewDecision CheckStewardPreview(StewardPreviewContext const& input);
-
-StewardPreviewDecision CheckStewardSelection(
-    StewardPreviewContext const& input, bool IsMainSender,
-    std::uint32_t action);
-
+StewardPreviewDecision CheckStewardSelection(StewardPreviewContext const& input,
+    bool isMainSender, std::uint32_t action);
 bool IsInformationalAction(std::uint32_t action);
 }
 #endif

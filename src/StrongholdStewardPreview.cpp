@@ -15,20 +15,21 @@ StewardPreviewDecision CheckStewardPreview(StewardPreviewContext const& input)
 
 bool IsInformationalAction(std::uint32_t action)
 {
-    return action == static_cast<std::uint32_t>(StewardPreviewAction::Overview) ||
-           action == static_cast<std::uint32_t>(StewardPreviewAction::FutureBuildings);
+    return action >= static_cast<std::uint32_t>(StewardPreviewAction::Overview) &&
+        action <= static_cast<std::uint32_t>(StewardPreviewAction::Trophies);
 }
 
 StewardPreviewDecision CheckStewardSelection(
-    StewardPreviewContext const& input, bool IsMainSender,
+    StewardPreviewContext const& input, bool isMainSender,
     std::uint32_t action)
 {
     StewardPreviewDecision const base = CheckStewardPreview(input);
     if (base != StewardPreviewDecision::Allowed)
         return base;
-    if (!IsMainSender)
+    if (!isMainSender)
         return StewardPreviewDecision::InvalidMenuSender;
     if (!IsInformationalAction(action) &&
+        action != static_cast<std::uint32_t>(StewardPreviewAction::Back) &&
         action != static_cast<std::uint32_t>(StewardPreviewAction::Close))
         return StewardPreviewDecision::InvalidAction;
     return StewardPreviewDecision::Allowed;

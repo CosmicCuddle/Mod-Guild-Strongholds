@@ -43,3 +43,18 @@ The CI matrix deliberately builds the real upstream AzerothCore `modules` target
 6. Confirm zero housing, quests, phasing, DB writes, teleport or access-control changes. Remove the NPC and its binding, revert staged binary/config and verify backups.
 
 **There are no provided NPC IDs, SQL statements, coordinates or actual world spawns. Do not install this draft on your live realm.**
+
+## Rich catalogue-based preview — still read-only
+
+The optional script now presents a main menu with Development Overview, Alliance Themes, Horde Themes, Human Buildings, Orc Buildings, Daily Activities, Weekly Activities, Raid Trophies, and Close. A detail page displays the relevant **compiled source catalogue**, never live property state:
+
+- 5 Alliance and 5 Horde theme names/architecture descriptions.
+- 6 Human and 6 Orc building plans, minimum settlement level and *planned* supply/timber/iron costs.
+- 3 proposed daily activities, 4 weekly activities and 2 future one-time trophy requests, each labelled with planned guild level and IP milestone.
+- Back and Close navigation; preview detail lines reopen only the same page and cannot perform any gameplay action.
+
+**Every content entry explicitly says `[PLAN]` or `[LOCKED]`.** This is not a live IP adapter, real guild construction view, quest giver, vendor or trophy distributor. The implementation intentionally does **not** read current guild property rows, IP progression, quest flags or live inventory, and avoids falsely implying an achievement was earned. Future services must use the server-authoritative adapters and private-space gates before becoming accessible.
+
+`tests/steward_readonly_content_tests.cpp` verifies catalogue linkage, 5/5 racial theme counts, six buildings per prototype race, three/four/two activity counts, stated minimum levels/required IP milestones, bounded gossip page size and planning-only wording. The existing selection-policy tests now cover all ten defined read-only menu actions, unknown/forged actions and revoked privileges.
+
+This remains only an **explicitly compiled, staff-only staging script** with no NPC template, spawn, world SQL or live gameplay changes.

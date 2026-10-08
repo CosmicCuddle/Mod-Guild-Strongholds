@@ -170,3 +170,11 @@ The module now contains `src/StrongholdStagingSteward.cpp`, a real AzerothCore `
 A normal build omits the script. On an approved *separate staging* build it requires BOTH `NAXX_GS_BUILD_STAGING_STEWARD` and `NaxxGuildStrongholds.StagingSteward.Enabled=1`. Only a staff character in GM mode who belongs to a guild can view it. It rechecks permissions on every gossip selection and accepts only overview, future-building information, and close. It explicitly says housing is unavailable.
 
 No creature template ID, spawn, world SQL, guild property purchase, teleport, inventory debit, quest progress, decoration or phase operation is included. A staging admin would have to supply a separately approved, backed-up test NPC template and script binding after compatibility testing. See [STAGING_STEWARD.md](docs/STAGING_STEWARD.md).
+
+## Catalogue-driven Guild Steward preview (development only)
+
+The staging-only Guild Steward now has browsable pages for **all ten race-theme plans**, **twelve Human/Orc building projects**, **daily/weekly IP-milestone activity plans**, and **two planned raid trophy requests**. Every preview row is built from the project's actual C++ catalogues, not duplicated string placeholders.
+
+All rows say `[PLAN]` or `[LOCKED]`, include only planned minimum settlement levels, suggested resource costs and IP milestone numbers, and never imply that the guild owns or can use anything. A menu click can only change the read-only gossip page, go back or close. Separate C++ tests verify catalogue linkage, page sizes and no accidental unlocked/reward descriptions.
+
+No character IP rank, guild settlement level, claim status, completion receipt or trophy ownership is read from the server yet. Production builds omit the preview CreatureScript; no NPC has been spawned or bound. See [STAGING_STEWARD.md](docs/STAGING_STEWARD.md).

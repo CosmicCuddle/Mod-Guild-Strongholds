@@ -112,3 +112,13 @@ trap 'rm -rf "$work"' EXIT
   "$root/tests/steward_preview_tests.cpp" \
   -o "$work/steward_preview_tests"
 "$work/steward_preview_tests"
+
+# Preview pages derive their content from the real in-repo catalogues.
+# This does not read guild/player progress or modify the world.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdCatalog.cpp" \
+  "$root/src/StrongholdActivities.cpp" "$root/src/StrongholdConstruction.cpp" \
+  "$root/src/StrongholdStewardReadOnlyContent.cpp" \
+  "$root/tests/steward_readonly_content_tests.cpp" \
+  -o "$work/steward_readonly_content_tests"
+"$work/steward_readonly_content_tests"
