@@ -26,3 +26,10 @@ Before each playable milestone is accepted: confirm the full existing module inv
 - v0.1.0 foundations: inert loader, draft SQL, configuration and safety/compatibility documents.
 - v0.2.0 settlement catalogue (non-playable substep): ten defined race themes, Human/Orc plot definitions and pure access policy tests.
 - **Still outstanding for v0.2.0 proper:** evaluated private-area mechanism, approved map/asset coordinates, server-side NPC and teleport implementation, isolation tests with the *actual* IP and Playerbots configuration.
+
+
+## Subsequent research checkpoint
+
+Upstream MapMgr and MapInstanced source indicates that standard dungeon/raid instance routing is based on player/group instance saves, **not guild ownership**. No production-safe guild private-space mechanism has been selected yet.
+
+Per-character activity gate code is now available for testing in `src/StrongholdActivities.*`. Runtime compatibility and IP adapter are still outstanding.

@@ -48,3 +48,10 @@ Guild Strongholds must coexist with the server's **actually installed** modules,
 The `src/StrongholdCatalog.h/.cpp` pair defines all ten racial themes and two *logical* Human/Orc building layouts, with pure faction and guild access-policy checks. These checks do **not** create housing instances or teleport players. Read [SETTLEMENT_CATALOG.md](docs/SETTLEMENT_CATALOG.md) and [ISOLATION_RESEARCH.md](docs/ISOLATION_RESEARCH.md).
 
 A standalone C++ regression test is provided at `bash tests/run-catalog-tests.sh` (requires a C++17 compiler). It tests the data and fail-closed policy, **not** AzerothCore integration or compatibility with deployed modules.
+
+
+## Milestone: per-character activity eligibility groundwork
+
+`src/StrongholdActivities.h/.cpp` now defines nine sample daily, weekly and one-time settlement activities and fail-closed access-policy checks for personal IP milestones, settlement development, guild ownership and Playerbots. This is **domain logic**, not live quest registrations or reward processing. See [IP_ACTIVITY_RULES.md](docs/IP_ACTIVITY_RULES.md) for the concrete gating rules and the requirement for a version-matched, read-only IP adapter.
+
+`bash tests/run-catalog-tests.sh` tests the racial catalogue **and** activity eligibility without installing or changing anything in AzerothCore.

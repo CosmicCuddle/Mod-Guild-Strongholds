@@ -35,3 +35,23 @@ Do not enable the future Guild Steward, preview, purchase, teleport or building 
 `src/StrongholdCatalog.*` contains logical themes and plot names only. `CheckGuildEntry` is a **pure policy function** accepting prevalidated IDs and a test-established isolation-status value; it is not called from AzerothCore hooks and it does not teleport or spawn anything.
 
 Further code should introduce a server-only adapter to acquire authoritative guild membership, not trust any ID sent by the client. Real-world server hooks and map APIs must be checked against the exact deployed core revision before integrating this policy.
+
+
+## Source inspection checkpoint — 8 October 2026
+
+Research targets inspected (upstream code, **not** the user's deployed fork):
+
+- [AzerothCore MapMgr.cpp](https://github.com/azerothcore/azerothcore-wotlk/blob/master/src/server/game/Maps/MapMgr.cpp): `CreateMap(id, player)` delegates instanced-map selection to `MapInstanced::CreateInstanceForPlayer` when appropriate. `PlayerCannotEnter` enforces dungeon/raid entry requirements (including scripts and raid groups).
+- [AzerothCore MapInstanced.cpp](https://github.com/azerothcore/azerothcore-wotlk/blob/master/src/server/game/Maps/MapInstanced.cpp): `CreateInstanceForPlayer` resolves destination instance IDs from `sInstanceSaveMgr->PlayerGetDestinationInstanceId` or generates one. It is **player/group/instance-save oriented**, not keyed by guild property ownership.
+- [Guild House mod_guildhouse.cpp](https://github.com/azerothcore/mod-guildhouse/blob/master/src/mod_guildhouse.cpp): its player script assigns the guild's saved phase in GM Island (zone/area 876); its `OnBeforeWorldObjectSetPhaseMask` override changes combined-phase handling in that zone. It also has a code comment worrying about players in the wrong phase.
+- [Individual Progression header](https://github.com/ZhengPeiRu21/mod-individual-progression/blob/master/src/IndividualProgression.h): individual progression is derived from quest state and exposes `GetPlayerProgressionFromQuests` and `hasPassedProgression`; its own area/phase code needs separate conflict testing.
+
+### Consequences for implementation
+
+**Dungeon/raid instance reuse:** do not assume `TeleportTo(mapId,...)` routes guildmates to the same persistent private housing instance. Ordinary dungeon/raid instance saving, group leader routing, raid restrictions, lockouts, resets and world/DB spawn persistence may interfere. Would require a carefully designed adapter plus staging tests, possibly core changes. We have **not** implemented that adapter.
+
+**Existing Guild House phasing:** do not take its `guildId + 10` phase convention and deploy it across arbitrary zones. It relies on zone-specific behavior and may override other systems' phase masks. This does **not** prove compatibility with Individual Progression or multiple simultaneous Guild House modules.
+
+**Recommendation for first practical spike:** a test-only privacy feasibility prototype, disabled by default, that records/map-logs the intended owner guild, verified client guild ID, selected property key and safe return location; it must **not teleport or change phases** until we can prove one of the isolation methods on the target core. Follow with the documented two-guild in-world test, not a guessed permanent phase allocation.
+
+**No production approach chosen yet.** A feasibility decision is blocked on inspecting the actual server fork/modules and a physical test world. Both options remain candidates; neither is safe to promise as production-ready.

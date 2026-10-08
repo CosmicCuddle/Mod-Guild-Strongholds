@@ -63,3 +63,8 @@ A release note must state the tested AzerothCore commit, Playerbots fork/ref, IP
 ## Logical catalogue smoke tests
 
 `bash tests/run-catalog-tests.sh` must pass with a C++17 compiler in the review branch. Its 21 checks cover unique themes, faction-appropriate selection, initial plot layouts and fail-closed access-policy decisions. Passing does **not** replace AzerothCore CMake, staging realm, IP phasing or Playerbot integration tests.
+
+
+## IP activity policy smoke tests
+
+The standalone test runner now includes activity eligibility checks for mismatched guilds, unverified IP stages, lower-tier access to Outland/Northrend, disabled module access, bot opt-out and invalid settlement levels. These validate domain decisions only; they do **not** verify the installed IP fork, quest events, or database persistence.
