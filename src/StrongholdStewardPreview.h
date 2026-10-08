@@ -36,7 +36,8 @@ enum class StewardPreviewAction : std::uint32_t
     WeeklyActivities = 7,
     Trophies = 8,
     Back = 9,
-    Close = 10
+    Close = 10,
+    EvidenceReview = 11
 };
 
 StewardPreviewDecision CheckStewardPreview(StewardPreviewContext const& input);

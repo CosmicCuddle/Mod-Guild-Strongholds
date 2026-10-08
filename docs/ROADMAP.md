@@ -118,3 +118,8 @@ Next step is **full upstream/staging build validation**, then decide a safe guil
 ## Staging Guild Steward menu expansion
 
 The actual opt-in `CreatureScript` preview now reuses existing C++ source catalogues rather than maintaining disconnected placeholder text. Its read-only gossip pages expose prospective architecture, Human/Orc building costs and minimum guild/IP activity thresholds. Everything is shown as planned and locked; **no player/guild status is loaded and no gameplay action exists**. The separate C++ content tests and real-header opt-in compile provide a foundation for eventual version-verified data-backed NPC interactions.
+
+
+## Steward proof-composition milestone
+
+The development-only Steward now has a structured, fail-closed guild/IP evidence policy and read-only gossip page. Unlike displaying generic planned thresholds, it can independently detect lifecycle-generation mismatch, archived property and high rewarded-IP-rank with a lower global server cap in tests. The **actual in-game page intentionally shows these as UNVERIFIED**, not unlocked; production-readonly property/IP adapters and real private-space routing remain missing. See [STEWARD_EVIDENCE_CONTRACT.md](STEWARD_EVIDENCE_CONTRACT.md).

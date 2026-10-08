@@ -16,7 +16,8 @@ StewardPreviewDecision CheckStewardPreview(StewardPreviewContext const& input)
 bool IsInformationalAction(std::uint32_t action)
 {
     return action >= static_cast<std::uint32_t>(StewardPreviewAction::Overview) &&
-        action <= static_cast<std::uint32_t>(StewardPreviewAction::Trophies);
+        (action <= static_cast<std::uint32_t>(StewardPreviewAction::Trophies) ||
+         action == static_cast<std::uint32_t>(StewardPreviewAction::EvidenceReview));
 }
 
 StewardPreviewDecision CheckStewardSelection(

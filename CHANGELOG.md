@@ -179,3 +179,12 @@
 - Rechecks staff status, guild membership and config for every gossip selection, including navigation. Unknown/forged selections fail closed.
 - Added C++ regression tests checking catalogue-derived labels, planned-only wording, page size limits, all defined menu actions and revoked permissions.
 - Real NPC remains staging-flag-only, config off by default, and has no creature template or spawn.
+
+
+## Guild Steward property/IP evidence composition (unreleased)
+
+- Added `StrongholdStewardEvidence.*`, a standalone read-only snapshot evaluator combining original guild generation, current property lifecycle, settlement-level proof, Grimfeather IP enabled/cap, and existing per-activity eligibility.
+- Rejects stale guild IDs, foreign property, archived property, missing identity/settlement data, disabled/unknown IP and bots. Synthetic positive eligibility remains **preview-only**, never gameplay.
+- Added a Guild/IP evidence menu page in the staging-only CreatureScript. In-world it reads only the current player's guild ID and explicitly marks property/IP state unverified; it never guesses missing data.
+- Added C++ tests for foreign/reused/archived guilds, IP ranks capped below rewarded quests, missing IP, bot opt-out, no gameplay enablement, and bounded `[LOCKED]` preview rows.
+- No SQL queries, server-guild generation adapter, active building system, quest handlers, player teleports or visible NPC spawn.

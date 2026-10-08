@@ -58,3 +58,12 @@ The optional script now presents a main menu with Development Overview, Alliance
 `tests/steward_readonly_content_tests.cpp` verifies catalogue linkage, 5/5 racial theme counts, six buildings per prototype race, three/four/two activity counts, stated minimum levels/required IP milestones, bounded gossip page size and planning-only wording. The existing selection-policy tests now cover all ten defined read-only menu actions, unknown/forged actions and revoked privileges.
 
 This remains only an **explicitly compiled, staff-only staging script** with no NPC template, spawn, world SQL or live gameplay changes.
+
+
+## Guild and Individual Progression evidence page
+
+The staging-only menu adds `Guild and IP evidence [LOCKED]`. This is a **non-executable status diagnostic**, not an offer to join or purchase housing. It displays the numeric guild ID read from the actual player object, with a warning that guild ID alone cannot establish original guild creation generation, active property ownership or Individual Progression stage.
+
+The `StrongholdStewardEvidence` policy combines existing library rules for property lifetime, per-player IP effective stage and planned activity gates. It can be tested with synthetic complete proof, but **real gossip supplies no claimed proof**: owner creation date and property persistence, level and IP adapter remain unset. Thus the page stays locked. A synthetic `ActivityGate::Allowed` is explicitly **planning-only**; `HousingAvailable` is always false.
+
+Release requires authoritative, version-matched server-side read-only adapters and privacy isolation before any status can be shown as factual access. No in-world evaluation can currently claim achievements, grant daily quests, change phase, spawn buildings or debit resources.

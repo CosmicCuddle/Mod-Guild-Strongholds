@@ -9,6 +9,7 @@
 
 #include "StrongholdStewardPreview.h"
 #include "StrongholdStewardReadOnlyContent.h"
+#include "StrongholdStewardEvidence.h"
 #include "Config.h"
 #include "Creature.h"
 #include "Player.h"
@@ -18,6 +19,7 @@
 #include <cstdint>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace NaxxGuildStrongholds
 {
@@ -64,7 +66,8 @@ void ShowMainMenu(Player* player, Creature* creature)
         std::pair{StewardPreviewAction::OrcBuildings, "Orc buildings [PLAN]"},
         std::pair{StewardPreviewAction::DailyActivities, "Daily activity ideas [PLAN]"},
         std::pair{StewardPreviewAction::WeeklyActivities, "Weekly activity ideas [PLAN]"},
-        std::pair{StewardPreviewAction::Trophies, "Raid trophies [PLAN]"}
+        std::pair{StewardPreviewAction::Trophies, "Raid trophies [PLAN]"},
+        std::pair{StewardPreviewAction::EvidenceReview, "Guild and IP evidence [LOCKED]"}
     })
         AddGossipItemFor(player, GOSSIP_ICON_CHAT, item.second,
             GOSSIP_SENDER_MAIN, EncodeAction(item.first));
@@ -77,7 +80,18 @@ void ShowMainMenu(Player* player, Creature* creature)
 void ShowDetailPage(Player* player, Creature* creature, StewardPreviewAction page)
 {
     ClearGossipMenuFor(player);
-    auto rows = BuildStewardPreviewRows(page);
+    // Current Worldserver supplies only the player's visible guild ID.
+    // Deliberately DO NOT forge guild creation time, property SQL, IP rank
+    // or isolation proof. Everything else remains unverified/locked.
+    std::vector<std::string> rows;
+    if (page == StewardPreviewAction::EvidenceReview)
+    {
+        StewardEvidenceInput evidence;
+        evidence.ActorGuild.GuildId = player->GetGuildId();
+        rows = BuildStewardEvidenceRows(evidence);
+    }
+    else
+        rows = BuildStewardPreviewRows(page);
     // Defensive cap: never flood client with an unbounded source catalogue.
     // Every detail line is itself a self-loop; it cannot trigger gameplay.
     std::size_t rendered = 0;

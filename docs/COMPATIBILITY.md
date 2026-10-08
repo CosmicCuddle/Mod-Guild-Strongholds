@@ -157,3 +157,8 @@ There is deliberately **no** assigned `creature_template` row, SQL or spawn, nor
 ## Guild Steward script uses only read-only catalogue data
 
 The opt-in staging `CreatureScript` now links the `StrongholdCatalog`, `StrongholdConstruction`, and `StrongholdActivities` definitions to generate gossip pages. It has no runtime IP header, DB adapter, Playerbots mutation, inventory, quest reward or phase APIs. The real-header upstream opt-in compilation is the next check; the deployed fork and in-game gossip remain untested. Normal server builds never register the staging script.
+
+
+## Guild/IP source verification is not live state
+
+`StrongholdStewardEvidence.*` reuses independent original-guild-generation, property-lifecycle and IP effective-rank policies and never calls the upstream or installed Individual Progression module directly. In real staging `CreatureScript`, only `Player::GetGuildId` is read; the policy's original guild creation stamp, active property, settlement level and IP source snapshot are left unverified, so the page is locked. A matching public Grimfeather source contract does not prove the user's deployed fork or player stage. See [STEWARD_EVIDENCE_CONTRACT.md](STEWARD_EVIDENCE_CONTRACT.md).

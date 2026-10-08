@@ -62,7 +62,8 @@ int main()
         trophies[1].find("Icecrown") != std::string::npos,
         "Trophies draw from catalogue, no simulated reward");
     test(BuildStewardPreviewRows(StewardPreviewAction::Back).empty() &&
-        BuildStewardPreviewRows(StewardPreviewAction::Close).empty(),
+        BuildStewardPreviewRows(StewardPreviewAction::Close).empty() &&
+        BuildStewardPreviewRows(StewardPreviewAction::EvidenceReview).empty(),
         "Navigation actions do not generate a plan page");
 
     for (StewardPreviewAction action : {

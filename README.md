@@ -178,3 +178,12 @@ The staging-only Guild Steward now has browsable pages for **all ten race-theme 
 All rows say `[PLAN]` or `[LOCKED]`, include only planned minimum settlement levels, suggested resource costs and IP milestone numbers, and never imply that the guild owns or can use anything. A menu click can only change the read-only gossip page, go back or close. Separate C++ tests verify catalogue linkage, page sizes and no accidental unlocked/reward descriptions.
 
 No character IP rank, guild settlement level, claim status, completion receipt or trophy ownership is read from the server yet. Production builds omit the preview CreatureScript; no NPC has been spawned or bound. See [STAGING_STEWARD.md](docs/STAGING_STEWARD.md).
+
+
+## Read-only Guild Steward evidence review (staging-only)
+
+The Guild Steward now has a **Guild and IP evidence [LOCKED]** page, driven by `StrongholdStewardEvidence.*`. That policy composes existing guild-generation/lifecycle checks with the reviewed Grimfeather IP effective-stage cap and the activity catalogue. It explicitly distinguishes missing proof, another guild's property, recycled guild IDs, archived property, missing settlement level, unknown/disabled IP and hypothetical planning eligibility.
+
+**Real staging gossip reads only the current player's guild ID via AzerothCore.** We have deliberately **not** fabricated a guild creation timestamp, property SQL record, settlement level, Individual Progression stage or verified private map. The live-preview row explicitly says those fields cannot yet be verified. Every row says `[LOCKED]`, and `HousingAvailable` remains false even if all inputs are true in a synthetic test.
+
+This work provides a safe, composable seam for future **read-only** deployed-fork adapters but does not activate any quests, awards, buildings or NPC spawns. See [STEWARD_EVIDENCE_CONTRACT.md](docs/STEWARD_EVIDENCE_CONTRACT.md).

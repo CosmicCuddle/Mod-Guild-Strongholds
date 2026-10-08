@@ -122,3 +122,14 @@ trap 'rm -rf "$work"' EXIT
   "$root/tests/steward_readonly_content_tests.cpp" \
   -o "$work/steward_readonly_content_tests"
 "$work/steward_readonly_content_tests"
+
+# Actual core-free Guild Steward status composes verified guild generation,
+# active property, capped IP progress and existing activity gates.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdActivities.cpp" \
+  "$root/src/StrongholdIpCompatibility.cpp" \
+  "$root/src/StrongholdLifecycle.cpp" \
+  "$root/src/StrongholdStewardEvidence.cpp" \
+  "$root/tests/steward_evidence_tests.cpp" \
+  -o "$work/steward_evidence_tests"
+"$work/steward_evidence_tests"

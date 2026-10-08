@@ -30,7 +30,7 @@ int main()
     check(CheckStewardPreview(c) == StewardPreviewDecision::Allowed,
         "GM in guild can inspect planning-only preview");
 
-    for (std::uint32_t action = 1; action <= 10; ++action)
+    for (std::uint32_t action = 1; action <= 11; ++action)
     {
         check(CheckStewardSelection(c, true, action) == StewardPreviewDecision::Allowed,
             "only defined read-only actions accepted");
@@ -39,9 +39,10 @@ int main()
             "forged sender rejected for each action");
     }
     check(!IsInformationalAction(0) && !IsInformationalAction(9) &&
-        !IsInformationalAction(10) && IsInformationalAction(8),
+        !IsInformationalAction(10) && IsInformationalAction(8) &&
+        IsInformationalAction(11),
         "navigation never misclassified as informational content");
-    for (std::uint32_t forged : {0u, 11u, 100u, 0xffffffffu})
+    for (std::uint32_t forged : {0u, 12u, 100u, 0xffffffffu})
         check(CheckStewardSelection(c, true, forged) ==
             StewardPreviewDecision::InvalidAction, "unknown client action denied");
 
