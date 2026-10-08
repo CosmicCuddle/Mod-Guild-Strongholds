@@ -59,3 +59,7 @@ The user must substitute the correct checkout path. This helper is **not a subst
 ## Release sign-off
 
 A release note must state the tested AzerothCore commit, Playerbots fork/ref, IP ref, all other installed module commits, compatible configuration and SQL migration versions, and results of the above tests. No inferred claims of compatibility.
+
+## Logical catalogue smoke tests
+
+`bash tests/run-catalog-tests.sh` must pass with a C++17 compiler in the review branch. Its 21 checks cover unique themes, faction-appropriate selection, initial plot layouts and fail-closed access-policy decisions. Passing does **not** replace AzerothCore CMake, staging realm, IP phasing or Playerbot integration tests.

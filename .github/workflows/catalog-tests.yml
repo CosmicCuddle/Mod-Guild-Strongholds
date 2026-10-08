@@ -1,0 +1,21 @@
+name: Strongholds catalog tests
+
+on:
+  push:
+    branches:
+      - feature/v0.1.0-foundations
+  pull_request:
+    paths:
+      - 'src/StrongholdCatalog.*'
+      - 'tests/**'
+      - '.github/workflows/catalog-tests.yml'
+
+jobs:
+  catalog-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and run pure C++ policy tests
+        run: bash tests/run-catalog-tests.sh

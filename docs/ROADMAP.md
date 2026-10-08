@@ -20,3 +20,9 @@ Each milestone requires a clean revert path, schema upgrade plan, test checklist
 ## Compatibility gate for every milestone
 
 Before each playable milestone is accepted: confirm the full existing module inventory and run the relevant tests in [COMPATIBILITY.md](COMPATIBILITY.md). Additions to module-related hooks, phasing, SQL gameobject IDs, IP, Playerbots or dungeon-completion logic require focused regression tests. A clean build by itself does not prove runtime compatibility.
+
+## Progress in the development branch
+
+- v0.1.0 foundations: inert loader, draft SQL, configuration and safety/compatibility documents.
+- v0.2.0 settlement catalogue (non-playable substep): ten defined race themes, Human/Orc plot definitions and pure access policy tests.
+- **Still outstanding for v0.2.0 proper:** evaluated private-area mechanism, approved map/asset coordinates, server-side NPC and teleport implementation, isolation tests with the *actual* IP and Playerbots configuration.

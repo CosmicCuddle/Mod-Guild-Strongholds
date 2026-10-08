@@ -59,3 +59,11 @@ No tables should be created merely because the repository was cloned during the 
 A module isolation prototype cannot be declared production-safe from its own isolated test alone. We must first obtain a source-and-runtime inventory of **all deployed modules** and conduct the compatibility matrix in [COMPATIBILITY.md](COMPATIBILITY.md), including IP phasing, Playerbots, Mod-Naxxramas-Core and any other installed modules.
 
 Use fail-closed integration: if the compatible IP API, bot integration, safe guild-instance isolation or collision-free ID allocation cannot be verified, disable that feature and block live deployment rather than changing another module's data or behaviour.
+
+## Current isolated domain model
+
+`StrongholdCatalog.h/.cpp` has no AzerothCore dependencies and cannot access databases or players; this makes its stable names, faction constraints and fail-closed access policy independently testable.
+
+The current runtime loader stays inert. Do not assume a call to `CheckGuildEntry` proves safe guild isolation; its `isolationVerified` input only means something when a future runtime component supplies a real, audited guarantee.
+
+See [SETTLEMENT_CATALOG.md](SETTLEMENT_CATALOG.md) and [ISOLATION_RESEARCH.md](ISOLATION_RESEARCH.md) for the planned server integration.
