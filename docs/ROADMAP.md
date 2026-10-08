@@ -78,3 +78,10 @@ Next step remains a real, owner-approved two-guild isolation feasibility spike. 
 ## User-fork IP contract milestone
 
 Reviewed the actual public `Grimfeather/mod-individual-progression` fork, not merely the upstream parent. The fork's `progressionLimit` means quest-state rank cannot alone determine guild activity eligibility. Added C++ effective-stage policy, integration with the existing pure activity gate, negative tests and pinned-fork source-contract CI checks. **No runtime AzerothCore/Individual Progression adapter exists or has been approved yet.** See [IP_FORK_COMPATIBILITY.md](IP_FORK_COMPATIBILITY.md).
+
+
+## Phase-slot allocator feasibility — test-only foundation
+
+Implemented a source-only lease allocator and disposable MariaDB reservation contract for a *hypothetically approved* dedicated-zone pool of phase bits. The C++ model rejects collisions and capacity exhaustion, and the SQL unique constraints protect against concurrent assignments. **This does not yet satisfy v0.2.0**: an actual phase pool must be reserved and proven unclaimed on the real server; mixed IP/Playerbots visibility, in-zone spawns, safe returns, scale limits and staged removal remain unknown.
+
+Review [PHASE_LEASE_FEASIBILITY.md](PHASE_LEASE_FEASIBILITY.md) before considering any live phase assignment.

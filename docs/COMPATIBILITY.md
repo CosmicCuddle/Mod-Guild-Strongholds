@@ -113,3 +113,10 @@ The prospective `.naxxgs snapshot` command is **not compiled into normal builds*
 The reviewed *public* user fork `Grimfeather/mod-individual-progression` (commit `706740808fee328b8557607f87b0548cf961e047`) exposes `enabled`, `progressionLimit` and `GetPlayerProgressionFromQuests`. Its `hasPassedProgression` checks the cap **in addition to rewarded quest rank**. This creates a crucial potential tier bypass if a Strongholds integration reads only completed hidden quests. Our new `StrongholdIpCompatibility.*` domain policy instead computes an effective rank and revokes stale/unknown evidence.
 
 The `check-grimfeather-ip-contract.py` scanner checks actual pinned public fork source in a separate GitHub Actions job and rejects changed public API/enum/rank/cap semantics; it does not prove the *installed* fork matches, nor certify a full build or lack of phasing interference. See [IP_FORK_COMPATIBILITY.md](IP_FORK_COMPATIBILITY.md).
+
+
+## Slot accounting versus real private-area compatibility
+
+`StrongholdPhaseLease.*` and a dedicated disposable MariaDB test now cover double allocations, externally occupied bit rejection, guild-generation uniqueness, concurrent claims, no capacity and permanent historical holds. These **do not verify live phase occupancy**. The approved pool must be built only after the *actual deployed* Individual Progression, Playerbots, guild-house and all other modules have been audited, including DB-sourced phase masks and hidden IP spells.
+
+The CI `1 << 24` and `1 << 25` masks are synthetic values. Never write them into your worldserver as presumed safe defaults. If the real server cannot reserve sufficient non-conflicting bits with uniform behavior, abandon this candidate instead of force-changing global phase comparison. All housing readiness flags remain false.

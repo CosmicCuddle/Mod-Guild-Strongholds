@@ -94,6 +94,19 @@ CREATE TABLE IF NOT EXISTS `naxx_gs_visit` (
   KEY `idx_guild_visit` (`guild_id`, `guild_created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Draft-only phase reservation ledger. NOT game phase changes.
+-- Historical/retired bits remain reserved; never auto-reuse them.
+CREATE TABLE IF NOT EXISTS `naxx_gs_isolation_slot` (
+  `guild_id` INT UNSIGNED NOT NULL,
+  `guild_created_at` BIGINT UNSIGNED NOT NULL,
+  `phase_bit` INT UNSIGNED NOT NULL,
+  `lease_state` VARCHAR(16) NOT NULL DEFAULT 'held',
+  `version` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  `reserved_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`guild_id`),
+  UNIQUE KEY `uk_isolation_phase_bit` (`phase_bit`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS `naxx_gs_ledger` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `guild_id` INT UNSIGNED NOT NULL,

@@ -91,3 +91,5 @@ jobs:
         run: python tests/mysql_guild_lifecycle_test.py
       - name: Test durable visit records, failed teleports and emergency return
         run: python tests/mysql_visit_recovery_test.py
+      - name: Test collision-resistant guild phase leases and retirement
+        run: python tests/mysql_phase_lease_test.py

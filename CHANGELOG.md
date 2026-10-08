@@ -112,3 +112,12 @@
 - Added fail-closed C++ activity gate integration with stale-proof clearing, disabled/unverified source denial and invalid stage/limit validation.
 - Added a read-only fork source-contract checker, synthetic negative tests and a pinned-revision CI checkout, without modifying the fork or server.
 - No live Individual Progression linkage, guild NPCs, quest rewards or phased housing behavior enabled.
+
+
+## v0.2.x — bounded phase-lease feasibility (unreleased)
+
+- Added a conservative C++ reservation proposal for a manually preapproved candidate phase-bit pool, requiring full module inventory, uniform combined phase comparison and server-verified property identity.
+- Rejects externally used bits, malformed historical leases, guild ID reuse, duplicate leases and capacity exhaustion; no guild-ID modulo collision workaround.
+- **Retired phase bits remain reserved** until a separately audited evacuation/reclamation process is implemented; they are not silently recycled.
+- Added draft module-owned `naxx_gs_isolation_slot` SQL with unique guild and phase keys, plus test-only InnoDB concurrency/retry/rollback and archival checks.
+- Kept all startup gameplay flags disabled; no phase manipulation or privacy verification performed on a running realm.

@@ -63,3 +63,8 @@ The **revised initial, unapplied** `naxx_gs_settlement` table now stores the gui
 ## New durable return-ticket record
 
 The draft initial schema includes `naxx_gs_visit`, whose `player_guid` primary key forbids replacing a character's outstanding return position and whose unique `visit_nonce` identifies a single visit across retries. Prepared records must be **committed before any entry teleport**; a Returning state must be committed before exit; records are deleted only after final arrival is independently verified. The disposable MariaDB test in `tests/mysql_visit_recovery_test.py` checks the storage contract. No gameplay teleport or login-recovery handler has been implemented or validated on the user's installed core.
+
+
+## Phase-slot reservation transaction (prototype)
+
+The ninth draft module-owned table, `naxx_gs_isolation_slot`, is a future phase reservation ledger, **not actual phase assignment**. The isolated MariaDB contract test locks a verified, active settlement row, looks up existing leases, proposes an unused preapproved bit, inserts its unique ownership/phase constraints and ledger, and commits together. Unique phase collisions retry in fresh transactions, never silently sharing a bit. Disband retirement is idempotent, preserves a unique historical bit, and is not reclamation. The CI fixture's phase bits are arbitrary and have not been checked against a real AzerothCore phase table. Strict production migration/escrow/uninstall acceptance remains outstanding.

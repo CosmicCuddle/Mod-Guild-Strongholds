@@ -62,3 +62,12 @@ See [PHASE_COMPATIBILITY_AUDIT.md](PHASE_COMPATIBILITY_AUDIT.md) for the model a
 ## Optional snapshot mechanism (not an isolation solution)
 
 The development branch now contains a **compile-time opt-in**, GM-restricted, configuration-gated read-only snapshot command that reports only the issuing character's map ID, instance ID and phase mask alongside guild/area identifiers. It does not instantiate maps, change phases, grant property access or report another guild's data. See [STAGING_DIAGNOSTICS.md](STAGING_DIAGNOSTICS.md). This is evidence gathering infrastructure only, not real guild isolation.
+
+
+## Candidate B progress: phase-slot lease ledger, no phasing
+
+A conservative, **non-operational** phase-bit reservation proof now exists: `StrongholdPhaseLease.*` proposes one unique bit for each verified guild generation from an *administrator-approved* mask, excluding separately observed occupied bits, and refuses allocation when empty. `naxx_gs_isolation_slot` adds two database uniqueness constraints. When a guild is archived, its lease may become `retired` but the bit remains permanently held, avoiding accidental reuse during unresolved player exits.
+
+The `1 << 24` and `1 << 25` masks appearing in CI are **invented test fixtures**, not confirmed free phase bits on Naxxramas. Nor is there any actual approved world zone, location, phase mode override or NPC route. No fallback assigns a shared mask; no GM command applies a lease to a player.
+
+This tests candidate B's allocation *accounting*, **not the privacy mechanism itself**. See [PHASE_LEASE_FEASIBILITY.md](PHASE_LEASE_FEASIBILITY.md). Candidate A (true guild-keyed map instances) remains open and may be preferable if phase-bit scale or IP collision restrictions make candidate B unsuitable.

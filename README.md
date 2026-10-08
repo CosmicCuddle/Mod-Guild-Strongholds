@@ -119,3 +119,12 @@ Normal builds do not register the command, and the housing startup guard remains
 We inspected the user's public [Grimfeather Individual Progression fork](https://github.com/Grimfeather/mod-individual-progression) at commit `706740808fee328b8557607f87b0548cf961e047`. The fork derives raw character stage from rewarded hidden quests, **but separately restricts access using `enabled` and `progressionLimit`**.
 
 A standalone `StrongholdIpCompatibility.*` policy now computes the capped effective stage and refuses to use stale/unverified stage evidence. An automated read-only source-contract checker tests the pinned public fork in CI and reports mismatches instead of assuming upstream APIs are unchanged. This is not compiled against or installed on the live server. Read [IP_FORK_COMPATIBILITY.md](docs/IP_FORK_COMPATIBILITY.md).
+
+
+## Staging phase-slot reservations — NOT live phasing
+
+The new `StrongholdPhaseLease.*` and `tests/mysql_phase_lease_test.py` implement a **prototype reservation ledger** for a candidate dedicated-housing-zone phase pool. An administrator must first verify the installed modules, combined-mode phase behavior and **explicitly approve** which phase bits are safe. Until then, no phase slot may be offered.
+
+Tests ensure a phase bit is unique per guild, reused guild IDs cannot acquire old allocations, retired bits remain reserved, simultaneous requests cannot claim the same bit, and insufficient capacity returns **no capacity** instead of sharing space. The draft characters SQL includes `naxx_gs_isolation_slot`, which is not auto-installed. **No player's phase is changed; no housing instance, teleport, creature or gameobject is created.**
+
+This prototype does not prove that finite phase bits can support the desired scale or coexist with Individual Progression and every installed module. True map instances remain an alternative. See [PHASE_LEASE_FEASIBILITY.md](docs/PHASE_LEASE_FEASIBILITY.md).

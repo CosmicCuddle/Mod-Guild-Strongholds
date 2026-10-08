@@ -106,3 +106,8 @@ The upstream AzerothCore `WorldObject::InSamePhase` tests bitwise AND when `m_us
 The raw rewarded-quest stage **is not sufficient** for eligibility when Individual Progression's `progressionLimit` is lower. `StrongholdIpCompatibility.*` derives an effective rank only when the installed source contract has been verified, IP is enabled and the player is in-world; if a configured positive cap is lower, the rank is limited to that cap. Unknown, disabled, invalid or stale data fails closed. It never writes hidden quests or touches IP phase auras.
 
 CI independently checks source signatures on the real public Grimfeather fork at a pinned commit; this doesn't substitute for the actual deployed fork's revision inventory and compilation. See [IP_FORK_COMPATIBILITY.md](IP_FORK_COMPATIBILITY.md).
+
+
+## Candidate dedicated-zone phase leasing (test-only)
+
+`StrongholdPhaseLease.*` is a pure proposal layer that accepts **externally verified** approval and used-phase masks; it cannot inspect actual runtime phase occupancy. The draft `naxx_gs_isolation_slot` table has a guild primary key and unique phase bit. A MariaDB contract test handles simultaneous reservations with fresh transaction retries after collisions and records a ledger entry atomically. Retiring a guild never frees its bit. The module still cannot set any phase masks or mark privacy ready; see [PHASE_LEASE_FEASIBILITY.md](PHASE_LEASE_FEASIBILITY.md).

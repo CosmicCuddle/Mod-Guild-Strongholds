@@ -45,3 +45,8 @@ A normal disable or data-preserving uninstall leaves both active and archived pr
 ## Critical: outstanding `naxx_gs_visit` records
 
 The draft module includes durable return tickets for potential private-area visitors. A future production uninstall **must evacuate and verify every player is safely returned before removing the compiled recovery hooks**, and preserve tickets until success. Do not purge `naxx_gs_visit` when players may still be inside housing. The optional destructive SQL purge is never automatically run, and a database backup alone cannot teleport a stranded character. The diagnostic development branch is not housing-capable and has no actual return hooks yet.
+
+
+## Pending guild phase reservations
+
+The draft character schema now includes `naxx_gs_isolation_slot`. Ordinary disable/uninstall preserves these reservations and *never* reallocates retired bits to new guilds. A future actual private-area system must evacuate all outstanding visitors and remove spawned objects before any capacity could be reclaimed. The optional permanent purge is backup-only after all character recovery tickets have been resolved; never drop a live phase lease and allow its bit to be reused with players still inside.

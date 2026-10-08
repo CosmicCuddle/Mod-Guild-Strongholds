@@ -82,3 +82,10 @@ trap 'rm -rf "$work"' EXIT
   "$root/tests/ip_compatibility_tests.cpp" \
   -o "$work/ip_compatibility_tests"
 "$work/ip_compatibility_tests"
+
+# Domain-only phase-slot allocator: no real-world phase assignments.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdIsolationProbe.cpp" \
+  "$root/src/StrongholdPhaseLease.cpp" "$root/tests/phase_lease_tests.cpp" \
+  -o "$work/phase_lease_tests"
+"$work/phase_lease_tests"
