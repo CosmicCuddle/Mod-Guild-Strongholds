@@ -120,3 +120,9 @@ The `check-grimfeather-ip-contract.py` scanner checks actual pinned public fork 
 `StrongholdPhaseLease.*` and a dedicated disposable MariaDB test now cover double allocations, externally occupied bit rejection, guild-generation uniqueness, concurrent claims, no capacity and permanent historical holds. These **do not verify live phase occupancy**. The approved pool must be built only after the *actual deployed* Individual Progression, Playerbots, guild-house and all other modules have been audited, including DB-sourced phase masks and hidden IP spells.
 
 The CI `1 << 24` and `1 << 25` masks are synthetic values. Never write them into your worldserver as presumed safe defaults. If the real server cannot reserve sufficient non-conflicting bits with uniform behavior, abandon this candidate instead of force-changing global phase comparison. All housing readiness flags remain false.
+
+## Guild-private instance routing feasibility
+
+The new C++ route preflight tests source assumptions for candidate A, but **does not register or create AzerothCore instances**. A proper adapter cannot simply generate and persist an instance ID; it must integrate with the actual core instance manager and prove that `PlayerGetDestinationInstanceId` and group/raid binds do not override ownership routing. Map DBC and instance templates must be valid, without repurposing Molten Core, Onyxia or any IP-gated progression dungeon.
+
+The upstream reviewed core commit for this research was `7b2cecef92b271a468e39d89831b520b20ae06a8` (8 October 2026), **not a verified deployed server revision**. The code has tests for stale guild generations and client arrival mismatches; all other module compatibility remains unverified. See [INSTANCE_ROUTING_FEASIBILITY.md](INSTANCE_ROUTING_FEASIBILITY.md).

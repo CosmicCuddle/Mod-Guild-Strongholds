@@ -128,3 +128,9 @@ The new `StrongholdPhaseLease.*` and `tests/mysql_phase_lease_test.py` implement
 Tests ensure a phase bit is unique per guild, reused guild IDs cannot acquire old allocations, retired bits remain reserved, simultaneous requests cannot claim the same bit, and insufficient capacity returns **no capacity** instead of sharing space. The draft characters SQL includes `naxx_gs_isolation_slot`, which is not auto-installed. **No player's phase is changed; no housing instance, teleport, creature or gameobject is created.**
 
 This prototype does not prove that finite phase bits can support the desired scale or coexist with Individual Progression and every installed module. True map instances remain an alternative. See [PHASE_LEASE_FEASIBILITY.md](docs/PHASE_LEASE_FEASIBILITY.md).
+
+## Candidate A: guild-owned map instances (feasibility preflight)
+
+The project now has a **test-only** core-instance route preflight in `src/StrongholdInstanceRoute.*`. It rejects unverified map/client assets, mismatched player/group instance bindings, unsafe reset lifetime, lack of deterministic per-guild routing and missing two-guild privacy evidence. Existing and even retired instance IDs may not silently be given to another guild. The code **does not call** AzerothCore `GenerateInstanceId`, `CreateInstance` or `TeleportTo` and does not store or assign any real instance ID.
+
+Upstream AzerothCore's current dungeon instance routing uses player/group instance saves, not a verified guild owner mapping. True private instances remain a **candidate requiring a custom integration and staged proof**, not an implemented housing option. No new database tables were added in this batch. Read [INSTANCE_ROUTING_FEASIBILITY.md](docs/INSTANCE_ROUTING_FEASIBILITY.md).

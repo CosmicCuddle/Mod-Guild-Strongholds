@@ -85,3 +85,7 @@ Reviewed the actual public `Grimfeather/mod-individual-progression` fork, not me
 Implemented a source-only lease allocator and disposable MariaDB reservation contract for a *hypothetically approved* dedicated-zone pool of phase bits. The C++ model rejects collisions and capacity exhaustion, and the SQL unique constraints protect against concurrent assignments. **This does not yet satisfy v0.2.0**: an actual phase pool must be reserved and proven unclaimed on the real server; mixed IP/Playerbots visibility, in-zone spawns, safe returns, scale limits and staged removal remain unknown.
 
 Review [PHASE_LEASE_FEASIBILITY.md](PHASE_LEASE_FEASIBILITY.md) before considering any live phase assignment.
+
+## Candidate A — Guild-private core instance routing feasibility
+
+We now have a test-only C++ instance route preflight and server-arrival comparison. **The current upstream MapInstanced source does not offer a demonstrated guild-owned destination hook**: player/group binding controls dungeon and raid instance selection. This remains a major blocker, not a ready alternative to the finite phase leases. Candidate A requires a compatibility-reviewed core-supported route plus persistent custom instance save semantics without modifying existing raid lockouts. See [INSTANCE_ROUTING_FEASIBILITY.md](INSTANCE_ROUTING_FEASIBILITY.md).

@@ -121,3 +121,11 @@
 - **Retired phase bits remain reserved** until a separately audited evacuation/reclamation process is implemented; they are not silently recycled.
 - Added draft module-owned `naxx_gs_isolation_slot` SQL with unique guild and phase keys, plus test-only InnoDB concurrency/retry/rollback and archival checks.
 - Kept all startup gameplay flags disabled; no phase manipulation or privacy verification performed on a running realm.
+
+## v0.2.x — native instance routing preflight (unreleased)
+
+- Reviewed upstream 8 October 2026 AzerothCore `MapInstanced`, `MapMgr`, `InstanceSaveMgr`, `Player::TeleportTo` behaviour.
+- Added strict **non-operational** guild-owned map-instance preflight, accepting only externally verified, core-managed instance ID and saved lifetime.
+- Added checks for safe player/group bindings, non-raid map/client asset provenance, guild-private routing, world isolation and recovery proofs.
+- Added regression tests rejecting shared instance IDs (even across map IDs), guild identity reuse, retired instance reuse, missing evidence and wrong arrival destination.
+- No SQL migrations, gameplay registration, instance creation, phase writes or live teleportation implemented.

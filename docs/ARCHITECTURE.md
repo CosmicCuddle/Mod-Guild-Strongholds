@@ -111,3 +111,7 @@ CI independently checks source signatures on the real public Grimfeather fork at
 ## Candidate dedicated-zone phase leasing (test-only)
 
 `StrongholdPhaseLease.*` is a pure proposal layer that accepts **externally verified** approval and used-phase masks; it cannot inspect actual runtime phase occupancy. The draft `naxx_gs_isolation_slot` table has a guild primary key and unique phase bit. A MariaDB contract test handles simultaneous reservations with fresh transaction retries after collisions and records a ledger entry atomically. Retiring a guild never frees its bit. The module still cannot set any phase masks or mark privacy ready; see [PHASE_LEASE_FEASIBILITY.md](PHASE_LEASE_FEASIBILITY.md).
+
+## Candidate A instance registration (proof only)
+
+`StrongholdInstanceRoute.*` is a pure domain preflight requiring external evidence of a real map DBC/template, core-issued global instance ID, persistent instance save, safe group/player binding, deterministic guild-specific routing, two-guild privacy verification and safe return. It refuses stale guild IDs, duplicate routes and reused retired core IDs across all map types. The code never calls AzerothCore's instance allocator or requests teleportation. There is no instance database schema because the **actual core lifecycle and persistence integration must be proven first**. See [INSTANCE_ROUTING_FEASIBILITY.md](INSTANCE_ROUTING_FEASIBILITY.md).

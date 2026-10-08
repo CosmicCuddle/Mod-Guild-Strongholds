@@ -89,3 +89,9 @@ trap 'rm -rf "$work"' EXIT
   "$root/src/StrongholdPhaseLease.cpp" "$root/tests/phase_lease_tests.cpp" \
   -o "$work/phase_lease_tests"
 "$work/phase_lease_tests"
+
+# Native instance-routing preflight only; never allocates real core instances.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdInstanceRoute.cpp" \
+  "$root/tests/instance_route_tests.cpp" -o "$work/instance_route_tests"
+"$work/instance_route_tests"

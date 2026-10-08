@@ -71,3 +71,11 @@ A conservative, **non-operational** phase-bit reservation proof now exists: `Str
 The `1 << 24` and `1 << 25` masks appearing in CI are **invented test fixtures**, not confirmed free phase bits on Naxxramas. Nor is there any actual approved world zone, location, phase mode override or NPC route. No fallback assigns a shared mask; no GM command applies a lease to a player.
 
 This tests candidate B's allocation *accounting*, **not the privacy mechanism itself**. See [PHASE_LEASE_FEASIBILITY.md](PHASE_LEASE_FEASIBILITY.md). Candidate A (true guild-keyed map instances) remains open and may be preferable if phase-bit scale or IP collision restrictions make candidate B unsuitable.
+
+## Candidate A progress: core-managed instance route preflight, no instance allocation
+
+The new `StrongholdInstanceRoute.*` provides a policy-level feasibility gate for **already core-issued instance destinations**. It demands an approved non-progression client map, a valid save/reload lifecycle, verified non-conflicting player and group bindings, a proven **guild-specific** destination mechanism, safe exits and actual A/B visibility proof. It never calls the global instance ID allocator; holding a numeric `instanceId` is not the same as owning a real `InstanceMap`.
+
+The reviewed upstream `MapInstanced::CreateInstanceForPlayer` uses `PlayerGetDestinationInstanceId` and, if no destination binding exists, calls `MapMgr::GenerateInstanceId`. There is **no verified guild-keyed route in that sequence**. In addition, `MapInstanced::CreateInstance` requires a valid map DBC entry and `instance_template`, and its created map is a dungeon instance. Using an existing raid map as housing would risk lockouts, bosses and IP progression.
+
+The private instance approach might scale better than finite phase bits, but it needs a real, approved AzerothCore-compatible map/instance integration. Until then, it is **not operational**. [INSTANCE_ROUTING_FEASIBILITY.md](INSTANCE_ROUTING_FEASIBILITY.md) records the findings and staging release gates.
