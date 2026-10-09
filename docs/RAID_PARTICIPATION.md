@@ -62,3 +62,7 @@ The new independent `StrongholdEncounterContribution.*` pure policy illustrates 
 ## Source-signature preflight for exact installed forks
 
 The scanner described in [RAID_SOURCE_PREFLIGHT.md](RAID_SOURCE_PREFLIGHT.md) searches C++ symbol occurrences for bot/session, boss lifecycle, group/guild and effective combat entrypoints. It has no runtime hooks or proof of real participation; all four provenance states stay UNVERIFIED. It is a manual code-review aid only, not a human classifier or a reward pathway.
+
+## Raid membership timeline review candidates
+
+The new [membership window model](RAID_MEMBERSHIP_TIMELINE.md) distinguishes join/leave gaps, stale previous attempts, wrong groups, recycled guild IDs and concurrent 40-player mixed-guild rosters. It NEVER proves actual membership, human status or guild trophy eligibility. An installed-fork event-time source is still missing.

@@ -78,3 +78,7 @@ At this stage the owner does **not** need to `git pull`, edit HeidiSQL, run Moba
 ## 8. Source preflight extension
 
 A new read-only helper (scripts/audit-raid-source-readiness.py) prepares a manual review of exact deployed AzerothCore, Playerbots and raid event APIs on a separate source copy. It *never* approves positive human control, boss completion, member contribution, guild generation or trophies. See [RAID_SOURCE_PREFLIGHT.md](RAID_SOURCE_PREFLIGHT.md). Running it is optional until a copied staging checkout is available.
+
+## 9. Group/roster timeline development
+
+The domain-only StrongholdRaidMembershipTimeline tests historic join/leave and original guild identity against a proposed raid attempt. It cannot prove real group or human status, cannot award trophies and requires the exact installed-fork source review. See [RAID_MEMBERSHIP_TIMELINE.md](RAID_MEMBERSHIP_TIMELINE.md).

@@ -188,3 +188,7 @@ A pure C++ attempt-bound event policy now rejects foreign instance/actor evidenc
 ## Read-only deployed raid-source inventory preparation
 
 The optional Python source preflight scans only bounded C++ API name occurrences in a separate source copy. No actual installed AzerothCore/Playerbots human classifier, boss completion, raid participation or guild routing is verified. See [RAID_SOURCE_PREFLIGHT.md](RAID_SOURCE_PREFLIGHT.md); gameplay and awards remain disabled.
+
+## Offline event-time group and guild-history model
+
+A bounded synthetic roster window evaluator now rejects previous-wipe event tokens, reused guild IDs, overlapping windows and action during join/leave gaps, including 40-player mixed guild simulations. All results remain review candidates with no actual verification or rewards. See [RAID_MEMBERSHIP_TIMELINE.md](RAID_MEMBERSHIP_TIMELINE.md).

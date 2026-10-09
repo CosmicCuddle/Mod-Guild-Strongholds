@@ -47,6 +47,8 @@ jobs:
         run: python3 tests/encounter_contribution_source_tests.py
       - name: Verify read-only raid and Playerbots source audit on synthetic forks
         run: python3 tests/raid_source_readiness_tests.py
+      - name: Verify offline raid membership policy has no executable effects
+        run: python3 tests/raid_membership_timeline_source_tests.py
       - name: Verify safe module inventory and local Git modification reporting
         run: bash tests/module_inventory_tests.sh
 

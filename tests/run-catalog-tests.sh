@@ -194,3 +194,10 @@ trap 'rm -rf "$work"' EXIT
   "$root/tests/encounter_contribution_tests.cpp" \
   -o "$work/encounter_contribution_tests"
 "$work/encounter_contribution_tests"
+
+# Offline raid join/leave + guild-generation history (no gameplay verification).
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdRaidMembershipTimeline.cpp" \
+  "$root/tests/raid_membership_timeline_tests.cpp" \
+  -o "$work/raid_membership_timeline_tests"
+"$work/raid_membership_timeline_tests"

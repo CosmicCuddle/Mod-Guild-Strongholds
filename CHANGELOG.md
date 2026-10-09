@@ -283,3 +283,9 @@
 - Added non-mutating signature/count scanner for copied AzerothCore and module C++ source, without leaking configuration values or source excerpts.
 - Hard-coded all human, guild-generation, named-boss and per-member participation evidence to UNVERIFIED, and trophy awards to denied.
 - Added synthetic privacy/negative tests, CI wiring and future staging usage notes. No deployable game features, SQL, NPCs, Playerbots or IP changes.
+
+## Offline raid group/guild timeline (development only)
+
+- Pure C++ windows for encounter-bound raid join/leave membership with original guild generation, distinct groups and half-open time intervals.
+- Negative tests for previous-wipe replay, group swap, overlapping windows, roster gaps, invalid source and 40-member mixed guilds.
+- Never certifies a character human, actual guild membership or trophy grant; no AzerothCore runtime hook, SQL, IP, Playerbots or world changes.
