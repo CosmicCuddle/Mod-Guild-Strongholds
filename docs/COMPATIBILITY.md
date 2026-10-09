@@ -211,3 +211,12 @@ The custom production AzerothCore/Playerbots/IP fork **may differ**, and the cal
 Reviewed public `mod-playerbots/mod-playerbots` commit `037c01418b5d01506917a3db9b44fd56ac5f965c` defines `PlayerbotsMgr::GetPlayerbotAI(Player*)` and returns `nullptr` both when Playerbots is disabled and when the player has no stored bot AI. A null result is therefore **ambiguous** and cannot independently prove a human player. Other Playerbots forks can differ further.
 
 The new participation policy requires positive trusted `ControlClassificationSourceVerified` and either `VerifiedHuman` or `VerifiedPlayerbot`; absent confidence it remains `Unknown`, never counted as a human. A dedicated CI job audits the pinned public Playerbots source only, NOT the user's installed version or actual runtime. The staging kill-credit observer has no dependency on the Playerbots module and cannot award anything. See [RAID_PARTICIPATION.md](RAID_PARTICIPATION.md).
+
+
+## Playerbots opt-in source seam
+
+The fourth isolated CI variant checks out public `mod-playerbots/mod-playerbots` commit `037c01418b5d01506917a3db9b44fd56ac5f965c` outside the AzerothCore `modules/` tree and compiles Strongholds with the reviewed public Playerbots `PlayerbotMgr.h` and `PlayerbotAIConfig.h` headers. It checks compilation only; the actual Playerbots runtime/library is not included or linked.
+
+In normal builds `StrongholdStagingPlayerbotsRead.cpp` is excluded. In opt-in staging builds it requires `NAXX_GS_BUILD_STAGING_PLAYERBOTS_READ` plus `NAXX_GS_BUILD_STAGING_RAID_OBSERVER` and two disabled config settings. Only *positive* bot AI registry presence produces a bot classification. Absence remains unknown rather than falsely human.
+
+The user's customised Playerbots module may differ; no installed-fork compatibility, positive human authority, in-game raid reward, SQL, account login or privacy guarantee is claimed.

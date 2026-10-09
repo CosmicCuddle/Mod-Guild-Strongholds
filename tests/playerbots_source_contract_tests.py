@@ -28,6 +28,12 @@ assert "GetSession()->IsHeadless()" in hooks
 local = pathlib.Path("src/StrongholdRaidParticipation.cpp").read_text()
 assert "ControlClassificationSourceVerified" in local
 assert "ParticipantControl::Unknown" in local
+read = pathlib.Path("src/StrongholdStagingPlayerbotsRead.cpp").read_text()
+assert "sPlayerbotsMgr.GetPlayerbotAI(player)" in read
+assert "sPlayerbotAIConfig.enabled" in read
+policy = pathlib.Path("src/StrongholdPlayerbotsRead.cpp").read_text()
+assert "return ParticipantControl::VerifiedPlayerbot;" in policy
+assert "return ParticipantControl::VerifiedHuman;" not in policy
 
 print("PASS: pinned public Playerbots has a bot-AI lookup but NULL is ambiguous")
 print("NOT VERIFIED: installed Playerbots fork; human status remains UNKNOWN without an audited positive test")

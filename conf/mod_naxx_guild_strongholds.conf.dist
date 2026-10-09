@@ -60,3 +60,14 @@ NaxxGuildStrongholds.StagingIpRead.Enabled = 0
 # Do not enable on production; high-volume raid logs require review.
 # Default: 0
 NaxxGuildStrongholds.StagingRaidObserver.Enabled = 0
+
+# Extra staging-only anonymous, POSITIVE-BOT classification for candidate
+# kill-credit logs. Requires NAXX_GS_BUILD_STAGING_RAID_OBSERVER AND
+# NAXX_GS_BUILD_STAGING_PLAYERBOTS_READ and the linked source-matched module.
+# GetPlayerbotAI(player)==nullptr NEVER counts as human.
+# Before setting ReviewedSource=1 the operator MUST review the installed
+# Playerbots fork's implementation. This switch is a manual attestation,
+# NOT an automatically verified source fingerprint.
+# Default: 0 / 0
+NaxxGuildStrongholds.StagingPlayerbotsRead.Enabled = 0
+NaxxGuildStrongholds.StagingPlayerbotsRead.ReviewedSource = 0

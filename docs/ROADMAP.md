@@ -173,3 +173,10 @@ Added a real `PlayerScript::OnPlayerCreatureKillCredit` staging observer as a se
 Public `mod-playerbots` source revealed a critical semantic trap: `GetPlayerbotAI()==nullptr` is ambiguous if the module is disabled. The new pinned-fork CI audit confirms this; a real human check must be specifically designed against **the owner's installed Playerbots fork**, not guessed from that pointer.
 
 No actual encounter-specific participation adapter or reward hook has been added; all server logs remain candidate-only and all housing/trophy gameplay blocked. See [RAID_PARTICIPATION.md](RAID_PARTICIPATION.md).
+
+
+## Staging bot recognition without false human credit
+
+An opt-in Playerbots source adapter has been added to the anonymous kill-credit observer. It uses the **real public Playerbots bot-AI lookup** only to make the *positive* statement "this character is a bot" when a registered AI exists. All negative lookups, inactive/unreviewed source or missing observations remain unknown and **never** establish human guild eligibility. This closes the dangerous shortcut of treating `nullptr` or normal-looking sessions as human.
+
+Next blockers: source-audit the user's actual deployed Playerbots fork, implement a **positively verified human** controller classification, real per-encounter contribution provenance and safe guild roster/instance snapshot, all still entirely blocked from gameplay/trophies. Source compilation and synthetic tests cannot replace full staging/live-fork integration.

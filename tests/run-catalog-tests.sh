@@ -180,3 +180,10 @@ trap 'rm -rf "$work"' EXIT
   "$root/tests/raid_participation_tests.cpp" \
   -o "$work/raid_participation_tests"
 "$work/raid_participation_tests"
+
+# Checked public Playerbots GetPlayerbotAI can only POSITIVELY prove bot;
+# absence, disabled module, stale/unreviewed source are always UNKNOWN.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdPlayerbotsRead.cpp" \
+  "$root/tests/playerbots_read_tests.cpp" -o "$work/playerbots_read_tests"
+"$work/playerbots_read_tests"

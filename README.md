@@ -256,3 +256,12 @@ A second real AzerothCore callback is now under the same disabled-by-default sta
 The platform-free `StrongholdRaidParticipation.*` checks original guild generation, unique character GUID, verified raid group + encounter instance, individually verified encounter participation and a **positive, separately source-verified human/Playerbot classification**. It handles mixed-guild 40-player rosters, denies unknown human status and never awards anything. Tests simulate all evidence; live event adapters **cannot yet provide the missing encounter participation and human provenance**.
 
 We audited public `mod-playerbots/mod-playerbots` revision `037c01418b5d01506917a3db9b44fd56ac5f965c`. Its `GetPlayerbotAI(Player*)` may return null simply when Playerbots is disabled; **null is not proof of a human**. A new pinned-source CI job checks this contract. The user's deployed Playerbots fork remains unverified. See [RAID_PARTICIPATION.md](docs/RAID_PARTICIPATION.md).
+
+
+## Playerbots — staging-only positive bot registry read
+
+The raid kill-credit observer can now optionally consult the **actual reviewed Playerbots bot-AI registry** through `StrongholdStagingPlayerbotsRead.cpp`, under a new **independent compile flag** `NAXX_GS_BUILD_STAGING_PLAYERBOTS_READ` and TWO disabled-by-default staging config options (`Enabled=0` and `ReviewedSource=0`). The operator must first audit the *installed* Playerbots fork before attesting to it; the toggle is not an automatic SHA verifier.
+
+A nonnull `sPlayerbotsMgr.GetPlayerbotAI(player)` with the linked Playerbots module active can **positively classify that kill-credit recipient as a bot**. However, a null AI pointer has *multiple causes* and is **always classified UNKNOWN—not human**. The anonymous observer logs only `BOT_CONFIRMED` or `UNKNOWN_NOT_HUMAN_PROOF`, beside map/instance/creature numbers, never character GUIDs or names. It cannot certify full encounter contribution, or award trophies.
+
+The fourth, independent CI build attempts source compilation against pinned public Playerbots at `037c01418b5d01506917a3db9b44fd56ac5f965c` using genuine pinned AzerothCore headers, without linking the real Playerbots binary or starting a realm. Real installed fork review and full-stack integration remain mandatory. See [STAGING_PLAYERBOTS_READ.md](docs/STAGING_PLAYERBOTS_READ.md).

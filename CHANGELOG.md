@@ -262,3 +262,11 @@
 - Added 40-player/mixed-guild, duplicate GUID, unknown bots, mismatched guild generation and non-participation negative tests.
 - Audited pinned public Playerbots source: `GetPlayerbotAI` returns null when module is disabled, so a null AI pointer cannot prove a character is human. Added immutable public source checkout/contract CI job.
 - **No new trophy award path**: kill-credit callbacks never imply completed encounter contribution, no persistent raid roster, no actual Playerbots fork runtime dependency, no DB/world/quest writes.
+
+
+## Opt-in Playerbots positive bot-classifier (staging source only)
+
+- Added a fail-closed one-way classifier: a genuinely nonnull registered `PlayerbotAI` may confirm **bot**; all other cases remain **unknown**, never human.
+- Added actual `PlayerbotMgr.h`/`PlayerbotAIConfig.h` opt-in Playerbots registry reader and anonymous kill-credit staging log classification, guarded by separate compile macro and two disabled-by-default settings (operator-reviewed-fork attestation is NOT a source fingerprint).
+- Added exhaustive 64-case pure C++ truth-table and no-effect source regression checks; updated pinned Playerbots fork source-contract test.
+- Added independent real-upstream header-compilation job with **source-pinned public Playerbots checkout**, no installed local module/build, real realm, SQL or trophy reward. Normal builds still omit all staging scripts.

@@ -43,3 +43,14 @@ No real server was started or edited. The User's customised AzerothCore and Play
 ## Release blockers
 
 Source-verified map/difficulty/boss IDs for the **custom** Classic raids, named encounter-completion/credit evidence, valid real participation window, trusted positive human/bot determination, original guild generation at encounter time, bounded durable event/roster proof, owner-selected guild human minimum, actual private housing and verified Playerbots/IP/coexistence. Backups and rollback are required before staging world edits. Nothing should be installed in production now.
+
+
+## Positive bot recognition in the optional staging observer
+
+An additional opt-in **read-only** `StrongholdStagingPlayerbotsRead.cpp` now uses exactly the reviewed public fork's `sPlayerbotsMgr.GetPlayerbotAI(player)` and `sPlayerbotAIConfig.enabled`. This is not a robust human classifier. **Non-null, source-matched bot AI means a positively detected Playerbot. Null means UNKNOWN**, including when the bot module is off, disabled, the character is not registered, or custom server state differs.
+
+Three conditions are all necessary before the staging bot read runs: explicitly compile `NAXX_GS_BUILD_STAGING_RAID_OBSERVER` AND `NAXX_GS_BUILD_STAGING_PLAYERBOTS_READ`, opt in to the raid observer config, and separately enable `StagingPlayerbotsRead.Enabled` **and** `StagingPlayerbotsRead.ReviewedSource` (both default 0). The reviewed-source switch is an operator attestation, **not** proof that the installed fork matches the pinned public checkout.
+
+The staging `OnPlayerCreatureKillCredit` logger may then emit anonymous `BOT_CONFIRMED` or `UNKNOWN_NOT_HUMAN_PROOF` beside map/instance/creature numeric IDs. No character names/GUIDs, guild info or IP tiers are logged. This observation **never** produces `ParticipantControl::VerifiedHuman`, does not fill actual encounter participation evidence and cannot change rewards, database or game objects.
+
+The new CI variant compiles the optional interface against public pinned Playerbots source (source not linked into game binary). Real deployed fork with all installed modules, human account/session validation, raid presence/contribution audit and positive human proof are still unverified. See [STAGING_PLAYERBOTS_READ.md](STAGING_PLAYERBOTS_READ.md).

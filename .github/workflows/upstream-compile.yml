@@ -30,14 +30,22 @@ jobs:
             compile_flags: ""
             link_worldserver: true
             ip_checkout: false
+            playerbots_checkout: false
           - label: Real upstream staging GM, Steward and read-only property DB compile (opt-in)
             compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_RAID_OBSERVER -DNAXX_GS_BUILD_STAGING_PROPERTY_READ"
             link_worldserver: false
             ip_checkout: false
+            playerbots_checkout: false
           - label: Real upstream staging Guild Steward with reviewed Grimfeather IP source (opt-in)
             compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_RAID_OBSERVER -DNAXX_GS_BUILD_STAGING_PROPERTY_READ -DNAXX_GS_BUILD_STAGING_IP_READ"
             link_worldserver: false
             ip_checkout: true
+            playerbots_checkout: false
+          - label: Real upstream staging positive Playerbots registry read (optional)
+            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_RAID_OBSERVER -DNAXX_GS_BUILD_STAGING_PROPERTY_READ -DNAXX_GS_BUILD_STAGING_PLAYERBOTS_READ"
+            link_worldserver: false
+            ip_checkout: false
+            playerbots_checkout: true
     steps:
       - name: Check out isolated Strongholds development source
         uses: actions/checkout@v4
@@ -58,6 +66,14 @@ jobs:
           repository: Grimfeather/mod-individual-progression
           ref: 706740808fee328b8557607f87b0548cf961e047
           path: core/modules/mod-individual-progression
+          persist-credentials: false
+      - name: Check out immutable reviewed Playerbots source for optional read integration
+        if: matrix.playerbots_checkout
+        uses: actions/checkout@v4
+        with:
+          repository: mod-playerbots/mod-playerbots
+          ref: 037c01418b5d01506917a3db9b44fd56ac5f965c
+          path: reviewed-playerbots-source
           persist-credentials: false
       - name: Assert safe isolated source and install NO game data
         shell: bash
@@ -94,6 +110,12 @@ jobs:
           if [[ "${{ matrix.ip_checkout }}" == "true" ]]; then
             test -f core/modules/mod-individual-progression/src/IndividualProgression.h
             NAXX_GS_COMPILE_FLAGS="$NAXX_GS_COMPILE_FLAGS -I$GITHUB_WORKSPACE/core/modules/mod-individual-progression/src"
+          fi
+          if [[ "${{ matrix.playerbots_checkout }}" == "true" ]]; then
+            test -f reviewed-playerbots-source/src/Bot/PlayerbotMgr.h
+            test -f reviewed-playerbots-source/src/PlayerbotAIConfig.h
+            test -f reviewed-playerbots-source/src/Bot/Engine/PlayerbotAIBase.h
+            NAXX_GS_COMPILE_FLAGS="$NAXX_GS_COMPILE_FLAGS -I$GITHUB_WORKSPACE/reviewed-playerbots-source/src -I$GITHUB_WORKSPACE/reviewed-playerbots-source/src/Bot -I$GITHUB_WORKSPACE/reviewed-playerbots-source/src/Bot/Engine"
           fi
           cmake -S core -B core/build -G Ninja \
             -DCMAKE_C_COMPILER=clang-18 \
@@ -161,6 +183,10 @@ jobs:
               "$RUNNER_TEMP/naxx-gs-symbols.txt"
             if [[ "${{ matrix.ip_checkout }}" == "true" ]]; then
               grep -Fq 'NaxxGuildStrongholds::ReadStagingIpState(' \
+                "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            fi
+            if [[ "${{ matrix.playerbots_checkout }}" == "true" ]]; then
+              grep -Fq 'NaxxGuildStrongholds::ReadStagingPlayerbotsControl(' \
                 "$RUNNER_TEMP/naxx-gs-symbols.txt"
             fi
           fi
