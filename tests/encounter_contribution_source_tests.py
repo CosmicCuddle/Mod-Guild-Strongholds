@@ -13,7 +13,7 @@ assert "EncounterParticipationVerified = false" in header
 assert "TrophyGranted = false" in header
 assert "StrongholdEncounterContribution.cpp" in runner
 assert "encounter_contribution_tests.cpp" in runner
-assert "human classification" in docs.lower() && "always false" in docs.lower()
+assert "human classification" in docs.lower() and "always false" in docs.lower()
 
 for text in (cpp, header):
     for forbidden in (
