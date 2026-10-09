@@ -113,6 +113,91 @@ int main()
     test(PrepareReturn(overflow, 1234, true, true).Decision ==
          VisitRecoveryDecision::VersionOverflow, "Exit rejects version overflow");
 
+
+    // Worldserver crashed after Returning was committed but before arrival:
+    // no new entry ticket, only a source-reviewed RECONCILIATION CANDIDATE.
+    RecoveryLocationSnapshot atHome{0,0,-8950.1f,515.5f,98.0f,
+                                    true,true,false,false};
+    test(ReviewInterruptedVisit(returning.Proposed, 1234, true, true, atHome) ==
+         RecoveryResumeDecision::CandidateReviewCompletedReturn,
+         "Returning at saved origin can be reviewed after restart");
+    test(ReviewInterruptedVisit(ticket, 1234, true, true, atHome) ==
+         RecoveryResumeDecision::CandidateReconcileNeverLeft,
+         "Prepared still at origin may never have entered");
+    test(ReviewInterruptedVisit(arrive.Proposed, 1234, true, true, atHome) ==
+         RecoveryResumeDecision::CandidatePersistReturning,
+         "Inside but already at origin still needs state reconciliation");
+
+    auto inside = atHome;
+    inside.MapId = 1;
+    inside.InsideOriginalPropertyVerified = true;
+    test(ReviewInterruptedVisit(returning.Proposed, 1234, true, true, inside) ==
+         RecoveryResumeDecision::CandidateRetryReturning,
+         "Returning still inside after crash may retry old origin");
+    test(ReviewInterruptedVisit(ticket, 1234, true, true, inside) ==
+         RecoveryResumeDecision::CandidatePersistReturning,
+         "Prepared yet inside requires durable Returning transition");
+    test(ReviewInterruptedVisit(arrive.Proposed, 1234, true, true, inside) ==
+         RecoveryResumeDecision::CandidatePersistReturning,
+         "Inside after relog requires durable Returning transition");
+
+    test(ReviewInterruptedVisit(returning.Proposed, 1234, false, true, inside) ==
+         RecoveryResumeDecision::UntrustedTicket, "Caller-supplied row never trusted");
+    test(ReviewInterruptedVisit(returning.Proposed, 9999, true, true, inside) ==
+         RecoveryResumeDecision::IncorrectCharacter, "Other player cannot resume visit");
+    test(ReviewInterruptedVisit(returning.Proposed, 1234, true, false, inside) ==
+         RecoveryResumeDecision::UnsafeSavedReturn, "Saved origin must be revalidated");
+
+    auto unstable = inside;
+    unstable.PositionFromServer = false;
+    test(ReviewInterruptedVisit(returning.Proposed, 1234, true, true, unstable) ==
+         RecoveryResumeDecision::UnverifiedPosition, "No self-attested location");
+    unstable = inside;
+    unstable.PositionStable = false;
+    test(ReviewInterruptedVisit(returning.Proposed, 1234, true, true, unstable) ==
+         RecoveryResumeDecision::MovementPending, "Wait for position to stabilize");
+    unstable = inside;
+    unstable.TeleportPending = true;
+    test(ReviewInterruptedVisit(returning.Proposed, 1234, true, true, unstable) ==
+         RecoveryResumeDecision::MovementPending, "Do not duplicate pending teleport");
+    unstable = inside;
+    unstable.X = std::numeric_limits<float>::quiet_NaN();
+    test(ReviewInterruptedVisit(returning.Proposed, 1234, true, true, unstable) ==
+         RecoveryResumeDecision::UnverifiedPosition, "Corrupt coordinate never qualifies");
+
+    unstable = atHome;
+    unstable.InsideOriginalPropertyVerified = true;
+    test(ReviewInterruptedVisit(returning.Proposed, 1234, true, true, unstable) ==
+         RecoveryResumeDecision::ConflictingEvidence, "At origin and inside is inconsistent");
+    unstable = atHome;
+    unstable.MapId = 571;
+    test(ReviewInterruptedVisit(returning.Proposed, 1234, true, true, unstable) ==
+         RecoveryResumeDecision::ManualRecoveryRequired, "Unexpected third map requires manual recovery");
+    unstable = atHome;
+    unstable.X += 10.0f;
+    test(ReviewInterruptedVisit(returning.Proposed, 1234, true, true, unstable) ==
+         RecoveryResumeDecision::ManualRecoveryRequired, "Not near original location is not confirmed return");
+    unstable = atHome;
+    unstable.InstanceId = 44;
+    test(ReviewInterruptedVisit(returning.Proposed, 1234, true, true, unstable) ==
+         RecoveryResumeDecision::ManualRecoveryRequired, "Wrong instance cannot clear visit");
+
+    auto invalidStage = returning.Proposed;
+    invalidStage.Stage = static_cast<VisitStage>(250);
+    test(ReviewInterruptedVisit(invalidStage, 1234, true, true, atHome) ==
+         RecoveryResumeDecision::InvalidTicket, "Unknown visit stage rejected");
+    test(CanClearVisit(invalidStage, 1234, true, true) ==
+         VisitRecoveryDecision::InvalidVisitRecord, "Unknown stage cannot clear SQL");
+    test(PrepareReturn(invalidStage, 1234, true, true).Decision ==
+         VisitRecoveryDecision::InvalidVisitRecord, "Unknown stage cannot create transition");
+    // The original guild may have disbanded: the old ticket still belongs
+    // exclusively to this CHARACTER. Active guild membership is irrelevant.
+    auto disbanded = returning.Proposed;
+    disbanded.OriginalGuild.GuildId = 555;
+    test(ReviewInterruptedVisit(disbanded, 1234, true, true, inside) ==
+         RecoveryResumeDecision::CandidateRetryReturning,
+         "Archived/changed guild never strands the old character");
+
     if (failed)
     {
         std::cerr << failed << " of " << checks << " visit-recovery tests failed\n";

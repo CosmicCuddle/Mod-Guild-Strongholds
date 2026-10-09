@@ -51,6 +51,8 @@ jobs:
         run: python3 tests/raid_membership_timeline_source_tests.py
       - name: Verify offline two-guild matrix never enables housing
         run: python3 tests/privacy_matrix_source_tests.py
+      - name: Ensure crash/reconnect recovery review does not mutate SQL or world
+        run: python3 tests/reconnect_recovery_source_tests.py
       - name: Verify safe module inventory and local Git modification reporting
         run: bash tests/module_inventory_tests.sh
 

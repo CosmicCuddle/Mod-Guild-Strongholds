@@ -300,3 +300,9 @@
 
 - Rejects out-of-range synthetic visibility kinds before fixed-array indexing and unknown phase comparison modes before visibility decisions.
 - Adds negative C++ tests. No player/GO phase hooks, SQL, instance routing or other module modifications.
+
+## Interrupted visitor reconnect and safe-return review (offline)
+
+- Added fail-closed recovery candidate decisions for persisted Prepared/Inside/Returning tickets after crashes, relog and interrupted teleports.
+- Explicitly refuses unverified positions, wrong player, uncertain third locations and invalid state values; never clears a ticket or rewrites a safe origin.
+- Added C++ negative tests and read-only source guard. No worldserver, SQL, Playerbots, IP or live changes.

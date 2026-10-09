@@ -86,3 +86,7 @@ The domain-only StrongholdRaidMembershipTimeline tests historic join/leave and o
 ## 10. Future privacy staging coverage
 
 A pure StrongholdPrivacyMatrix requires both A/B directions in base, mixed IP, Playerbots, relog, restart and guild-change contexts. No observations can turn on the housing feature. See [PRIVACY_STAGING_MATRIX.md](PRIVACY_STAGING_MATRIX.md).
+
+## 11. Interrupted visit after restart
+
+ReviewInterruptedVisit now models Prepared, Inside and Returning ticket reconciliation after crash/relog, with no live teleport, SQL changes, or automatic ticket deletion. It rejects unknown visit stage enum values. See [RECOVERY_RECONNECT.md](RECOVERY_RECONNECT.md); actual full-stack recovery still blocked.

@@ -86,6 +86,44 @@ VisitRecoveryPlan PrepareReturn(VisitRecord const& saved,
     std::uint32_t verifiedCharacterGuid, bool persistedRecordTrusted,
     bool returnMapRevalidatedByServer);
 
+
+// Pure, read-only review of a persisted visit after crash, relog or restart.
+// A candidate result never teleports a player, updates SQL, clears a ticket
+// or approves removing the recovery handler from a live realm.
+struct RecoveryLocationSnapshot
+{
+    std::uint32_t MapId = 0;
+    std::uint32_t InstanceId = 0;
+    float X = 0.0f;
+    float Y = 0.0f;
+    float Z = 0.0f;
+    bool PositionFromServer = false;
+    bool PositionStable = false;
+    bool TeleportPending = false;
+    bool InsideOriginalPropertyVerified = false;
+};
+
+enum class RecoveryResumeDecision : std::uint8_t
+{
+    UntrustedTicket,
+    InvalidTicket,
+    IncorrectCharacter,
+    UnsafeSavedReturn,
+    UnverifiedPosition,
+    MovementPending,
+    ConflictingEvidence,
+    ManualRecoveryRequired,
+    CandidateReconcileNeverLeft,
+    CandidatePersistReturning,
+    CandidateRetryReturning,
+    CandidateReviewCompletedReturn
+};
+
+RecoveryResumeDecision ReviewInterruptedVisit(
+    VisitRecord const& saved, std::uint32_t verifiedCharacterGuid,
+    bool persistedRecordTrusted, bool savedReturnRevalidatedByServer,
+    RecoveryLocationSnapshot const& current);
+
 // No deletion is allowed unless a trusted return teleport was VERIFIED.
 // Even if the game client disconnects, the row must survive for recovery.
 VisitRecoveryDecision CanClearVisit(VisitRecord const& saved,

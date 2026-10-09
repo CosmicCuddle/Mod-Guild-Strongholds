@@ -26,7 +26,10 @@ bool ValidVisitRecord(VisitRecord const& visit)
         visit.OriginalGuild.CreatedAt != 0 &&
         KeyValid(visit.SessionKey, 64) &&
         KeyValid(visit.PropertyKey, 32) &&
-        IsStructurallyValidReturn(visit.ReturnPoint);
+        IsStructurallyValidReturn(visit.ReturnPoint) &&
+        (visit.Stage == VisitStage::Prepared ||
+         visit.Stage == VisitStage::Inside ||
+         visit.Stage == VisitStage::Returning);
 }
 
 VisitRecoveryPlan CopyPlan(VisitRecord const& record)
@@ -129,6 +132,68 @@ VisitRecoveryPlan PrepareReturn(VisitRecord const& saved,
     plan.Proposed.Stage = VisitStage::Returning;
     ++plan.Proposed.Version;
     return plan;
+}
+
+
+RecoveryResumeDecision ReviewInterruptedVisit(
+    VisitRecord const& saved, std::uint32_t verifiedCharacterGuid,
+    bool persistedRecordTrusted, bool savedReturnRevalidatedByServer,
+    RecoveryLocationSnapshot const& current)
+{
+    if (!persistedRecordTrusted)
+        return RecoveryResumeDecision::UntrustedTicket;
+    if (!ValidVisitRecord(saved))
+        return RecoveryResumeDecision::InvalidTicket;
+    if (!verifiedCharacterGuid || saved.CharacterGuid != verifiedCharacterGuid)
+        return RecoveryResumeDecision::IncorrectCharacter;
+    if (!savedReturnRevalidatedByServer)
+        return RecoveryResumeDecision::UnsafeSavedReturn;
+    if (!current.PositionFromServer || !std::isfinite(current.X) ||
+        !std::isfinite(current.Y) || !std::isfinite(current.Z))
+        return RecoveryResumeDecision::UnverifiedPosition;
+    if (!current.PositionStable || current.TeleportPending)
+        return RecoveryResumeDecision::MovementPending;
+
+    // These tiny tolerances are SYNTHETIC review heuristics only. The real
+    // server must validate map/instance, collision and arrival independently.
+    bool const atOrigin = current.MapId == saved.ReturnPoint.MapId &&
+        current.InstanceId == saved.ReturnPoint.InstanceId &&
+        std::fabs(current.X - saved.ReturnPoint.X) <= 2.0f &&
+        std::fabs(current.Y - saved.ReturnPoint.Y) <= 2.0f &&
+        std::fabs(current.Z - saved.ReturnPoint.Z) <= 4.0f;
+
+    if (atOrigin && current.InsideOriginalPropertyVerified)
+        return RecoveryResumeDecision::ConflictingEvidence;
+
+    if (atOrigin)
+    {
+        switch (saved.Stage)
+        {
+            case VisitStage::Prepared:
+                return RecoveryResumeDecision::CandidateReconcileNeverLeft;
+            case VisitStage::Inside:
+                return RecoveryResumeDecision::CandidatePersistReturning;
+            case VisitStage::Returning:
+                return RecoveryResumeDecision::CandidateReviewCompletedReturn;
+        }
+    }
+
+    // Any unknown third location, GM intervention or unreviewed housing
+    // ownership must never trigger an unsolicited automatic relocation.
+    if (!current.InsideOriginalPropertyVerified)
+        return RecoveryResumeDecision::ManualRecoveryRequired;
+
+    switch (saved.Stage)
+    {
+        case VisitStage::Prepared:
+        case VisitStage::Inside:
+            return RecoveryResumeDecision::CandidatePersistReturning;
+        case VisitStage::Returning:
+            // Persisted origin and nonce MUST be reused if a future core
+            // adapter independently validates an idempotent retry.
+            return RecoveryResumeDecision::CandidateRetryReturning;
+    }
+    return RecoveryResumeDecision::InvalidTicket;
 }
 
 VisitRecoveryDecision CanClearVisit(VisitRecord const& saved,

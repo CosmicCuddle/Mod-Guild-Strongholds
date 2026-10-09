@@ -63,3 +63,7 @@ If the return point cannot be validated, do **not** teleport to arbitrary stored
 ## Compatibility and rollback
 
 The `naxx_gs_visit` table is **module-owned** and never touches character position columns. A data-preserving uninstall must evacuate/recover any outstanding visitors **before** the compiled module is removed. During normal disable/uninstall, visit tickets are not silently deleted. The *optional destructive purge* is dangerous with outstanding visitors and requires a tested evacuation, backups and explicit approval. No SQL should be applied to the live server at this stage.
+
+## Interrupted return/reconnect classification (offline only)
+
+The new [crash/reconnect recovery review](RECOVERY_RECONNECT.md) distinguishes Returning visitors still in the private property, Returning visitors back at origin, entry teleports never started and unsafe third-map or movement conditions. All are human/source-review candidates, NOT actual teleport or SQL actions. A runtime handler and pre-uninstall evacuation remain release blockers.
