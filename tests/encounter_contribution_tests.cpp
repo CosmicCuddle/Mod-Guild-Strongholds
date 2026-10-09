@@ -111,7 +111,7 @@ int main()
     check(ReviewEncounterContribution(attempt, 42, {damage}).Decision ==
           EncounterContributionDecision::InsufficientEffectiveActivity, "One tag not enough");
 
-    e = heal; e.Action = EncounterActionKind::EffectiveMitigation;
+    e = heal; e.Action = EncounterActionKind::EffectiveMitigation; e.EventId = 3;
     check(ReviewEncounterContribution(attempt, 42, {damage, e}).Decision ==
           EncounterContributionDecision::CandidateForStagingReview, "Tank mitigation can contribute");
     check(ReviewEncounterContribution(attempt, 42, {heal, e}).Decision ==
