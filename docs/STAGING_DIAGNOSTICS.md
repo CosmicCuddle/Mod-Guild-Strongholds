@@ -53,3 +53,7 @@ A separate GitHub Actions compile variant now compiles `StrongholdStagingDiagnos
 ## Real-header test correction
 
 The first opt-in diagnostic build surfaced a `ChatCommandBuilder` mismatch: AzerothCore expects a handler function reference, not a temporary function pointer. The implementation now passes `HandleSnapshot` directly. The fake C++ command constructor mirrors the function-reference requirement so the same error cannot silently pass mock tests. This remains a **staging-only** diagnostic, never enabled in normal builds.
+
+## Optional GM-self visit status (separately gated)
+
+A second staging command (.naxxgs visit) may read only the invoking GM's existing module-owned draft return-ticket status, using a separate compile flag/config. It cannot query another character, reveal saved location, delete tickets or teleport. See [STAGING_VISIT_READ.md](STAGING_VISIT_READ.md).

@@ -55,6 +55,8 @@ jobs:
         run: python3 tests/reconnect_recovery_source_tests.py
       - name: Verify offline uninstall drain gate can never approve a data purge
         run: python3 tests/uninstall_drain_source_tests.py
+      - name: Refuse cross-character or mutating staging visit DB reads
+        run: python3 tests/staging_visit_read_source_tests.py
       - name: Verify safe module inventory and local Git modification reporting
         run: bash tests/module_inventory_tests.sh
 

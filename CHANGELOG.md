@@ -312,3 +312,9 @@
 - Pure C++ preservation-first blocking policy for Prepared/Inside/Returning tickets, missing characters, corrupt DB counts, new-admission races, pending transfers and missing backups.
 - Adds synthetic tests and source-level no-purge guard. Even the clean synthetic scenario only reaches manual operator review.
 - No actual module uninstall, SQL deletion, teleport, Playerbots, IP or live world changes.
+
+## Source-linked staging visit-ticket status read
+
+- Separate compile/config-gated GM-self staging command bound to a SELECT on the draft module-owned characters table; no read of other characters, no printed saved coordinates/nonces.
+- Strict row/domain safety tests and source mutation guard; compile flag included in one pinned public AzerothCore staging CI variant, excluded in normal builds.
+- No gameplay enablement, SQL migration, teleport, Playerbots, IP or other module modification.

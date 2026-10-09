@@ -71,3 +71,7 @@ The new [crash/reconnect recovery review](RECOVERY_RECONNECT.md) distinguishes R
 ## Uninstall evacuation/drain preflight (offline)
 
 The new [uninstall drain safety contract](UNINSTALL_DRAIN.md) requires a durable stop to new entries, verified backups, trusted complete ticket stage counts, independent in-map character sweep and no outstanding teleports. Any Prepared/Inside/Returning ticket or stranded player blocks the candidate. No result approves removal or purge; runtime source and actual staging proof still absent.
+
+## Staging self-ticket source read, no recovery mutation
+
+An independently gated optional real-AzerothCore adapter now SELECTs the GM's own existing ticket and only displays its stage. This is a source/API integration step, NOT an entry/exit handler or a way to clear another character's ticket. See [STAGING_VISIT_READ.md](STAGING_VISIT_READ.md).

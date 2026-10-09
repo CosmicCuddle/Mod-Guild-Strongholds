@@ -32,7 +32,7 @@ jobs:
             ip_checkout: false
             playerbots_checkout: false
           - label: Real upstream staging GM, Steward and read-only property DB compile (opt-in)
-            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_RAID_OBSERVER -DNAXX_GS_BUILD_STAGING_PROPERTY_READ"
+            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_RAID_OBSERVER -DNAXX_GS_BUILD_STAGING_PROPERTY_READ -DNAXX_GS_BUILD_STAGING_VISIT_READ"
             link_worldserver: false
             ip_checkout: false
             playerbots_checkout: false
@@ -151,6 +151,10 @@ jobs:
           grep -Fq 'Addmod_guild_strongholdsScripts()' "$RUNNER_TEMP/naxx-gs-symbols.txt"
           grep -Fq 'AddMod_Guild_StrongholdsScripts()' "$RUNNER_TEMP/naxx-gs-symbols.txt"
           if [[ "${{ matrix.link_worldserver }}" == "true" ]]; then
+            if grep -Fq "NaxxGuildStrongholds::ReadStagingVisitTicket(" "$RUNNER_TEMP/naxx-gs-symbols.txt"; then
+              echo "::error::Staging ticket query unexpectedly present in normal build"
+              exit 1
+            fi
             # Opt-in diagnostic must not be part of the regular linked server.
             if grep -Fq 'NaxxGuildStrongholds::AddStagingDiagnosticsScripts()' \
                 "$RUNNER_TEMP/naxx-gs-symbols.txt"; then
@@ -175,6 +179,9 @@ jobs:
           else
             grep -Fq 'NaxxGuildStrongholds::AddStagingDiagnosticsScripts()' \
               "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            if [[ "${{ matrix.compile_flags }}" == *NAXX_GS_BUILD_STAGING_VISIT_READ* ]]; then
+              grep -Fq "NaxxGuildStrongholds::ReadStagingVisitTicket(" "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            fi
             grep -Fq 'NaxxGuildStrongholds::AddStagingStewardScripts()' \
               "$RUNNER_TEMP/naxx-gs-symbols.txt"
             grep -Fq 'NaxxGuildStrongholds::AddStagingRaidObserverScripts()' \

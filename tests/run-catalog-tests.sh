@@ -214,3 +214,9 @@ trap 'rm -rf "$work"' EXIT
   "$root/tests/uninstall_drain_tests.cpp" \
   -o "$work/uninstall_drain_tests"
 "$work/uninstall_drain_tests"
+
+# Pure field-validation and status only; no DB access in this test.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdVisitTicketRead.cpp" \
+  "$root/tests/visit_ticket_read_tests.cpp" -o "$work/visit_ticket_read_tests"
+"$work/visit_ticket_read_tests"

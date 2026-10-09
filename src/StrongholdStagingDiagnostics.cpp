@@ -12,6 +12,9 @@
 #include "Player.h"
 #include "RBAC.h"
 #include "ScriptMgr.h"
+#if defined(NAXX_GS_BUILD_STAGING_VISIT_READ)
+#include "StrongholdStagingVisitAdapter.h"
+#endif
 
 #include <string>
 
@@ -30,6 +33,9 @@ public:
         static ChatCommandTable snapshotTable =
         {
             { "snapshot", HandleSnapshot, rbac::RBAC_PERM_COMMAND_DEBUG_INFO, Console::No }
+#if defined(NAXX_GS_BUILD_STAGING_VISIT_READ)
+            ,{ "visit", HandleVisit, rbac::RBAC_PERM_COMMAND_DEBUG_INFO, Console::No }
+#endif
         };
         static ChatCommandTable commandTable =
         {
@@ -37,6 +43,26 @@ public:
         };
         return commandTable;
     }
+
+#if defined(NAXX_GS_BUILD_STAGING_VISIT_READ)
+    static bool HandleVisit(ChatHandler* handler)
+    {
+        if (!handler)
+            return false;
+        if (!sConfigMgr->GetOption<bool>(
+            "NaxxGuildStrongholds.Diagnostics.Enabled", false))
+        {
+            handler->SendSysMessage("Guild Strongholds diagnostic OFF.");
+            return true;
+        }
+        Player const* self = handler->GetPlayer();
+        if (!self)
+            return false;
+        VisitTicketReadReview const inspected = ReadStagingVisitTicket(self);
+        handler->SendSysMessage(VisitTicketStatusText(inspected.Status));
+        return true;
+    }
+#endif
 
     static bool HandleSnapshot(ChatHandler* handler)
     {

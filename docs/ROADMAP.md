@@ -200,3 +200,7 @@ Offline six-context, eight-surface A/B matrix with 132 synthetic observations, c
 ## Preservation-first pre-uninstall drain verification (offline)
 
 Added a fail-closed pure C++ model of a trusted complete DB ticket count plus independent housing-world sweep after blocking new visits, with the emergency handler still present. It cannot permit uninstall or SQL purge, and is not deployed. See [UNINSTALL_DRAIN.md](UNINSTALL_DRAIN.md).
+
+## Source-linked test-realm visit ticket inspector
+
+New optional GM-self read-only CharacterDatabase source adapter, command and strict row policy integrated into pinned public core CI. Disabled in ordinary builds; missing row/SQL is UNKNOWN, never approval. No actual teleport/exit/recovery; see [STAGING_VISIT_READ.md](STAGING_VISIT_READ.md).

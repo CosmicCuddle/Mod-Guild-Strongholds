@@ -71,3 +71,12 @@ NaxxGuildStrongholds.StagingRaidObserver.Enabled = 0
 # Default: 0 / 0
 NaxxGuildStrongholds.StagingPlayerbotsRead.Enabled = 0
 NaxxGuildStrongholds.StagingPlayerbotsRead.ReviewedSource = 0
+
+# STAGING-ONLY GM-self read of an EXISTING test characters DB visit ticket.
+# Requires NAXX_GS_BUILD_STAGING_DIAGNOSTICS AND
+# NAXX_GS_BUILD_STAGING_VISIT_READ at compile-time plus BOTH settings:
+# Diagnostics.Enabled and StagingVisitRead.Enabled on isolated staging.
+# Provides only a status, never nonce or saved player location.
+# Does NOT create SQL, clear tickets, teleport, or enable housing.
+# Default: 0
+NaxxGuildStrongholds.StagingVisitRead.Enabled = 0

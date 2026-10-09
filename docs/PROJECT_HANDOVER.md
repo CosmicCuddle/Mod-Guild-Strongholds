@@ -94,3 +94,7 @@ ReviewInterruptedVisit now models Prepared, Inside and Returning ticket reconcil
 ## 12. Safe code removal and full visit drain
 
 The pure StrongholdUninstallDrain model now rejects uninstall review with any outstanding return tickets, in-map visitor, invalid stage counts, unfrozen entry, pending transfers, missing backup or missing recovery handler. Even an empty staging-data fixture never authorizes actual module removal. See [UNINSTALL_DRAIN.md](UNINSTALL_DRAIN.md).
+
+## 13. Actual source-linked GM-self visit status
+
+A distinct staging-only option now uses an authenticated staff Player GUID in a one-row SELECT against an already reviewed separate staging characters table; .naxxgs visit displays status only. It is disabled/absent from normal builds and cannot return players or delete tickets. See [STAGING_VISIT_READ.md](STAGING_VISIT_READ.md).
