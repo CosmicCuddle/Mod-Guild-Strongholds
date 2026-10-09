@@ -207,3 +207,10 @@ trap 'rm -rf "$work"' EXIT
   -I"$root/src" "$root/src/StrongholdPrivacyMatrix.cpp" \
   "$root/tests/privacy_matrix_tests.cpp" -o "$work/privacy_matrix_tests"
 "$work/privacy_matrix_tests"
+
+# Pure uninstaller evacuation/drain gate; no SQL, map or player writes.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdUninstallDrain.cpp" \
+  "$root/tests/uninstall_drain_tests.cpp" \
+  -o "$work/uninstall_drain_tests"
+"$work/uninstall_drain_tests"

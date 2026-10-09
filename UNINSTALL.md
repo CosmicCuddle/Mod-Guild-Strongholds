@@ -50,3 +50,7 @@ The draft module includes durable return tickets for potential private-area visi
 ## Pending guild phase reservations
 
 The draft character schema now includes `naxx_gs_isolation_slot`. Ordinary disable/uninstall preserves these reservations and *never* reallocates retired bits to new guilds. A future actual private-area system must evacuate all outstanding visitors and remove spawned objects before any capacity could be reclaimed. The optional permanent purge is backup-only after all character recovery tickets have been resolved; never drop a live phase lease and allow its bit to be reused with players still inside.
+
+## Mandatory drain before compiled-code removal
+
+Use the [offline uninstall drain contract](docs/UNINSTALL_DRAIN.md) as a **planning checklist only**. It models the requirement that a new-entry freeze, restorable backup, a complete durable visit-ticket scan, and a separate map/player-location sweep show no pending or stranded visitors before removal. It does NOT authorise actual uninstall or destructive purge, and there is not yet a real evacuation handler. Never remove running recovery code before an independently verified full evacuation.

@@ -90,3 +90,7 @@ A pure StrongholdPrivacyMatrix requires both A/B directions in base, mixed IP, P
 ## 11. Interrupted visit after restart
 
 ReviewInterruptedVisit now models Prepared, Inside and Returning ticket reconciliation after crash/relog, with no live teleport, SQL changes, or automatic ticket deletion. It rejects unknown visit stage enum values. See [RECOVERY_RECONNECT.md](RECOVERY_RECONNECT.md); actual full-stack recovery still blocked.
+
+## 12. Safe code removal and full visit drain
+
+The pure StrongholdUninstallDrain model now rejects uninstall review with any outstanding return tickets, in-map visitor, invalid stage counts, unfrozen entry, pending transfers, missing backup or missing recovery handler. Even an empty staging-data fixture never authorizes actual module removal. See [UNINSTALL_DRAIN.md](UNINSTALL_DRAIN.md).

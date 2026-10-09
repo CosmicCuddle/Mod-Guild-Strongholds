@@ -67,3 +67,7 @@ The `naxx_gs_visit` table is **module-owned** and never touches character positi
 ## Interrupted return/reconnect classification (offline only)
 
 The new [crash/reconnect recovery review](RECOVERY_RECONNECT.md) distinguishes Returning visitors still in the private property, Returning visitors back at origin, entry teleports never started and unsafe third-map or movement conditions. All are human/source-review candidates, NOT actual teleport or SQL actions. A runtime handler and pre-uninstall evacuation remain release blockers.
+
+## Uninstall evacuation/drain preflight (offline)
+
+The new [uninstall drain safety contract](UNINSTALL_DRAIN.md) requires a durable stop to new entries, verified backups, trusted complete ticket stage counts, independent in-map character sweep and no outstanding teleports. Any Prepared/Inside/Returning ticket or stranded player blocks the candidate. No result approves removal or purge; runtime source and actual staging proof still absent.

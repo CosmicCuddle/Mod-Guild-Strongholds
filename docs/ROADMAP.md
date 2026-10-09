@@ -196,3 +196,7 @@ A bounded synthetic roster window evaluator now rejects previous-wipe event toke
 ## Bidirectional private housing scenario coverage model (unreleased)
 
 Offline six-context, eight-surface A/B matrix with 132 synthetic observations, cross-guild interaction denial and own-guild controls. No actual visibility hook or gameplay changes. See [PRIVACY_STAGING_MATRIX.md](PRIVACY_STAGING_MATRIX.md).
+
+## Preservation-first pre-uninstall drain verification (offline)
+
+Added a fail-closed pure C++ model of a trusted complete DB ticket count plus independent housing-world sweep after blocking new visits, with the emergency handler still present. It cannot permit uninstall or SQL purge, and is not deployed. See [UNINSTALL_DRAIN.md](UNINSTALL_DRAIN.md).

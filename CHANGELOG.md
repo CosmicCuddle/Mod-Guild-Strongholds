@@ -306,3 +306,9 @@
 - Added fail-closed recovery candidate decisions for persisted Prepared/Inside/Returning tickets after crashes, relog and interrupted teleports.
 - Explicitly refuses unverified positions, wrong player, uncertain third locations and invalid state values; never clears a ticket or rewrites a safe origin.
 - Added C++ negative tests and read-only source guard. No worldserver, SQL, Playerbots, IP or live changes.
+
+## Pre-uninstall visitor evacuation/drain safety model
+
+- Pure C++ preservation-first blocking policy for Prepared/Inside/Returning tickets, missing characters, corrupt DB counts, new-admission races, pending transfers and missing backups.
+- Adds synthetic tests and source-level no-purge guard. Even the clean synthetic scenario only reaches manual operator review.
+- No actual module uninstall, SQL deletion, teleport, Playerbots, IP or live world changes.
