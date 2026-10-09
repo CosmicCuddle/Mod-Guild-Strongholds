@@ -1,6 +1,6 @@
 # AzerothCore module build integration — pinned source contract
 
-**Status: upstream source inspected and two loader aliases smoke-linked against fake headers. No full worldserver build has been performed.**
+**Status:** the pinned public upstream AzerothCore worldserver has compiled and linked in disposable GitHub Actions on the foundation branch, with normal housing disabled. Opt-in staging source variants are also compiled. **The owner's customized deployed core and complete installed-module stack have NOT been compiled or validated.**
 
 ## Issue corrected
 

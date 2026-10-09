@@ -318,3 +318,8 @@
 - Separate compile/config-gated GM-self staging command bound to a SELECT on the draft module-owned characters table; no read of other characters, no printed saved coordinates/nonces.
 - Strict row/domain safety tests and source mutation guard; compile flag included in one pinned public AzerothCore staging CI variant, excluded in normal builds.
 - No gameplay enablement, SQL migration, teleport, Playerbots, IP or other module modification.
+
+## GM visit diagnostic command smoke tests
+
+- Added a separate C++ fake-AzerothCore command test ensuring compile-time opt-in visibility, original snapshot preservation, permission checks, runtime master-disable and GM-self pointer binding.
+- Refreshed pinned-public-worldserver-build documentation; deployed customised fork and complete module-stack compatibility remain unverified.

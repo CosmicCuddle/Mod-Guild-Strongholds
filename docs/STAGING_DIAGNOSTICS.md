@@ -1,6 +1,6 @@
 # Read-only staging diagnostics — NOT a housing feature
 
-**State: implemented in the development branch, mock-core tests only.**
+**State: implemented on the development branch. Mock-core tests and pinned public upstream source compilation exist; no test on the user's customized deployed fork.**
 
 ## Why this is optional
 

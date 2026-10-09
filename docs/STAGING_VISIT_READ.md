@@ -21,3 +21,7 @@ Standalone tests cover malformed fields, all stages, source uncertainty, identit
 To remove it from a staging test build, reset both settings to 0 and rebuild without the compile flags. It owns no schema/data, world objects, spawn or phase assignment, so no SQL uninstall is needed for this reader.
 
 The eventual recovery handler, two-guild isolation, audited actual module source, full player evacuation and real character-DB compare-and-swap remain mandatory release blockers. Do not deploy this branch to the live server.
+
+## Command-level negative smoke tests
+
+A separate fake-AzerothCore test build compiles the diagnostic with BOTH staging flags and a mock ticket reader. It confirms the new visit subcommand is RBAC-gated, disabled by default, only passes the issuing character into the reader, reveals only a status and does not change player state. The ordinary mock test still confirms snapshot is the only command without the extra visit compile flag. The real public-core CI separately compiles the actual database adapter.

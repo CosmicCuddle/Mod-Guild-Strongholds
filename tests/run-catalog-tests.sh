@@ -220,3 +220,13 @@ trap 'rm -rf "$work"' EXIT
   -I"$root/src" "$root/src/StrongholdVisitTicketRead.cpp" \
   "$root/tests/visit_ticket_read_tests.cpp" -o "$work/visit_ticket_read_tests"
 "$work/visit_ticket_read_tests"
+
+# Mock the extra GM-only visit command. No real SQL or worldserver invoked.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_VISIT_READ \
+  -I"$root/tests/fake_diagnostics" -I"$root/src" \
+  "$root/src/StrongholdStagingDiagnostics.cpp" \
+  "$root/src/StrongholdVisitTicketRead.cpp" \
+  "$root/tests/staging_visit_command_tests.cpp" \
+  -o "$work/staging_visit_command_tests"
+"$work/staging_visit_command_tests"
