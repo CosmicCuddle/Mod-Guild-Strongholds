@@ -58,3 +58,7 @@ The new CI variant compiles the optional interface against public pinned Playerb
 ## Attempt-bound combat event review model
 
 The new independent `StrongholdEncounterContribution.*` pure policy illustrates an **offline candidate evidence envelope**: a server-authenticated encounter attempt, bounded event times, per-character matching actor/map/instance, distinct server event IDs, group membership at event time and target-encounter binding. It rejects spectator-only, shared kill-credit and zero-effective actions; permits independently evidenced damage, heals or mitigation as staging *candidates*. There is still no deployed-fork adapter and every candidate retains `EncounterParticipationVerified=false` and `TrophyGranted=false`. See [ENCOUNTER_CONTRIBUTION.md](ENCOUNTER_CONTRIBUTION.md). Do not set the existing per-member participation Boolean from a candidate.
+
+## Source-signature preflight for exact installed forks
+
+The scanner described in [RAID_SOURCE_PREFLIGHT.md](RAID_SOURCE_PREFLIGHT.md) searches C++ symbol occurrences for bot/session, boss lifecycle, group/guild and effective combat entrypoints. It has no runtime hooks or proof of real participation; all four provenance states stay UNVERIFIED. It is a manual code-review aid only, not a human classifier or a reward pathway.

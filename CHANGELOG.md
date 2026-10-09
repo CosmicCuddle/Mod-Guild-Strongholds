@@ -277,3 +277,9 @@
 - Passive presence, kill credit, unrelated healing, zero-effective actions, stale/unverified source data and duplicate/foreign events never count as qualifying actions.
 - Candidate review still asserts zero verified participation and zero trophy rewards. This is NOT positive human/Playerbots proof or a live combat data source.
 - Added exhaustive negative C++ tests, no-mutation source guard, CI integration and explicit installed-fork review requirements. No schema, gameplay, module configuration, NPC or other module changes.
+
+## Source inventory for raid and Playerbots (development only)
+
+- Added non-mutating signature/count scanner for copied AzerothCore and module C++ source, without leaking configuration values or source excerpts.
+- Hard-coded all human, guild-generation, named-boss and per-member participation evidence to UNVERIFIED, and trophy awards to denied.
+- Added synthetic privacy/negative tests, CI wiring and future staging usage notes. No deployable game features, SQL, NPCs, Playerbots or IP changes.

@@ -184,3 +184,7 @@ Next blockers: source-audit the user's actual deployed Playerbots fork, implemen
 ## Encounter contribution evidence prototype — still offline
 
 A pure C++ attempt-bound event policy now rejects foreign instance/actor evidence, duplicate/unverified events, passive kill credit, spectator-only attendance and out-of-window actions. Effective damage, healing and mitigation can generate **review candidates only**, never positive human status, encounter participation proof or trophy rewards. The genuine custom-fork event source, authoritative encounter-completion adapter, 40-player mixed-guild behavior and Playerbots human identity audit remain blocking. See [ENCOUNTER_CONTRIBUTION.md](ENCOUNTER_CONTRIBUTION.md).
+
+## Read-only deployed raid-source inventory preparation
+
+The optional Python source preflight scans only bounded C++ API name occurrences in a separate source copy. No actual installed AzerothCore/Playerbots human classifier, boss completion, raid participation or guild routing is verified. See [RAID_SOURCE_PREFLIGHT.md](RAID_SOURCE_PREFLIGHT.md); gameplay and awards remain disabled.

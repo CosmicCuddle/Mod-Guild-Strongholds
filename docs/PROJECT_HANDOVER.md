@@ -74,3 +74,7 @@ The accurate files are under `src/`, `tests/`, `docs/`, `conf/`, `data/sql/manua
 ## 6. No live action requested
 
 At this stage the owner does **not** need to `git pull`, edit HeidiSQL, run MobaXterm commands, recompile or restart a realm to benefit from this development branch. Only after a clear, separate owner-approved staging plan should that change.
+
+## 8. Source preflight extension
+
+A new read-only helper (scripts/audit-raid-source-readiness.py) prepares a manual review of exact deployed AzerothCore, Playerbots and raid event APIs on a separate source copy. It *never* approves positive human control, boss completion, member contribution, guild generation or trophies. See [RAID_SOURCE_PREFLIGHT.md](RAID_SOURCE_PREFLIGHT.md). Running it is optional until a copied staging checkout is available.
