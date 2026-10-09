@@ -187,3 +187,10 @@ trap 'rm -rf "$work"' EXIT
   -I"$root/src" "$root/src/StrongholdPlayerbotsRead.cpp" \
   "$root/tests/playerbots_read_tests.cpp" -o "$work/playerbots_read_tests"
 "$work/playerbots_read_tests"
+
+# Offline attempt-bound event provenance: candidate only, never a human proof.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdEncounterContribution.cpp" \
+  "$root/tests/encounter_contribution_tests.cpp" \
+  -o "$work/encounter_contribution_tests"
+"$work/encounter_contribution_tests"

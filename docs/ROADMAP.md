@@ -180,3 +180,7 @@ No actual encounter-specific participation adapter or reward hook has been added
 An opt-in Playerbots source adapter has been added to the anonymous kill-credit observer. It uses the **real public Playerbots bot-AI lookup** only to make the *positive* statement "this character is a bot" when a registered AI exists. All negative lookups, inactive/unreviewed source or missing observations remain unknown and **never** establish human guild eligibility. This closes the dangerous shortcut of treating `nullptr` or normal-looking sessions as human.
 
 Next blockers: source-audit the user's actual deployed Playerbots fork, implement a **positively verified human** controller classification, real per-encounter contribution provenance and safe guild roster/instance snapshot, all still entirely blocked from gameplay/trophies. Source compilation and synthetic tests cannot replace full staging/live-fork integration.
+
+## Encounter contribution evidence prototype — still offline
+
+A pure C++ attempt-bound event policy now rejects foreign instance/actor evidence, duplicate/unverified events, passive kill credit, spectator-only attendance and out-of-window actions. Effective damage, healing and mitigation can generate **review candidates only**, never positive human status, encounter participation proof or trophy rewards. The genuine custom-fork event source, authoritative encounter-completion adapter, 40-player mixed-guild behavior and Playerbots human identity audit remain blocking. See [ENCOUNTER_CONTRIBUTION.md](ENCOUNTER_CONTRIBUTION.md).

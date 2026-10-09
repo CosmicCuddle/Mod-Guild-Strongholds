@@ -270,3 +270,10 @@
 - Added actual `PlayerbotMgr.h`/`PlayerbotAIConfig.h` opt-in Playerbots registry reader and anonymous kill-credit staging log classification, guarded by separate compile macro and two disabled-by-default settings (operator-reviewed-fork attestation is NOT a source fingerprint).
 - Added exhaustive 64-case pure C++ truth-table and no-effect source regression checks; updated pinned Playerbots fork source-contract test.
 - Added independent real-upstream header-compilation job with **source-pinned public Playerbots checkout**, no installed local module/build, real realm, SQL or trophy reward. Normal builds still omit all staging scripts.
+
+## Encounter provenance review model (development only)
+
+- Added source-independent attempt and per-member effective-action evidence policy with bounded/unique event IDs, event-time group and encounter binding, and raid-map/instance checks.
+- Passive presence, kill credit, unrelated healing, zero-effective actions, stale/unverified source data and duplicate/foreign events never count as qualifying actions.
+- Candidate review still asserts zero verified participation and zero trophy rewards. This is NOT positive human/Playerbots proof or a live combat data source.
+- Added exhaustive negative C++ tests, no-mutation source guard, CI integration and explicit installed-fork review requirements. No schema, gameplay, module configuration, NPC or other module changes.
