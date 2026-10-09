@@ -1,0 +1,218 @@
+name: Upstream AzerothCore compile and link (no realm)
+
+on:
+  push:
+    branches:
+      - feature/v0.1.0-foundations
+    paths:
+      - 'src/**'
+      - 'conf/**'
+      - '.github/workflows/upstream-compile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: upstream-module-compile-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  compile-against-upstream:
+    name: ${{ matrix.label }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: Real upstream full worldserver compile and link (housing disabled)
+            compile_flags: ""
+            link_worldserver: true
+            ip_checkout: false
+            playerbots_checkout: false
+          - label: Real upstream staging GM, Steward and read-only property DB compile (opt-in)
+            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_RAID_OBSERVER -DNAXX_GS_BUILD_STAGING_PROPERTY_READ -DNAXX_GS_BUILD_STAGING_VISIT_READ"
+            link_worldserver: false
+            ip_checkout: false
+            playerbots_checkout: false
+          - label: Real upstream staging Guild Steward with reviewed Grimfeather IP source (opt-in)
+            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_RAID_OBSERVER -DNAXX_GS_BUILD_STAGING_PROPERTY_READ -DNAXX_GS_BUILD_STAGING_IP_READ"
+            link_worldserver: false
+            ip_checkout: true
+            playerbots_checkout: false
+          - label: Real upstream staging positive Playerbots registry read (optional)
+            compile_flags: "-DNAXX_GS_BUILD_STAGING_DIAGNOSTICS -DNAXX_GS_BUILD_STAGING_STEWARD -DNAXX_GS_BUILD_STAGING_RAID_OBSERVER -DNAXX_GS_BUILD_STAGING_PROPERTY_READ -DNAXX_GS_BUILD_STAGING_PLAYERBOTS_READ"
+            link_worldserver: false
+            ip_checkout: false
+            playerbots_checkout: true
+    steps:
+      - name: Check out isolated Strongholds development source
+        uses: actions/checkout@v4
+        with:
+          path: strongholds
+          persist-credentials: false
+      - name: Check out immutable upstream AzerothCore source
+        uses: actions/checkout@v4
+        with:
+          repository: azerothcore/azerothcore-wotlk
+          ref: 7b2cecef92b271a468e39d89831b520b20ae06a8
+          path: core
+          persist-credentials: false
+      - name: Check out pinned reviewed Grimfeather IP fork for source integration
+        if: matrix.ip_checkout
+        uses: actions/checkout@v4
+        with:
+          repository: Grimfeather/mod-individual-progression
+          ref: 706740808fee328b8557607f87b0548cf961e047
+          path: core/modules/mod-individual-progression
+          persist-credentials: false
+      - name: Check out immutable reviewed Playerbots source for optional read integration
+        if: matrix.playerbots_checkout
+        uses: actions/checkout@v4
+        with:
+          repository: mod-playerbots/mod-playerbots
+          ref: 037c01418b5d01506917a3db9b44fd56ac5f965c
+          path: reviewed-playerbots-source
+          persist-credentials: false
+      - name: Assert safe isolated source and install NO game data
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f strongholds/src/StrongholdBootstrap.cpp
+          test -f strongholds/src/StrongholdStartupGate.h
+          grep -Fq 'DevelopmentCapabilities{}' strongholds/src/StrongholdStartupGate.h
+          test ! -e core/modules/mod-guild-strongholds
+          mkdir -p core/modules/mod-guild-strongholds
+          cp -a strongholds/src core/modules/mod-guild-strongholds/
+          cp -a strongholds/conf core/modules/mod-guild-strongholds/
+          test ! -e core/modules/mod-guild-strongholds/tests
+          test ! -e core/modules/mod-guild-strongholds/data
+          echo "CI-only source checkout, NO databases, no DBC, no live server"
+
+      - name: Install upstream C++ build dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            clang-18 cmake ninja-build ccache make build-essential \
+            libboost-all-dev libbz2-dev libmysql++-dev \
+            libreadline6-dev libssl-dev libtool openssl zlib1g-dev \
+            libmysqlclient-dev libncurses-dev
+
+      - name: Configure real upstream AzerothCore
+        shell: bash
+        env:
+          NAXX_GS_COMPILE_FLAGS: ${{ matrix.compile_flags }}
+        run: |
+          set -euo pipefail
+          if [[ "${{ matrix.ip_checkout }}" == "true" ]]; then
+            test -f core/modules/mod-individual-progression/src/IndividualProgression.h
+            NAXX_GS_COMPILE_FLAGS="$NAXX_GS_COMPILE_FLAGS -I$GITHUB_WORKSPACE/core/modules/mod-individual-progression/src"
+          fi
+          if [[ "${{ matrix.playerbots_checkout }}" == "true" ]]; then
+            test -f reviewed-playerbots-source/src/Bot/PlayerbotMgr.h
+            test -f reviewed-playerbots-source/src/PlayerbotAIConfig.h
+            test -f reviewed-playerbots-source/src/Bot/Engine/PlayerbotAIBase.h
+            NAXX_GS_COMPILE_FLAGS="$NAXX_GS_COMPILE_FLAGS -I$GITHUB_WORKSPACE/reviewed-playerbots-source/src -I$GITHUB_WORKSPACE/reviewed-playerbots-source/src/Bot -I$GITHUB_WORKSPACE/reviewed-playerbots-source/src/Bot/Engine"
+          fi
+          cmake -S core -B core/build -G Ninja \
+            -DCMAKE_C_COMPILER=clang-18 \
+            -DCMAKE_CXX_COMPILER=clang++-18 \
+            -DCMAKE_CXX_FLAGS="$NAXX_GS_COMPILE_FLAGS" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/guild-strongholds-no-install" \
+            -DAPPS_BUILD=all \
+            -DTOOLS_BUILD=none \
+            -DSCRIPTS=static \
+            -DMODULES=static \
+            -DWITH_WARNINGS=ON \
+            -DUSE_SCRIPTPCH=OFF \
+            -DUSE_COREPCH=OFF
+          grep -R -q 'Addmod_guild_strongholdsScripts' core/build/modules/gen_scriptloader
+
+      - name: Compile actual module against upstream headers
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake --build core/build --target modules --parallel 2
+
+      - name: Check module binary symbol exports
+        shell: bash
+        run: |
+          set -euo pipefail
+          library="$(find core/build -type f -name 'libmodules.a' -print -quit)"
+          if [[ -z "$library" ]]; then
+            echo "::error::Compiled module static archive was not found"
+            exit 1
+          fi
+          nm -C "$library" > "$RUNNER_TEMP/naxx-gs-symbols.txt"
+          grep -Fq 'Addmod_guild_strongholdsScripts()' "$RUNNER_TEMP/naxx-gs-symbols.txt"
+          grep -Fq 'AddMod_Guild_StrongholdsScripts()' "$RUNNER_TEMP/naxx-gs-symbols.txt"
+          if [[ "${{ matrix.link_worldserver }}" == "true" ]]; then
+            if grep -Fq "NaxxGuildStrongholds::ReadStagingVisitTicket(" "$RUNNER_TEMP/naxx-gs-symbols.txt"; then
+              echo "::error::Staging ticket query unexpectedly present in normal build"
+              exit 1
+            fi
+            # Opt-in diagnostic must not be part of the regular linked server.
+            if grep -Fq 'NaxxGuildStrongholds::AddStagingDiagnosticsScripts()' \
+                "$RUNNER_TEMP/naxx-gs-symbols.txt"; then
+              echo "::error::Staging GM diagnostic symbol unexpectedly present in normal build"
+              exit 1
+            fi
+            if grep -Fq 'NaxxGuildStrongholds::AddStagingStewardScripts()' \
+                "$RUNNER_TEMP/naxx-gs-symbols.txt"; then
+              echo "::error::Staging Guild Steward symbol present in normal build"
+              exit 1
+            fi
+            if grep -Fq 'NaxxGuildStrongholds::AddStagingRaidObserverScripts()' \
+                "$RUNNER_TEMP/naxx-gs-symbols.txt"; then
+              echo "::error::Staging raid observer present in normal build"
+              exit 1
+            fi
+            if grep -Fq 'NaxxGuildStrongholds::AddStagingRaidKillCreditObserverScripts()' \
+                "$RUNNER_TEMP/naxx-gs-symbols.txt"; then
+              echo "::error::Staging kill-credit observer present in normal build"
+              exit 1
+            fi
+          else
+            grep -Fq 'NaxxGuildStrongholds::AddStagingDiagnosticsScripts()' \
+              "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            if [[ "${{ matrix.compile_flags }}" == *NAXX_GS_BUILD_STAGING_VISIT_READ* ]]; then
+              grep -Fq "NaxxGuildStrongholds::ReadStagingVisitTicket(" "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            fi
+            grep -Fq 'NaxxGuildStrongholds::AddStagingStewardScripts()' \
+              "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            grep -Fq 'NaxxGuildStrongholds::AddStagingRaidObserverScripts()' \
+              "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            grep -Fq 'NaxxGuildStrongholds::AddStagingRaidKillCreditObserverScripts()' \
+              "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            if [[ "${{ matrix.ip_checkout }}" == "true" ]]; then
+              grep -Fq 'NaxxGuildStrongholds::ReadStagingIpState(' \
+                "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            fi
+            if [[ "${{ matrix.playerbots_checkout }}" == "true" ]]; then
+              grep -Fq 'NaxxGuildStrongholds::ReadStagingPlayerbotsControl(' \
+                "$RUNNER_TEMP/naxx-gs-symbols.txt"
+            fi
+          fi
+
+      - name: Link full real upstream worldserver with disabled housing
+        if: matrix.link_worldserver
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake --build core/build --target worldserver --parallel 2
+          test -x core/build/bin/worldserver || \
+            test -x core/build/src/server/apps/worldserver/worldserver || \
+            find core/build -type f -name worldserver -perm /111 | grep -q .
+          echo "PASS: built and linked actual upstream worldserver with passive Strongholds"
+          echo "No realm started, no SQL loaded, no phase changed"
+
+      - name: Explicitly report test limitations
+        shell: bash
+        run: |
+          echo "COMPILED: pinned public upstream AzerothCore only"
+          echo "NOT TESTED: deployed Naxxramas core, IP, Playerbots, other installed modules"
+          echo "NOT TESTED: private housing map, quests, NPCs, real SQL, or safe teleports"

@@ -1,0 +1,185 @@
+name: Strongholds catalog tests
+
+on:
+  push:
+    branches:
+      - feature/v0.1.0-foundations
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'scripts/**'
+      - 'docs/**'
+      - 'data/sql/manual/**'
+      - 'uninstall/**'
+      - '.github/workflows/catalog-tests.yml'
+
+jobs:
+  catalog-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and run pure C++ policy tests
+        run: bash tests/run-catalog-tests.sh
+      - name: Validate namespaced SQL and matching uninstall targets (static lint)
+        run: python3 tests/sql_safety_check.py
+      - name: Test read-only isolation compatibility scanner on fake source checkout
+        run: python3 tests/isolation_audit_tests.py
+      - name: Test reviewed IP fork source contract negatives
+        run: python3 tests/ip_fork_contract_tests.py
+      - name: Test module-loader contract negatives and both folder aliases
+        run: python3 tests/module_loader_contract_tests.py
+      - name: Ensure read-only guild API adapter never mutates game state
+        run: python3 tests/staging_guild_adapter_source_tests.py
+      - name: Ensure optional direct IP adapter cannot mutate progression
+        run: python3 tests/staging_ip_read_contract_tests.py
+      - name: Ensure raid trophy policies cannot mutate SQL or the game world
+        run: python3 tests/trophy_no_effects_tests.py
+      - name: Verify read-only raid death hook never awards guild trophies
+        run: python3 tests/raid_death_observer_source_tests.py
+      - name: Verify PlayerScript kill credit and participation never infer human status
+        run: python3 tests/raid_participation_source_tests.py
+      - name: Refuse human inference in opt-in Playerbots bot registry reader
+        run: python3 tests/playerbots_read_source_tests.py
+      - name: Verify encounter contribution remains candidate-only and mutation-free
+        run: python3 tests/encounter_contribution_source_tests.py
+      - name: Verify read-only raid and Playerbots source audit on synthetic forks
+        run: python3 tests/raid_source_readiness_tests.py
+      - name: Verify offline raid membership policy has no executable effects
+        run: python3 tests/raid_membership_timeline_source_tests.py
+      - name: Verify offline two-guild matrix never enables housing
+        run: python3 tests/privacy_matrix_source_tests.py
+      - name: Ensure crash/reconnect recovery review does not mutate SQL or world
+        run: python3 tests/reconnect_recovery_source_tests.py
+      - name: Verify offline uninstall drain gate can never approve a data purge
+        run: python3 tests/uninstall_drain_source_tests.py
+      - name: Refuse cross-character or mutating staging visit DB reads
+        run: python3 tests/staging_visit_read_source_tests.py
+      - name: Verify safe module inventory and local Git modification reporting
+        run: bash tests/module_inventory_tests.sh
+
+  core-loader-contract:
+    name: Real upstream AzerothCore loader/header contract (read-only)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out Strongholds source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check out reviewed upstream AzerothCore loader source
+        uses: actions/checkout@v4
+        with:
+          repository: azerothcore/azerothcore-wotlk
+          ref: 7b2cecef92b271a468e39d89831b520b20ae06a8
+          path: reviewed-azerothcore
+          sparse-checkout: |
+            modules/CMakeLists.txt
+            modules/ModulesLoader.cpp.in.cmake
+            src/cmake/macros/ConfigureModules.cmake
+            src/cmake/macros/AutoCollect.cmake
+            src/server/game/Scripting/ScriptDefines/WorldScript.h
+            src/server/game/Scripting/ScriptDefines/CommandScript.h
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Compare real loader and script interfaces to module
+        run: >-
+          python3 scripts/check-azerothcore-module-loader.py
+          reviewed-azerothcore --module-source .
+
+  ip-fork-contract:
+    name: Reviewed Grimfeather IP fork contract (read-only)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out Strongholds development source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check out reviewed public IP fork at immutable revision
+        uses: actions/checkout@v4
+        with:
+          repository: Grimfeather/mod-individual-progression
+          ref: 706740808fee328b8557607f87b0548cf961e047
+          path: reviewed-ip-source
+          persist-credentials: false
+      - name: Verify pinned reviewed API and progression-limit semantics
+        run: >-
+          python3 scripts/check-grimfeather-ip-contract.py reviewed-ip-source
+          --expect-revision 706740808fee328b8557607f87b0548cf961e047
+
+  mysql-construction:
+    name: MariaDB construction transaction contract
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: strongholds_test_only
+          MARIADB_DATABASE: naxx_gs_ci_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mariadb-admin ping -h 127.0.0.1 -uroot -pstrongholds_test_only"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    env:
+      NAXX_GS_CI_ONLY: "YES"
+      NAXX_GS_TEST_HOST: "127.0.0.1"
+      NAXX_GS_TEST_PORT: "3306"
+      NAXX_GS_TEST_DB: "naxx_gs_ci_test"
+      NAXX_GS_TEST_USER: "root"
+      NAXX_GS_TEST_PASSWORD: "strongholds_test_only"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test-only MariaDB client
+        run: python -m pip install --disable-pip-version-check PyMySQL==1.1.1
+      - name: Exercise isolated SQL transactions and rollback
+        run: python tests/mysql_construction_test.py
+      - name: Test guild property claims, rollback and concurrent ownership
+        run: python tests/mysql_property_claim_test.py
+      - name: Test archive, guild identity and recoverability
+        run: python tests/mysql_guild_lifecycle_test.py
+      - name: Test durable visit records, failed teleports and emergency return
+        run: python tests/mysql_visit_recovery_test.py
+      - name: Test collision-resistant guild phase leases and retirement
+        run: python tests/mysql_phase_lease_test.py
+      - name: Test draft settlement SELECT without mutations
+        run: python tests/mysql_property_read_test.py
+      - name: Test generation-safe trophy receipts and atomic unlock history
+        run: python tests/mysql_trophy_receipts_test.py
+
+  playerbots-fork-contract:
+    name: Reviewed public Playerbots classification semantics (read-only)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out Strongholds policy source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check out pinned public Playerbots source
+        uses: actions/checkout@v4
+        with:
+          repository: mod-playerbots/mod-playerbots
+          ref: 037c01418b5d01506917a3db9b44fd56ac5f965c
+          path: reviewed-playerbots-source
+          sparse-checkout: |
+            src/Bot/PlayerbotMgr.h
+            src/Bot/PlayerbotMgr.cpp
+            src/Script/Playerbots.cpp
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Verify bot-null ambiguity and no human-status guessing
+        run: python3 tests/playerbots_source_contract_tests.py reviewed-playerbots-source

@@ -1,0 +1,82 @@
+[worldserver]
+
+#####################################
+# Naxxramas Guild Strongholds
+# v0.1.x diagnostic-only development bootstrap
+#####################################
+
+# Master feature switch. Requests to enable remain BLOCKED until
+# privacy, persistence, safe exit and existing-module compatibility are verified.
+# Default: 0
+NaxxGuildStrongholds.Enabled = 0
+
+# Optional debugging in later releases. Does nothing in this bootstrap.
+# Default: 0
+NaxxGuildStrongholds.Debug = 0
+
+# Planned: optional Playerbot contribution integration.
+# Will stay disabled until bot-related abuse protections are tested.
+# Default: 0
+NaxxGuildStrongholds.Playerbots.Enabled = 0
+
+# STAGING-ONLY READ-ONLY GM DIAGNOSTICS (NOT housing enablement).
+# Requires an explicit NAXX_GS_BUILD_STAGING_DIAGNOSTICS compile flag
+# in addition to this setting. No command exists in normal builds.
+# Even with diagnostics on, private housing remains blocked.
+# Default: 0
+NaxxGuildStrongholds.Diagnostics.Enabled = 0
+
+# STAGING-ONLY informational Guild Steward creature script.
+# Requires a separate NAXX_GS_BUILD_STAGING_STEWARD compile flag.
+# A staging administrator must ALSO bind the ScriptName manually to a
+# verified creature_template on a SEPARATE backed-up staging realm.
+# There is NO supplied NPC entry, world SQL, spawn or gameplay unlock.
+# Default: 0
+NaxxGuildStrongholds.StagingSteward.Enabled = 0
+
+# EXTRA STAGING-ONLY read of the DRAFT module-owned settlement table.
+# Requires BOTH NAXX_GS_BUILD_STAGING_STEWARD and
+# NAXX_GS_BUILD_STAGING_PROPERTY_READ compiler definitions.
+# Never enable on production. The test realm must already contain the
+# separately approved/backed-up DRAFT characters SQL table; this will NOT
+# install/create/alter any database objects or grant housing.
+# A missing table is treated as UNKNOWN and logged by the DB subsystem.
+# Default: 0
+NaxxGuildStrongholds.StagingPropertyRead.Enabled = 0
+
+# EXTRA STAGING-ONLY, READ-ONLY DIRECT Grimfeather IP module lookup.
+# Requires NAXX_GS_BUILD_STAGING_IP_READ and
+# NAXX_GS_BUILD_STAGING_STEWARD, plus the reviewed IP fork's actual
+# headers/source included in the same isolated staging build.
+# This is NOT enabled merely because these options exist in a config.
+# Never enable on live realms. Gameplay and housing remain disabled.
+# Default: 0
+NaxxGuildStrongholds.StagingIpRead.Enabled = 0
+
+# EXTRA staging-only UNIT DEATH observation (never grants raid credit).
+# Requires NAXX_GS_BUILD_STAGING_RAID_OBSERVER at compilation AND this
+# independently disabled config option. No SQL, boss mapping, character
+# names/GUIDs, IP reads, Playerbot classification or actual trophy writes.
+# Do not enable on production; high-volume raid logs require review.
+# Default: 0
+NaxxGuildStrongholds.StagingRaidObserver.Enabled = 0
+
+# Extra staging-only anonymous, POSITIVE-BOT classification for candidate
+# kill-credit logs. Requires NAXX_GS_BUILD_STAGING_RAID_OBSERVER AND
+# NAXX_GS_BUILD_STAGING_PLAYERBOTS_READ and the linked source-matched module.
+# GetPlayerbotAI(player)==nullptr NEVER counts as human.
+# Before setting ReviewedSource=1 the operator MUST review the installed
+# Playerbots fork's implementation. This switch is a manual attestation,
+# NOT an automatically verified source fingerprint.
+# Default: 0 / 0
+NaxxGuildStrongholds.StagingPlayerbotsRead.Enabled = 0
+NaxxGuildStrongholds.StagingPlayerbotsRead.ReviewedSource = 0
+
+# STAGING-ONLY GM-self read of an EXISTING test characters DB visit ticket.
+# Requires NAXX_GS_BUILD_STAGING_DIAGNOSTICS AND
+# NAXX_GS_BUILD_STAGING_VISIT_READ at compile-time plus BOTH settings:
+# Diagnostics.Enabled and StagingVisitRead.Enabled on isolated staging.
+# Provides only a status, never nonce or saved player location.
+# Does NOT create SQL, clear tickets, teleport, or enable housing.
+# Default: 0
+NaxxGuildStrongholds.StagingVisitRead.Enabled = 0
