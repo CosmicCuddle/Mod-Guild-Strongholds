@@ -76,3 +76,4 @@ EncounterContributionReview ReviewEncounterContribution(
     // Deliberately NO success-to-reward or success-to-verified-human path.
     return review;
 }
+} // namespace NaxxGuildStrongholds
