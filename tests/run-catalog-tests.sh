@@ -201,3 +201,9 @@ trap 'rm -rf "$work"' EXIT
   "$root/tests/raid_membership_timeline_tests.cpp" \
   -o "$work/raid_membership_timeline_tests"
 "$work/raid_membership_timeline_tests"
+
+# Two-guild matrix: offline evidence, never privacy approval.
+"${CXX:-g++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -I"$root/src" "$root/src/StrongholdPrivacyMatrix.cpp" \
+  "$root/tests/privacy_matrix_tests.cpp" -o "$work/privacy_matrix_tests"
+"$work/privacy_matrix_tests"

@@ -79,3 +79,7 @@ The new `StrongholdInstanceRoute.*` provides a policy-level feasibility gate for
 The reviewed upstream `MapInstanced::CreateInstanceForPlayer` uses `PlayerGetDestinationInstanceId` and, if no destination binding exists, calls `MapMgr::GenerateInstanceId`. There is **no verified guild-keyed route in that sequence**. In addition, `MapInstanced::CreateInstance` requires a valid map DBC entry and `instance_template`, and its created map is a dungeon instance. Using an existing raid map as housing would risk lockouts, bosses and IP progression.
 
 The private instance approach might scale better than finite phase bits, but it needs a real, approved AzerothCore-compatible map/instance integration. Until then, it is **not operational**. [INSTANCE_ROUTING_FEASIBILITY.md](INSTANCE_ROUTING_FEASIBILITY.md) records the findings and staging release gates.
+
+## Privacy coverage acceptance matrix (offline only)
+
+A new [two-guild scenario matrix](PRIVACY_STAGING_MATRIX.md) requires 132 bidirectional checks across 6 contexts and 8 cross-guild surfaces with positive own-guild controls. Synthetic data cannot prove real housing isolation or enable gameplay; actual deployed-core staging remains a release blocker.

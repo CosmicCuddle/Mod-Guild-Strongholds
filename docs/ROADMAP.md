@@ -192,3 +192,7 @@ The optional Python source preflight scans only bounded C++ API name occurrences
 ## Offline event-time group and guild-history model
 
 A bounded synthetic roster window evaluator now rejects previous-wipe event tokens, reused guild IDs, overlapping windows and action during join/leave gaps, including 40-player mixed guild simulations. All results remain review candidates with no actual verification or rewards. See [RAID_MEMBERSHIP_TIMELINE.md](RAID_MEMBERSHIP_TIMELINE.md).
+
+## Bidirectional private housing scenario coverage model (unreleased)
+
+Offline six-context, eight-surface A/B matrix with 132 synthetic observations, cross-guild interaction denial and own-guild controls. No actual visibility hook or gameplay changes. See [PRIVACY_STAGING_MATRIX.md](PRIVACY_STAGING_MATRIX.md).

@@ -82,3 +82,7 @@ A new read-only helper (scripts/audit-raid-source-readiness.py) prepares a manua
 ## 9. Group/roster timeline development
 
 The domain-only StrongholdRaidMembershipTimeline tests historic join/leave and original guild identity against a proposed raid attempt. It cannot prove real group or human status, cannot award trophies and requires the exact installed-fork source review. See [RAID_MEMBERSHIP_TIMELINE.md](RAID_MEMBERSHIP_TIMELINE.md).
+
+## 10. Future privacy staging coverage
+
+A pure StrongholdPrivacyMatrix requires both A/B directions in base, mixed IP, Playerbots, relog, restart and guild-change contexts. No observations can turn on the housing feature. See [PRIVACY_STAGING_MATRIX.md](PRIVACY_STAGING_MATRIX.md).

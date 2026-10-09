@@ -289,3 +289,9 @@
 - Pure C++ windows for encounter-bound raid join/leave membership with original guild generation, distinct groups and half-open time intervals.
 - Negative tests for previous-wipe replay, group swap, overlapping windows, roster gaps, invalid source and 40-member mixed guilds.
 - Never certifies a character human, actual guild membership or trophy grant; no AzerothCore runtime hook, SQL, IP, Playerbots or world changes.
+
+## Offline two-guild privacy matrix milestone
+
+- Added 132-case synthetic bidirectional privacy/interactivity review matrix across six lifecycle/IP/bot contexts.
+- Hard rejection of cross-guild leaks, invalid reports, missing coverage and broken own-guild visibility.
+- Never enables housing; no SQL, worldserver, Playerbots, IP or live changes.
