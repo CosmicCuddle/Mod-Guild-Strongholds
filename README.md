@@ -21,7 +21,9 @@ A planned AzerothCore 3.3.5 module for private, customisable guild settlements.
 4. Test guild separation, logouts, relogs, teleport returns, restarts and progression checks before allowing property purchases.
 5. Stop and back up the databases before any schema installation or upgrade.
 
-For future conversation continuity, start with **[PROJECT_HANDOVER.md](docs/PROJECT_HANDOVER.md)**.\n\nRead **[DESIGN.md](docs/DESIGN.md)**, **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** and **[ROADMAP.md](docs/ROADMAP.md)**.
+For future conversation continuity, start with **[PROJECT_HANDOVER.md](docs/PROJECT_HANDOVER.md)**.
+
+Read **[DESIGN.md](docs/DESIGN.md)**, **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** and **[ROADMAP.md](docs/ROADMAP.md)**.
 
 ## Current repository contents
 
