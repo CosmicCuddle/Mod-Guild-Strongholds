@@ -100,6 +100,20 @@ int main()
     test(EvaluateIsolationSamples(badGuild) == ProbeVerdict::MalformedSample,
         "Unknown owning guild is not proof");
 
+    // Malformed external/synthetic enums must fail closed; unchecked indexing
+    // into the three-kind array used to risk undefined behaviour.
+    auto invalidKind = MakeSamples(1, 2);
+    invalidKind[0].Kind = static_cast<ObservationKind>(255);
+    test(EvaluateIsolationSamples(invalidKind) == ProbeVerdict::MalformedSample,
+        "Unknown observation kind is refused before array indexing");
+    auto invalidMode = MakeSamples(1, 2);
+    invalidMode[1].Mode = static_cast<VisibilityMode>(255);
+    test(EvaluateIsolationSamples(invalidMode) == ProbeVerdict::MalformedSample,
+        "Unknown phase comparison mode is refused");
+    test(!CanSampleSee(invalidMode[1], invalidMode[0]) &&
+         !CanSampleSee(invalidMode[0], invalidMode[1]),
+        "Unknown comparison modes cannot imply visibility");
+
     if (failures)
         return 1;
     std::cout << "PASS: " << checks << " bidirectional phase and instance model checks\n";

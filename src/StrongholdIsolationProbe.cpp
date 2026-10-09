@@ -15,6 +15,12 @@ bool CanSampleSee(IsolationSample const& observer,
     // AzerothCore Object.h WorldObject::InSamePhase(uint32):
     // m_useCombinedPhases ? GetPhaseMask() & phasemask
     //                    : GetPhaseMask() == phasemask
+    // An invalid enum value must not silently be interpreted as ExactValue.
+    if ((observer.Mode != VisibilityMode::CombinedBits &&
+         observer.Mode != VisibilityMode::ExactValue) ||
+        (target.Mode != VisibilityMode::CombinedBits &&
+         target.Mode != VisibilityMode::ExactValue))
+        return false;
     if (observer.Mode == VisibilityMode::CombinedBits)
         return (observer.PhaseMask & target.PhaseMask) != 0;
     return observer.PhaseMask == target.PhaseMask;
@@ -34,7 +40,11 @@ ProbeVerdict EvaluateIsolationSamples(
     std::set<std::uint32_t> guildIds;
     for (IsolationSample const& item : samples)
     {
-        if (item.GuildId == 0 || item.PhaseMask == 0)
+        // Never index the fixed three-kind array with a corrupt enum.
+        if (item.GuildId == 0 || item.PhaseMask == 0 ||
+            static_cast<std::size_t>(item.Kind) >= 3 ||
+            (item.Mode != VisibilityMode::CombinedBits &&
+             item.Mode != VisibilityMode::ExactValue))
             return ProbeVerdict::MalformedSample;
         guildIds.insert(item.GuildId);
     }

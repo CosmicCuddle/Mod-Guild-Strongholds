@@ -79,3 +79,7 @@ Any failure or missing evidence blocks the live release. See [ISOLATION_DECISION
 An opt-in `.naxxgs snapshot` staging command is now implemented but **not registered or compiled in ordinary server builds**. It can report the invoking GM's guild ID, map ID, instance ID, zone, area and phase mask without changing the world. Its value is collecting *observations* when a staging server and dedicated guilds are ready. It cannot detect the object's exact/combined phase comparison mode or directly observe whether other guilds see its gameobjects. Guild A/B snapshots must be supplemented with independent visibility and interaction tests in both directions.
 
 See [STAGING_DIAGNOSTICS.md](STAGING_DIAGNOSTICS.md). No actual staging measurements have been collected.
+
+## Guard against malformed diagnostic enum values
+
+The pure isolation comparison model now rejects unrecognised observation kinds and phase comparison modes instead of indexing outside its three-kind array or treating unknown comparison mode as exact-value comparison. These are offline fail-closed robustness checks, not proof of real guild privacy. Actual deployed AzerothCore, IP and Playerbots testing is still mandatory.

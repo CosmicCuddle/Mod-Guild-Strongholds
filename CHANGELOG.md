@@ -295,3 +295,8 @@
 - Added 132-case synthetic bidirectional privacy/interactivity review matrix across six lifecycle/IP/bot contexts.
 - Hard rejection of cross-guild leaks, invalid reports, missing coverage and broken own-guild visibility.
 - Never enables housing; no SQL, worldserver, Playerbots, IP or live changes.
+
+## Fail-closed isolation probe enum hardening
+
+- Rejects out-of-range synthetic visibility kinds before fixed-array indexing and unknown phase comparison modes before visibility decisions.
+- Adds negative C++ tests. No player/GO phase hooks, SQL, instance routing or other module modifications.
